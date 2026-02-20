@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP & HTTPS: The Digital Pulse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --bg-card: #0F172A;
+            --neon-green: #00FF9D;
+            --neon-blue: #00C2FF;
+            --neon-purple: #BD00FF;
+            --text-main: #E0E0E0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        .neon-border-green {
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.2);
+            border: 1px solid rgba(0, 255, 157, 0.3);
+        }
+
+        .neon-border-blue {
+            box-shadow: 0 0 10px rgba(0, 194, 255, 0.2);
+            border: 1px solid rgba(0, 194, 255, 0.3);
+        }
+
+        .neon-text-green {
+            text-shadow: 0 0 8px rgba(0, 255, 157, 0.6);
+        }
+
+        .neon-text-blue {
+            text-shadow: 0 0 8px rgba(0, 194, 255, 0.6);
+        }
+
+        .flow-line {
+            width: 2px;
+            background: linear-gradient(to bottom, #00C2FF, #00FF9D);
+            height: 40px;
+            margin: 0 auto;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00FF9D;
+        }
+    </style>
+    <!-- 
+        Palette: Cyber/Hacker
+        Primary: Neon Green (#00FF9D)
+        Secondary: Neon Blue (#00C2FF)
+        Background: Deep Black (#050505)
+    -->
+    <!-- CONFIRMATION: NEITHER Mermaid JS NOR SVG were used in this output. -->
+</head>
+<body class="antialiased selection:bg-green-500 selection:text-black">
+
+    <nav class="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">⚡</span>
+                    <span class="text-xl font-bold tracking-wider text-white font-mono">NET<span class="text-green-400">SEC</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8 text-xs font-mono tracking-widest text-gray-400">
+                    <a href="#http" class="hover:text-blue-400 transition-colors">HTTP_PROTO</a>
+                    <a href="#flow" class="hover:text-green-400 transition-colors">DATA_FLOW</a>
+                    <a href="#security" class="hover:text-purple-400 transition-colors">ENCRYPTION</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+        <!-- Hero Section -->
+        <header class="text-center space-y-6 pt-10">
+            <div class="inline-block px-3 py-1 rounded bg-blue-900/20 border border-blue-500/30 text-blue-400 text-xs font-mono mb-2">
+                MODULE: WEB COMMUNICATIONS
+            </div>
+            <h1 class="text-5xl md:text-7xl font-black text-white tracking-tight uppercase">
+                The Anatomy of <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-green-400 to-purple-400 neon-text-blue">The Request</span>
+            </h1>
+            <p class="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                The internet relies on a constant conversation between <strong>Clients</strong> (your browser) and <strong>Servers</strong>. This infographic decodes the HTTP protocol, visualizing how requests are formed, how servers respond, and how encryption shields this dialogue from prying eyes.
+            </p>
+        </header>
+
+        <!-- Section 1: HTTP Request/Response Structure -->
+        <section id="http" class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <div class="border-l-4 border-blue-500 pl-6">
+                    <h2 class="text-3xl font-bold text-white mb-2">1. The Conversation</h2>
+                    <p class="text-gray-400 leading-relaxed">
+                        An HTTP interaction is binary: a <strong>Request</strong> (the ask) and a <strong>Response</strong> (the answer). The Request carries the Method (Verb) and Headers, while the Response carries the Status Code and Body.
+                    </p>
+                </div>
+
+                <!-- Visual Code Blocks (HTML/CSS only) -->
+                <div class="space-y-4 font-mono text-sm">
+                    <!-- Request Card -->
+                    <div class="bg-slate-900 p-5 rounded-lg neon-border-blue relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-blue-600 text-white text-[10px] px-2 py-1 font-bold">OUTGOING</div>
+                        <div class="text-blue-400 font-bold mb-2">// THE REQUEST</div>
+                        <div class="text-white"><span class="text-purple-400">GET</span> /users/login.html <span class="text-gray-500">HTTP/1.1</span></div>
+                        <div class="text-gray-400">Host: inlanefreight.com</div>
+                        <div class="text-gray-400">User-Agent: curl/7.68.0</div>
+                    </div>
+
+                    <!-- Response Card -->
+                    <div class="bg-slate-900 p-5 rounded-lg neon-border-green relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-green-600 text-black text-[10px] px-2 py-1 font-bold">INCOMING</div>
+                        <div class="text-green-400 font-bold mb-2">// THE RESPONSE</div>
+                        <div class="text-white"><span class="text-gray-500">HTTP/1.1</span> <span class="text-green-500">200 OK</span></div>
+                        <div class="text-gray-400">Content-Type: text/html</div>
+                        <div class="text-gray-500 mt-2">&lt;html&gt;... (Body) ...&lt;/html&gt;</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart: Request Composition -->
+            <div class="bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
+                <h3 class="text-center font-mono text-blue-400 text-sm mb-6 uppercase">// Protocol Component Weight</h3>
+                <div class="chart-container">
+                    <canvas id="compositionChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: The Flow of Data -->
+        <section id="flow" class="relative">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-3xl font-bold text-white mb-4">2. The Request Flow</h2>
+                <p class="text-gray-400">
+                    From the moment you hit enter, data traverses a specific path. Tools like <strong>cURL</strong> and Browser <strong>DevTools</strong> (Network Tab) allow us to inspect this "raw" conversation.
+                </p>
+            </div>
+
+            <!-- CSS Flow Diagram (No SVG) -->
+            <div class="max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center relative z-10">
+                    
+                    <!-- Client -->
+                    <div class="bg-slate-900 p-6 rounded-xl border border-blue-500/30 shadow-lg flex flex-col items-center">
+                        <div class="text-4xl mb-3">💻</div>
+                        <h3 class="text-blue-400 font-bold font-mono">CLIENT</h3>
+                        <p class="text-xs text-gray-500 mt-2">Initiates GET Request</p>
+                    </div>
+
+                    <!-- Processing -->
+                    <div class="bg-black p-6 rounded-xl border border-dashed border-gray-700 flex flex-col items-center justify-center">
+                        <div class="text-2xl mb-2">⚡</div>
+                        <h3 class="text-white font-bold font-mono text-sm">PROCESSING</h3>
+                        <div class="text-[10px] text-gray-500 mt-1 font-mono">DNS Resolution -> IP</div>
+                    </div>
+
+                    <!-- Server -->
+                    <div class="bg-slate-900 p-6 rounded-xl border border-green-500/30 shadow-lg flex flex-col items-center">
+                        <div class="text-4xl mb-3">🖥️</div>
+                        <h3 class="text-green-400 font-bold font-mono">SERVER</h3>
+                        <p class="text-xs text-gray-500 mt-2">Returns 200 OK + HTML</p>
+                    </div>
+                </div>
+
+                <!-- Connectors for Desktop -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-blue-900 via-white/10 to-green-900 transform -translate-y-6 -z-0"></div>
+            </div>
+
+            <!-- Status Codes Chart -->
+            <div class="mt-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1">
+                    <div class="chart-container">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+                <div class="order-1 md:order-2 space-y-6">
+                    <h3 class="text-2xl font-bold text-white">Status Codes: The Verdict</h3>
+                    <p class="text-gray-400 text-sm">Every response carries a code indicating success or failure.</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-3 bg-green-900/20 border-l-2 border-green-500 rounded">
+                            <span class="block text-green-400 font-bold font-mono">200 OK</span>
+                            <span class="text-xs text-gray-500">Success</span>
+                        </div>
+                        <div class="p-3 bg-yellow-900/20 border-l-2 border-yellow-500 rounded">
+                            <span class="block text-yellow-400 font-bold font-mono">401 Auth</span>
+                            <span class="text-xs text-gray-500">Unauthorized</span>
+                        </div>
+                        <div class="p-3 bg-blue-900/20 border-l-2 border-blue-500 rounded">
+                            <span class="block text-blue-400 font-bold font-mono">301 Move</span>
+                            <span class="text-xs text-gray-500">Redirect</span>
+                        </div>
+                        <div class="p-3 bg-red-900/20 border-l-2 border-red-500 rounded">
+                            <span class="block text-red-400 font-bold font-mono">404 Missing</span>
+                            <span class="text-xs text-gray-500">Not Found</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: HTTPS & Security -->
+        <section id="security" class="bg-slate-900 rounded-3xl p-8 md:p-12 border border-slate-800 shadow-2xl overflow-hidden relative">
+            <!-- Decorative Glow -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-green-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-white mb-4 border-l-4 border-green-500 pl-6">3. The Digital Shield (HTTPS)</h2>
+                <p class="text-gray-400 max-w-2xl">
+                    HTTP sends data in <strong>Clear-Text</strong>, making it vulnerable to Man-in-the-Middle (MiTM) attacks. <strong>HTTPS</strong> solves this by wrapping the connection in an encrypted SSL/TLS tunnel using Port 443.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                
+                <!-- Security Radar Chart -->
+                <div class="bg-black/40 p-6 rounded-2xl neon-border-green">
+                    <h3 class="text-center font-mono text-green-400 text-sm mb-4 uppercase">// Security Protocol Analysis</h3>
+                    <div class="chart-container">
+                        <canvas id="securityRadarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Encryption Handshake Visual -->
+                <div class="space-y-6">
+                    <h3 class="text-xl font-bold text-white">The Handshake Protocol</h3>
+                    
+                    <div class="relative pl-8 border-l-2 border-gray-700 space-y-8">
+                        <!-- Step 1 -->
+                        <div class="relative">
+                            <div class="absolute -left-[41px] top-0 w-6 h-6 bg-slate-800 border-2 border-blue-500 rounded-full flex items-center justify-center text-[10px] text-white">1</div>
+                            <h4 class="text-blue-400 font-bold font-mono text-sm">CLIENT HELLO</h4>
+                            <p class="text-xs text-gray-500 mt-1">Browser requests secure connection.</p>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="relative">
+                            <div class="absolute -left-[41px] top-0 w-6 h-6 bg-slate-800 border-2 border-purple-500 rounded-full flex items-center justify-center text-[10px] text-white">2</div>
+                            <h4 class="text-purple-400 font-bold font-mono text-sm">SERVER HELLO + CERT</h4>
+                            <p class="text-xs text-gray-500 mt-1">Server sends SSL Certificate & Public Key.</p>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="relative">
+                            <div class="absolute -left-[41px] top-0 w-6 h-6 bg-slate-800 border-2 border-green-500 rounded-full flex items-center justify-center text-[10px] text-white">3</div>
+                            <h4 class="text-green-400 font-bold font-mono text-sm">ENCRYPTED TUNNEL</h4>
+                            <p class="text-xs text-gray-500 mt-1">Key exchange complete. Data is now unreadable to outsiders.</p>
+                        </div>
+                    </div>
+
+                    <!-- cURL Tooltip -->
+                    <div class="mt-8 bg-gray-950 p-4 rounded border border-gray-800 font-mono text-xs">
+                        <div class="text-gray-500 mb-1"># Test Insecure Connection</div>
+                        <div class="text-yellow-400">curl -k https://inlanefreight.com</div>
+                        <div class="text-gray-600 mt-1">// -k flag bypasses SSL certificate checks</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="border-t border-gray-800 pt-10 text-center text-gray-600 font-mono text-xs">
+            <p>SYSTEM STATUS: ONLINE // ENCRYPTION: AES-256 // GENERATED FOR EDUCATION</p>
+        </footer>
+
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        // --- 1. Label Wrapping Helper (Mandatory) ---
+        function formatLabel(str, maxwidth) {
+            var sections = [];
+            var words = str.split(" ");
+            var temp = "";
+            words.forEach(function(item, index) {
+                if (temp.length > 0) {
+                    var concat = temp + ' ' + item;
+                    if (concat.length > maxwidth) {
+                        sections.push(temp);
+                        temp = "";
+                    } else {
+                        if (index == (words.length - 1)) {
+                            sections.push(concat);
+                            return;
+                        } else {
+                            temp = concat;
+                            return;
+                        }
+                    }
+                }
+                if (index == (words.length - 1)) {
+                    sections.push(item);
+                    return;
+                }
+                if (item.length < maxwidth) {
+                    temp = item;
+                } else {
+                    sections.push(item);
+                }
+            });
+            return sections;
+        }
+
+        // --- 2. Tooltip Config (Mandatory) ---
+        const commonTooltipOptions = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            },
+            backgroundColor: 'rgba(5, 5, 5, 0.95)',
+            titleColor: '#00FF9D',
+            bodyColor: '#fff',
+            borderColor: '#00FF9D',
+            borderWidth: 1,
+            titleFont: { family: "'JetBrains Mono', monospace" }
+        };
+
+        // --- Chart 1: Request Composition (Doughnut) ---
+        const ctxComp = document.getElementById('compositionChart').getContext('2d');
+        const compLabels = ['Headers (Metadata)', 'Method/Path', 'Body (Payload)', 'Cookies/Auth'];
+        
+        new Chart(ctxComp, {
+            type: 'doughnut',
+            data: {
+                labels: compLabels.map(l => formatLabel(l, 15)),
+                datasets: [{
+                    data: [30, 10, 50, 10],
+                    backgroundColor: [
+                        '#00C2FF', // Blue
+                        '#BD00FF', // Purple
+                        '#00FF9D', // Green
+                        '#E0E0E0'  // White
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { color: '#E0E0E0', font: { family: "'Inter', sans-serif" } }
+                    },
+                    tooltip: commonTooltipOptions
+                },
+                cutout: '65%'
+            }
+        });
+
+        // --- Chart 2: Status Codes (Bar) ---
+        const ctxStatus = document.getElementById('statusChart').getContext('2d');
+        
+        new Chart(ctxStatus, {
+            type: 'bar',
+            data: {
+                labels: ['200 OK', '301 Redirect', '401 Unauth', '404 Not Found', '500 Server Err'],
+                datasets: [{
+                    label: 'Response Frequency',
+                    data: [65, 10, 5, 15, 5],
+                    backgroundColor: [
+                        '#00FF9D', // Green
+                        '#00C2FF', // Blue
+                        '#FACC15', // Yellow
+                        '#EF4444', // Red
+                        '#BD00FF'  // Purple
+                    ],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: commonTooltipOptions
+                },
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { color: '#9CA3AF' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#9CA3AF' }
+                    }
+                }
+            }
+        });
+
+        // --- Chart 3: Security Radar (Radar) ---
+        const ctxRadar = document.getElementById('securityRadarChart').getContext('2d');
+        const radarLabels = ['Data Privacy', 'Integrity Check', 'Identity Trust', 'Attack Resistance'];
+        
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: radarLabels.map(l => formatLabel(l, 15)),
+                datasets: [{
+                    label: 'HTTPS (Secure)',
+                    data: [100, 100, 100, 95],
+                    borderColor: '#00FF9D',
+                    backgroundColor: 'rgba(0, 255, 157, 0.2)',
+                    pointBackgroundColor: '#00FF9D',
+                    pointBorderColor: '#fff'
+                }, {
+                    label: 'HTTP (Clear-Text)',
+                    data: [10, 20, 10, 0],
+                    borderColor: '#EF4444',
+                    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                    pointBackgroundColor: '#EF4444',
+                    pointBorderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        pointLabels: {
+                            color: '#E0E0E0',
+                            font: { size: 11, family: "'JetBrains Mono', monospace" }
+                        },
+                        ticks: { display: false, backdropColor: 'transparent' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#E0E0E0' }
+                    },
+                    tooltip: commonTooltipOptions
+                }
+            }
+        });
+    </script>
+</body>
+</html>
