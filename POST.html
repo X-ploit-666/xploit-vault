@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP POST & Session Security</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A;
+            color: #E2E8F0;
+        }
+        h1, h2, h3, .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .neon-text {
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+        }
+        .card-glow {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .flow-arrow {
+            position: relative;
+            height: 2px;
+            background: #3B82F6;
+            margin: 0 10px;
+        }
+        .flow-arrow::after {
+            content: '►';
+            position: absolute;
+            right: -5px;
+            top: -10px;
+            color: #3B82F6;
+            font-size: 14px;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0F172A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3B82F6;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 antialiased selection:bg-green-500 selection:text-black">
+
+    <nav class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-700 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <span class="text-green-400 text-2xl">█</span>
+                    <span class="text-xl font-bold tracking-wider text-white mono-font">SECURE<span class="text-green-400">POST</span></span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#methods" class="hover:text-green-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Methods</a>
+                        <a href="#sessions" class="hover:text-green-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Sessions</a>
+                        <a href="#json" class="hover:text-green-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">JSON</a>
+                        <a href="#curl" class="hover:text-green-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Hacking</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+        <header class="text-center space-y-6">
+            <div class="inline-block px-4 py-1 rounded-full bg-green-900/30 border border-green-500/50 text-green-400 text-sm font-mono mb-4">
+                MODULE 05: SYSTEM PROTOCOLS
+            </div>
+            <h1 class="text-5xl md:text-6xl font-extrabold text-white tracking-tight">
+                HTTP POST & <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 neon-text">SESSION HIJACKING</span>
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                Unlock the mechanics of secure data transmission. While GET requests browse, <strong>POST requests</strong> act. Discover how data is hidden, how sessions are maintained via cookies, and how hackers exploit these mechanisms.
+            </p>
+        </header>
+
+        <section id="methods" class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <h2 class="text-3xl font-bold text-white border-l-4 border-blue-500 pl-4">The Power of POST</h2>
+                <p class="text-slate-300 leading-relaxed">
+                    Unlike GET requests which expose parameters in the URL, the <strong>POST method</strong> encapsulates data within the request body. This fundamental difference enables the transmission of sensitive credentials, large files, and complex binary data without leaving traces in browser history or server access logs.
+                </p>
+                <div class="grid grid-cols-1 gap-4 mt-6">
+                    <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 flex items-start gap-4">
+                        <div class="bg-green-500/20 p-2 rounded text-green-400 text-xl">🔒</div>
+                        <div>
+                            <h3 class="font-bold text-white">Enhanced Privacy</h3>
+                            <p class="text-sm text-slate-400">Data hidden in body; not saved in history.</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 flex items-start gap-4">
+                        <div class="bg-blue-500/20 p-2 rounded text-blue-400 text-xl">📦</div>
+                        <div>
+                            <h3 class="font-bold text-white">Unlimited Capacity</h3>
+                            <p class="text-sm text-slate-400">No URL length limits (2,000 chars); ideal for uploads.</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 flex items-start gap-4">
+                        <div class="bg-purple-500/20 p-2 rounded text-purple-400 text-xl">⚙</div>
+                        <div>
+                            <h3 class="font-bold text-white">Binary Support</h3>
+                            <p class="text-sm text-slate-400">Send images, PDFs, and raw streams.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-slate-800 rounded-xl p-6 card-glow">
+                <h3 class="text-center text-white font-mono mb-6">Method Capabilities Comparison</h3>
+                <div class="chart-container">
+                    <canvas id="methodRadarChart"></canvas>
+                </div>
+                <p class="text-center text-xs text-slate-500 mt-4 font-mono">Figure 1.1: Functional attributes of GET vs POST</p>
+            </div>
+        </section>
+
+        <section id="sessions" class="bg-slate-800/50 rounded-2xl p-8 border border-slate-700 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-green-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+            
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-white mb-4">The Digital Hall Pass: Cookies & Sessions</h2>
+                <p class="text-slate-300 max-w-3xl mx-auto">
+                    HTTP is stateless; it has "short-term memory loss." To remember a user after login, the server issues a <strong>Session Cookie</strong> (e.g., PHPSESSID). This token acts as a digital keycard, granting access to restricted areas without requiring re-authentication for every click.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                
+                <div class="bg-slate-900 p-6 rounded-lg border border-red-500/30 flex flex-col items-center text-center shadow-lg">
+                    <div class="text-4xl mb-4">👤</div>
+                    <h3 class="text-xl font-bold text-white mb-2">1. Authentication</h3>
+                    <div class="bg-black/50 p-2 rounded w-full text-xs font-mono text-left text-green-400 mb-2">
+                        POST /login.php<br>
+                        username=admin<br>
+                        password=*****
+                    </div>
+                    <p class="text-sm text-slate-400">User sends credentials via POST request.</p>
+                </div>
+
+                <div class="hidden md:flex items-center justify-center">
+                    <div class="w-full h-1 bg-gradient-to-r from-red-500 to-green-500 relative">
+                        <div class="absolute right-0 -top-1.5 w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 p-6 rounded-lg border border-green-500/30 flex flex-col items-center text-center shadow-lg">
+                    <div class="text-4xl mb-4">🎟</div>
+                    <h3 class="text-xl font-bold text-white mb-2">2. Assignment</h3>
+                    <div class="bg-black/50 p-2 rounded w-full text-xs font-mono text-left text-blue-300 mb-2">
+                        HTTP/1.1 200 OK<br>
+                        Set-Cookie: ID=xyz
+                    </div>
+                    <p class="text-sm text-slate-400">Server verifies and issues a Session ID.</p>
+                </div>
+
+                <div class="hidden md:flex items-center justify-center col-span-3 my-4">
+                    <div class="w-1/2 h-1 bg-gradient-to-r from-green-500 to-blue-500 relative">
+                        <div class="absolute right-0 -top-1.5 w-3 h-3 bg-blue-500 rounded-full"></div>
+                    </div>
+                </div>
+
+                <div class="md:col-start-2 bg-slate-900 p-6 rounded-lg border border-blue-500/30 flex flex-col items-center text-center shadow-lg transform scale-110 border-2 border-blue-500">
+                    <div class="text-4xl mb-4">🔓</div>
+                    <h3 class="text-xl font-bold text-white mb-2">3. Persistence</h3>
+                    <div class="bg-black/50 p-2 rounded w-full text-xs font-mono text-left text-yellow-300 mb-2">
+                        GET /dashboard<br>
+                        Cookie: ID=xyz
+                    </div>
+                    <p class="text-sm text-slate-400">Browser auto-sends the ID. Access Granted.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="json" class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="order-2 lg:order-1 bg-slate-800 rounded-xl p-6 card-glow">
+                <h3 class="text-center text-white font-mono mb-6">Common Data Payload Formats</h3>
+                <div class="chart-container">
+                    <canvas id="payloadDoughnutChart"></canvas>
+                </div>
+            </div>
+
+            <div class="order-1 lg:order-2 space-y-6">
+                <h2 class="text-3xl font-bold text-white border-l-4 border-purple-500 pl-4">Speaking the Language: JSON</h2>
+                <p class="text-slate-300 leading-relaxed">
+                    Modern APIs and Single Page Applications rarely use standard form encoding. Instead, they utilize <strong>JSON (JavaScript Object Notation)</strong>. When sending JSON data, the server must be explicitly informed via the <code class="bg-slate-700 px-1 rounded text-purple-300">Content-Type: application/json</code> header, or the request may be ignored.
+                </p>
+                
+                <div class="bg-black rounded-lg p-4 font-mono text-sm shadow-inner border border-slate-700">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
+                        <span class="text-slate-500">payload.json</span>
+                        <span class="text-xs text-slate-600">JSON FORMAT</span>
+                    </div>
+                    <div class="text-purple-400">{</div>
+                    <div class="pl-4">
+                        <span class="text-blue-400">"target"</span>: <span class="text-green-400">"london"</span>,
+                    </div>
+                    <div class="pl-4">
+                        <span class="text-blue-400">"filters"</span>: <span class="text-purple-400">{</span>
+                    </div>
+                    <div class="pl-8">
+                        <span class="text-blue-400">"min_population"</span>: <span class="text-orange-400">1000000</span>
+                    </div>
+                    <div class="pl-4 text-purple-400">}</div>
+                    <div class="text-purple-400">}</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="curl" class="space-y-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-white mb-4">The Hacker's Toolkit: Crafting Requests</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">
+                    Security professionals bypass the browser UI to interact directly with the server. Using <strong>cURL</strong>, we can simulate logins, inject headers, and hijack sessions.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-700 shadow-2xl">
+                    <div class="bg-gray-800 px-4 py-2 flex items-center gap-2 border-b border-gray-700">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="ml-2 text-xs text-gray-400 font-mono">bash -- POST Login</span>
+                    </div>
+                    <div class="p-4 font-mono text-sm space-y-2">
+                        <p class="text-gray-500"># 1. Manual Login via POST</p>
+                        <p class="text-green-400">
+                            $ curl -X POST <br>
+                            &nbsp;&nbsp;-d 'user=admin&pass=12345' <br>
+                            &nbsp;&nbsp;http://target.com/login
+                        </p>
+                        <p class="text-blue-300 mt-2">
+                            < HTTP/1.1 200 OK<br>
+                            < Set-Cookie: SESS=abc123xyz
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-700 shadow-2xl">
+                    <div class="bg-gray-800 px-4 py-2 flex items-center gap-2 border-b border-gray-700">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="ml-2 text-xs text-gray-400 font-mono">bash -- Session Hijack</span>
+                    </div>
+                    <div class="p-4 font-mono text-sm space-y-2">
+                        <p class="text-gray-500"># 2. Replay Session (Hijacking)</p>
+                        <p class="text-green-400">
+                            $ curl -b 'SESS=abc123xyz' <br>
+                            &nbsp;&nbsp;http://target.com/admin
+                        </p>
+                        <p class="text-blue-300 mt-2">
+                            < HTTP/1.1 200 OK<br>
+                            < [Admin Dashboard HTML]
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <footer class="border-t border-slate-800 pt-8 text-center text-slate-500">
+            <p class="font-mono text-sm">SECURE_POST_INFOGRAPHIC // v1.0.5</p>
+            <p class="text-xs mt-2">Generated for Educational Security Analysis</p>
+        </footer>
+
+    </main>
+
+    <script>
+        function formatLabel(str, maxwidth) {
+            var sections = [];
+            var words = str.split(" ");
+            var temp = "";
+            words.forEach(function(item, index) {
+                if (temp.length > 0) {
+                    var concat = temp + ' ' + item;
+                    if (concat.length > maxwidth) {
+                        sections.push(temp);
+                        temp = "";
+                    } else {
+                        if (index == (words.length - 1)) {
+                            sections.push(concat);
+                            return;
+                        } else {
+                            temp = concat;
+                            return;
+                        }
+                    }
+                }
+                if (index == (words.length - 1)) {
+                    sections.push(item);
+                    return;
+                }
+                if (item.length < maxwidth) {
+                    temp = item;
+                } else {
+                    sections.push(item);
+                }
+            });
+            return sections;
+        }
+
+        const commonTooltipOptions = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            },
+            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+            titleColor: '#4ade80',
+            bodyColor: '#fff',
+            borderColor: '#3b82f6',
+            borderWidth: 1
+        };
+
+        const ctxRadar = document.getElementById('methodRadarChart').getContext('2d');
+        const radarLabels = ["Data Capacity", "Security (Hidden)", "Caching Ability", "Visibility (URL)", "Binary Support"];
+        const processedRadarLabels = radarLabels.map(l => formatLabel(l, 16));
+
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: processedRadarLabels,
+                datasets: [{
+                    label: 'POST Method',
+                    data: [100, 80, 0, 10, 100],
+                    fill: true,
+                    backgroundColor: 'rgba(74, 222, 128, 0.2)',
+                    borderColor: '#4ade80', 
+                    pointBackgroundColor: '#4ade80',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#4ade80'
+                }, {
+                    label: 'GET Method',
+                    data: [20, 10, 100, 100, 0],
+                    fill: true,
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderColor: '#3b82f6',
+                    pointBackgroundColor: '#3b82f6',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#3b82f6'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        pointLabels: {
+                            color: '#94a3b8',
+                            font: { family: "'JetBrains Mono', monospace", size: 12 }
+                        },
+                        ticks: { display: false, backdropColor: 'transparent' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#e2e8f0', font: { family: "'Inter', sans-serif" } }
+                    },
+                    tooltip: commonTooltipOptions
+                }
+            }
+        });
+
+        const ctxDoughnut = document.getElementById('payloadDoughnutChart').getContext('2d');
+        const payloadLabels = ["JSON (application/json)", "Form Data (x-www-form-urlencoded)", "XML / Other"];
+        const processedPayloadLabels = payloadLabels.map(l => formatLabel(l, 16));
+
+        new Chart(ctxDoughnut, {
+            type: 'doughnut',
+            data: {
+                labels: processedPayloadLabels,
+                datasets: [{
+                    label: 'Modern API Usage',
+                    data: [70, 25, 5],
+                    backgroundColor: [
+                        '#a855f7', 
+                        '#3b82f6', 
+                        '#64748b'  
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#e2e8f0', font: { family: "'Inter', sans-serif" } }
+                    },
+                    tooltip: commonTooltipOptions
+                }
+            }
+        });
+    </script>
+</body>
+</html>
