@@ -1,0 +1,5 @@
+# This directory is a Syncthing folder marker.
+# Do not delete.
+
+folderID: kvqyd-hzwam
+created: 2025-04-26T23:50:14+01:00
