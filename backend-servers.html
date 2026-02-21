@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Architecture of the Web: Back-End Deep Dive</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles & Palette -->
+    <style>
+        /* Palette Name: Cyber Blue & Amber
+           Based on "Brilliant Blues" with high contrast accents.
+           Primary Dark: #1e3a8a (Blue 900)
+           Primary Mid: #3b82f6 (Blue 500)
+           Accent: #f59e0b (Amber 500)
+           Background: #f8fafc (Slate 50)
+        */
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            scroll-behavior: smooth;
+        }
+
+        .gradient-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card-shadow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* CHART CONTAINER STYLING RULES (Mandatory) */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constrain width on large screens */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height */
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Utility for flow lines in diagrams */
+        .flow-line {
+            height: 2px;
+            background-color: #cbd5e1;
+            flex-grow: 1;
+            position: relative;
+        }
+        
+        .flow-arrow-right::after {
+            content: '►';
+            position: absolute;
+            right: -6px;
+            top: -9px;
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+
+        .flow-arrow-down::after {
+            content: '▼';
+            position: absolute;
+            bottom: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+    </style>
+
+    <!-- Source Material Analysis & Plan -->
+    <!--
+    PLAN NARRATIVE:
+    1. Introduction: Define the Back-End Server as the "brain" and "muscle" of web apps.
+    2. Core Components: Visualize the "Box" (Hardware, OS, Web Server, DB, Framework).
+    3. Web Servers: Deep dive into Traffic Handling, Status Codes, and Market Share (Apache/Nginx/IIS).
+    4. Databases: Compare SQL vs NoSQL structure and use cases.
+    5. Solution Stacks: Quick reference to LAMP, WAMP, etc.
+    6. Frameworks & APIs: Explain how the Front-End talks to the Back-End via REST/SOAP.
+    7. Conclusion: Summary of the ecosystem.
+
+    CHART SELECTION JUSTIFICATION (NO SVG):
+    1. Web Server Market Share -> Doughnut Chart (Chart.js) -> Compare proportions.
+    2. HTTP Status Code Frequency -> Bar Chart (Chart.js) -> Compare categorical frequency.
+    3. Database Characteristics (SQL vs NoSQL) -> Radar Chart (Chart.js) -> Compare multivariate attributes (Structure vs Speed vs Flex).
+    4. Database Landscape -> 3D Scatter Plot (Plotly.js) -> Show relationship between Complexity, Volume, and Type.
+    5. API Flow -> HTML/CSS Diagram -> Visualizing a process flow.
+    -->
+</head>
+<body class="antialiased">
+
+    <!-- HERO SECTION -->
+    <header class="gradient-header text-white py-16 px-4 mb-12">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight">The Anatomy of the Back-End</h1>
+            <p class="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto font-light">
+                Unveiling the hardware, software, and architecture that powers the modern web.
+            </p>
+            <div class="mt-8 flex justify-center space-x-4">
+                <span class="px-4 py-2 bg-blue-800 bg-opacity-50 rounded-full text-sm font-semibold border border-blue-400">Server Architecture</span>
+                <span class="px-4 py-2 bg-blue-800 bg-opacity-50 rounded-full text-sm font-semibold border border-blue-400">Database Management</span>
+                <span class="px-4 py-2 bg-blue-800 bg-opacity-50 rounded-full text-sm font-semibold border border-blue-400">API Protocols</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 pb-20 space-y-20">
+
+        <!-- SECTION 1: WHAT IS A BACK-END SERVER? -->
+        <section id="definition">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4 border-b-4 border-amber-500 inline-block pb-2">The Digital Powerhouse</h2>
+                <p class="text-lg text-slate-600 max-w-4xl mx-auto leading-relaxed">
+                    A back-end server is not just a computer; it's the engine room of a web application. Living in the <strong>Data Access Layer</strong>, it combines high-performance hardware with a sophisticated operating system to run the processes that make applications "dynamic." It serves files, processes logic, and safeguards data.
+                </p>
+            </div>
+
+            <!-- The 3 Pillars Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-white rounded-xl card-shadow p-8 border-t-4 border-blue-600">
+                    <div class="text-4xl mb-4 text-center">🌐</div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3 text-center">Web Server</h3>
+                    <p class="text-slate-600 text-sm text-center">
+                        The traffic controller. It accepts HTTP requests (Port 80/443), routes them, and delivers the response pages to your browser.
+                    </p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white rounded-xl card-shadow p-8 border-t-4 border-amber-500">
+                    <div class="text-4xl mb-4 text-center">🗄️</div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3 text-center">Database</h3>
+                    <p class="text-slate-600 text-sm text-center">
+                        The digital vault. It stores core assets (images, files), user data (usernames, passwords), and content (posts, updates).
+                    </p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white rounded-xl card-shadow p-8 border-t-4 border-cyan-500">
+                    <div class="text-4xl mb-4 text-center">🛠️</div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3 text-center">Framework</h3>
+                    <p class="text-slate-600 text-sm text-center">
+                        The blueprint. Tools and pre-written code (like Laravel or Django) that help developers build complex logic faster and securely.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: WEB SERVERS ANALYSIS -->
+        <section id="web-servers" class="bg-white rounded-2xl card-shadow p-8 md:p-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <!-- Narrative Column -->
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-800 mb-4">Web Server Landscape</h2>
+                    <p class="text-slate-600 mb-6 leading-relaxed">
+                        Web servers connect end-users to the application. While many options exist, the internet is dominated by three giants. <strong>Apache</strong> is the flexible veteran, <strong>NGINX</strong> is the high-concurrency speedster used by top tech giants like Netflix and Google, and <strong>IIS</strong> is the corporate standard for Microsoft environments.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <span class="w-3 h-3 rounded-full bg-blue-600 mr-3"></span>
+                            <span class="font-medium text-slate-700">Apache:</span>
+                            <span class="ml-2 text-slate-500 text-sm">Most common, highly extensible with modules.</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-3 h-3 rounded-full bg-cyan-500 mr-3"></span>
+                            <span class="font-medium text-slate-700">NGINX:</span>
+                            <span class="ml-2 text-slate-500 text-sm">Focuses on high concurrency & low memory load.</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-3 h-3 rounded-full bg-amber-500 mr-3"></span>
+                            <span class="font-medium text-slate-700">IIS:</span>
+                            <span class="ml-2 text-slate-500 text-sm">Optimized for Windows & Active Directory.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visualization Column -->
+                <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                    <h4 class="text-center font-semibold text-slate-500 mb-4 text-sm uppercase tracking-wider">Global Web Server Market Share</h4>
+                    <!-- Chart Container -->
+                    <div class="chart-container">
+                        <canvas id="serverShareChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: HTTP RESPONSE CODES -->
+        <section id="status-codes">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">The Language of Servers</h2>
+                <p class="text-slate-600 max-w-4xl leading-relaxed">
+                    When you talk to a server (Requests), it talks back using <strong>HTTP Status Codes</strong>. These numeric codes indicate success, failure, or the need for redirection. Understanding these codes is crucial for debugging and security analysis.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Info Cards for Codes -->
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                    <div class="font-bold text-green-800 text-lg">200 OK</div>
+                    <div class="text-green-700 text-sm mt-1">Success! The request worked perfectly.</div>
+                </div>
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+                    <div class="font-bold text-amber-800 text-lg">301 / 302</div>
+                    <div class="text-amber-700 text-sm mt-1">Moved. The URL has changed permanently or temporarily.</div>
+                </div>
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                    <div class="font-bold text-red-800 text-lg">404 / 500</div>
+                    <div class="text-red-700 text-sm mt-1">Errors. Either content is missing (404) or the server crashed (500).</div>
+                </div>
+            </div>
+
+            <!-- Bar Chart for Status Codes -->
+             <div class="bg-white rounded-2xl card-shadow p-6">
+                <h4 class="text-center font-semibold text-slate-500 mb-6 text-sm uppercase tracking-wider">Common HTTP Response Categories</h4>
+                <div class="chart-container">
+                    <canvas id="statusCodeChart"></canvas>
+                </div>
+                <p class="text-center text-xs text-slate-400 mt-4 italic">Simulated frequency distribution based on typical web traffic patterns.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 4: DATABASES - SQL vs NoSQL -->
+        <section id="databases" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Left: Explanation -->
+            <div class="bg-blue-900 text-white rounded-2xl card-shadow p-8 md:p-12 flex flex-col justify-center">
+                <h2 class="text-3xl font-bold mb-6 text-white">Data Storage Paradigms</h2>
+                <p class="text-blue-100 mb-6 leading-relaxed">
+                    Databases are optimized for Speed, Size, Scalability, and Cost. The two main architectures are <strong>Relational (SQL)</strong> and <strong>Non-Relational (NoSQL)</strong>.
+                </p>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="text-2xl mr-3">🏗️</span>
+                        <div>
+                            <strong class="text-cyan-400 block">Relational (SQL)</strong>
+                            <span class="text-sm opacity-90">Uses Tables, Rows, and Schemas. Best for structured data and complex relationships. Examples: MySQL, PostgreSQL.</span>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-2xl mr-3">📂</span>
+                        <div>
+                            <strong class="text-amber-400 block">Non-Relational (NoSQL)</strong>
+                            <span class="text-sm opacity-90">Uses Documents (JSON) or Key-Values. Best for speed, flexibility, and massive unstructured datasets. Examples: MongoDB, ElasticSearch.</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Right: Radar Chart Comparison -->
+            <div class="bg-white rounded-2xl card-shadow p-6 flex flex-col items-center justify-center">
+                <h4 class="text-center font-semibold text-slate-500 mb-2 text-sm uppercase tracking-wider">SQL vs NoSQL Characteristics</h4>
+                <div class="chart-container">
+                    <canvas id="dbRadarChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: WEB SOLUTION STACKS -->
+        <section id="stacks">
+            <h2 class="text-3xl font-bold text-slate-800 mb-8 text-center">Common Web Solution Stacks</h2>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <!-- Stack Card 1 -->
+                <div class="bg-white p-4 rounded-lg border border-slate-200 text-center hover:border-blue-500 transition-colors">
+                    <h3 class="text-xl font-bold text-blue-700">LAMP</h3>
+                    <div class="text-xs text-slate-500 mt-2">Linux, Apache, MySQL, PHP</div>
+                    <div class="mt-2 text-xs font-semibold bg-slate-100 rounded px-2 py-1 inline-block">The Classic</div>
+                </div>
+                <!-- Stack Card 2 -->
+                <div class="bg-white p-4 rounded-lg border border-slate-200 text-center hover:border-blue-500 transition-colors">
+                    <h3 class="text-xl font-bold text-blue-700">WAMP</h3>
+                    <div class="text-xs text-slate-500 mt-2">Windows, Apache, MySQL, PHP</div>
+                    <div class="mt-2 text-xs font-semibold bg-slate-100 rounded px-2 py-1 inline-block">Windows Dev</div>
+                </div>
+                <!-- Stack Card 3 -->
+                <div class="bg-white p-4 rounded-lg border border-slate-200 text-center hover:border-blue-500 transition-colors">
+                    <h3 class="text-xl font-bold text-blue-700">WINS</h3>
+                    <div class="text-xs text-slate-500 mt-2">Windows, IIS, .NET, SQL Server</div>
+                    <div class="mt-2 text-xs font-semibold bg-slate-100 rounded px-2 py-1 inline-block">Enterprise</div>
+                </div>
+                <!-- Stack Card 4 -->
+                <div class="bg-white p-4 rounded-lg border border-slate-200 text-center hover:border-blue-500 transition-colors">
+                    <h3 class="text-xl font-bold text-blue-700">MAMP</h3>
+                    <div class="text-xs text-slate-500 mt-2">macOS, Apache, MySQL, PHP</div>
+                    <div class="mt-2 text-xs font-semibold bg-slate-100 rounded px-2 py-1 inline-block">Mac Dev</div>
+                </div>
+                <!-- Stack Card 5 -->
+                <div class="bg-white p-4 rounded-lg border border-slate-200 text-center hover:border-blue-500 transition-colors">
+                    <h3 class="text-xl font-bold text-blue-700">XAMPP</h3>
+                    <div class="text-xs text-slate-500 mt-2">Cross-Platform, Apache, MySQL, PHP</div>
+                    <div class="mt-2 text-xs font-semibold bg-slate-100 rounded px-2 py-1 inline-block">Versatile</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: APIs & COMMUNICATION -->
+        <section id="apis" class="bg-slate-800 rounded-2xl card-shadow p-8 md:p-12 text-white">
+            <h2 class="text-3xl font-bold mb-6 text-white">APIs: The Secret Handshake</h2>
+            <p class="text-slate-300 mb-10 leading-relaxed max-w-4xl">
+                Front-end and back-end communicate via <strong>APIs (Application Programming Interfaces)</strong>. Modern web apps primarily use <strong>REST</strong> (Representational State Transfer) which is lightweight and uses standard HTTP methods (GET, POST), while legacy or complex enterprise apps might use <strong>SOAP</strong> (XML-based).
+            </p>
+
+            <!-- HTML/CSS Flowchart Diagram -->
+            <div class="bg-slate-900 rounded-xl p-6 md:p-10 border border-slate-700 overflow-x-auto">
+                <h3 class="text-center text-cyan-400 font-bold mb-8 uppercase tracking-widest text-sm">The API Request Lifecycle</h3>
+                
+                <div class="min-w-[600px] flex justify-between items-center relative">
+                    
+                    <!-- Step 1: Client -->
+                    <div class="w-32 text-center z-10">
+                        <div class="bg-blue-600 text-white p-4 rounded-lg shadow-lg mb-2 text-3xl">💻</div>
+                        <div class="font-bold text-blue-200">Front End</div>
+                        <div class="text-xs text-slate-400 mt-1">Initiates GET Request</div>
+                    </div>
+
+                    <!-- Arrow 1 -->
+                    <div class="flex-grow h-1 bg-slate-600 relative mx-4">
+                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-slate-800 px-2 text-xs text-cyan-400 font-mono">
+                            /api/users/1
+                        </div>
+                        <div class="absolute right-0 -top-2 text-slate-600 text-lg">▶</div>
+                    </div>
+
+                    <!-- Step 2: API/Server -->
+                    <div class="w-32 text-center z-10">
+                        <div class="bg-amber-600 text-white p-4 rounded-lg shadow-lg mb-2 text-3xl">⚙️</div>
+                        <div class="font-bold text-amber-200">Back End</div>
+                        <div class="text-xs text-slate-400 mt-1">Processes Logic</div>
+                    </div>
+
+                    <!-- Arrow 2 -->
+                    <div class="flex-grow h-1 bg-slate-600 relative mx-4">
+                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-slate-800 px-2 text-xs text-cyan-400 font-mono">
+                            Query DB
+                        </div>
+                        <div class="absolute right-0 -top-2 text-slate-600 text-lg">▶</div>
+                    </div>
+
+                    <!-- Step 3: Database -->
+                    <div class="w-32 text-center z-10">
+                        <div class="bg-cyan-700 text-white p-4 rounded-lg shadow-lg mb-2 text-3xl">🗄️</div>
+                        <div class="font-bold text-cyan-200">Database</div>
+                        <div class="text-xs text-slate-400 mt-1">Returns Data</div>
+                    </div>
+
+                </div>
+
+                <!-- Return Path -->
+                <div class="min-w-[600px] mt-8 flex justify-between items-center relative">
+                    <div class="absolute w-full border-b border-dashed border-slate-600 top-1/2 -z-0"></div>
+                     <div class="w-full text-center">
+                        <span class="bg-slate-900 px-4 text-xs text-green-400 font-mono">JSON Response: { "id": 1, "name": "Admin" } (200 OK)</span>
+                    </div>
+                     <div class="absolute left-0 top-1 text-slate-600 text-lg rotate-180">▶</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="text-center text-slate-400 py-10 border-t border-slate-200">
+            <p class="mb-2">Generated for Educational Purposes based on Back-End Architecture Source Material.</p>
+            <p class="text-xs">No SVGs or External Images were used in this Single Page Application.</p>
+        </footer>
+
+    </main>
+
+    <!-- SCRIPTS -->
+    <script>
+        // --- HELPER: LABEL SPLITTING FOR CHART.JS ---
+        // Splits long strings into arrays of shorter strings for Chart.js labels
+        function splitLabel(str, maxLen = 16) {
+            if (str.length <= maxLen) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= maxLen) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- HELPER: COMMON CHART OPTIONS ---
+        // Includes the Mandatory Tooltip Callback configuration
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: { family: "'Roboto', sans-serif", size: 12 },
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(30, 58, 138, 0.9)',
+                    titleFont: { family: "'Roboto', sans-serif", size: 14 },
+                    bodyFont: { family: "'Roboto', sans-serif", size: 13 },
+                    padding: 12,
+                    cornerRadius: 8,
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        // --- CHART 1: WEB SERVER MARKET SHARE (Doughnut) ---
+        const ctx1 = document.getElementById('serverShareChart').getContext('2d');
+        const serverDataLabels = ["Apache (The Flexible)", "NGINX (The Fast)", "IIS (The Corporate)", "Others"];
+        const processedServerLabels = serverDataLabels.map(l => splitLabel(l));
+
+        new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: processedServerLabels,
+                datasets: [{
+                    data: [40, 30, 15, 15],
+                    backgroundColor: [
+                        '#1d4ed8', // Apache (Blue)
+                        '#06b6d4', // NGINX (Cyan)
+                        '#f59e0b', // IIS (Amber)
+                        '#94a3b8'  // Others (Slate)
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                ...commonChartOptions,
+                cutout: '60%',
+                plugins: {
+                    ...commonChartOptions.plugins,
+                    legend: { position: 'right' }
+                }
+            }
+        });
+
+        // --- CHART 2: HTTP STATUS CODES (Bar) ---
+        const ctx2 = document.getElementById('statusCodeChart').getContext('2d');
+        const statusLabels = [
+            "200 OK (Success)", 
+            "301 Moved (Redir)", 
+            "404 Not Found (Client Err)", 
+            "500 Server Error", 
+            "403 Forbidden (Auth Err)"
+        ];
+        const processedStatusLabels = statusLabels.map(l => splitLabel(l));
+
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: processedStatusLabels,
+                datasets: [{
+                    label: 'Frequency of Occurrence (%)',
+                    data: [60, 10, 15, 5, 10],
+                    backgroundColor: [
+                        '#22c55e', // Green 500
+                        '#f59e0b', // Amber 500
+                        '#ef4444', // Red 500
+                        '#b91c1c', // Red 700
+                        '#f97316'  // Orange 500
+                    ],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                ...commonChartOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { display: true, color: '#f1f5f9' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // --- CHART 3: SQL vs NoSQL (Radar) ---
+        const ctx3 = document.getElementById('dbRadarChart').getContext('2d');
+        const radarLabels = ["Data Structure", "Scalability", "Flexibility", "Relationship Complexity", "Speed (Reads)"];
+        const processedRadarLabels = radarLabels.map(l => splitLabel(l));
+
+        new Chart(ctx3, {
+            type: 'radar',
+            data: {
+                labels: processedRadarLabels,
+                datasets: [
+                    {
+                        label: 'Relational (SQL)',
+                        data: [9, 6, 4, 10, 7],
+                        fill: true,
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)', // Blue
+                        borderColor: '#3b82f6',
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#3b82f6'
+                    },
+                    {
+                        label: 'NoSQL',
+                        data: [4, 10, 10, 5, 9],
+                        fill: true,
+                        backgroundColor: 'rgba(245, 158, 11, 0.2)', // Amber
+                        borderColor: '#f59e0b',
+                        pointBackgroundColor: '#f59e0b',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#f59e0b'
+                    }
+                ]
+            },
+            options: {
+                ...commonChartOptions,
+                scales: {
+                    r: {
+                        angleLines: { color: '#e2e8f0' },
+                        grid: { color: '#e2e8f0' },
+                        pointLabels: {
+                            font: { size: 11, family: "'Roboto', sans-serif" }
+                        },
+                        ticks: { display: false }
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
