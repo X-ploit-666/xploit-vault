@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Vulns/CSRF Cross Site Request Forgery.md",
+                "file": "HTB Job Role Path/Web Penetration Tester/Intro To Web App/BackEnd/BackEnd Components.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "CSRF Cross Site Request Forgery"
+              "title": "BackEnd Components"
             }
           }
         ]
@@ -187,16 +187,20 @@
   },
   "active": "37b5c172c94b0062",
   "lastOpenFiles": [
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/HTTP Headers.md",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/BackEnd/BackEnd Components.md",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/BackEnd",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Components/CSS.md",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Components/HTML.md",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Components/JavaScript.md",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Vulns/CSRF Cross Site Request Forgery.md",
     "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Vulns/HTML Injection.md",
     "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Vulns/XSS Cross Site Scripting.md",
-    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Vulns/CSRF Cross Site Request Forgery.md",
-    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Components/CSS.md",
     "PDFs/EvilCUPS.pdf",
     "csrf.html",
     "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Vulns/Sensitive Data Exposure.md",
     "xss.html",
     "html-injection.html",
-    "HTB Job Role Path/Web Penetration Tester/Web Requests/HTTP Headers.md",
     "Images/devtools_network_requests.jpg",
     "HTB Job Role Path/Web Penetration Tester/Intro To Web App/Intro To Web App/FrontEnd Vs BackEnd.md",
     "HTB Job Role Path/Web Penetration Tester/Intro To Web App/Intro To Web App/Web App Layout.md",
@@ -204,8 +208,6 @@
     "CryptoJacking/CryptoJacking Techniques.md",
     "CMS/Wordpress.md",
     "HTB Job Role Path/Web Penetration Tester/Web Requests/Hypertext Transfer Protocol Secure (HTTPS).md",
-    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Components/JavaScript.md",
-    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Components/HTML.md",
     "HTB Job Role Path/Web Penetration Tester/Web Requests/CRUD API.md",
     "HTB Job Role Path/Web Penetration Tester/Web Requests/HyperText Transfer Protocol (HTTP).md",
     "HTB Job Role Path/Web Penetration Tester/Web Requests/POST.md",
@@ -217,7 +219,6 @@
     "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Vulns",
     "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd",
     "frontend-js.html",
-    "frontend-css.html",
     "HTB Job Role Path/Web Penetration Tester/Web Requests/HTTP Methods & Codes.md",
     "HTB Job Role Path/Web Penetration Tester/Web Requests/GET.md",
     "HTB Job Role Path/Web Penetration Tester/Web Requests/HTTP Requests and Responses.md",
