@@ -8,87 +8,20 @@
         "type": "tabs",
         "children": [
           {
-            "id": "001ed4cff8f3bb78",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "HTB Job Role Path/Web Penetration Tester/Web Requests/CRUD API.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "CRUD API"
-            }
-          },
-          {
             "id": "37b5c172c94b0062",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "HTB Job Role Path/Web Penetration Tester/Web Requests/GET.md",
+                "file": "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Vulns/CSRF Cross Site Request Forgery.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "GET"
-            }
-          },
-          {
-            "id": "ebcf499e10892111",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "HTB Job Role Path/Web Penetration Tester/Web Requests/Hypertext Transfer Protocol Secure (HTTPS).md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Hypertext Transfer Protocol Secure (HTTPS)"
-            }
-          },
-          {
-            "id": "464a06ea23dcafd1",
-            "type": "leaf",
-            "state": {
-              "type": "image",
-              "state": {
-                "file": "Images/devtools_network_requests.jpg"
-              },
-              "icon": "lucide-image",
-              "title": "devtools_network_requests"
-            }
-          },
-          {
-            "id": "02b67495bbb1fb4b",
-            "type": "leaf",
-            "state": {
-              "type": "image",
-              "state": {
-                "file": "Images/devtools_network_requests.jpg"
-              },
-              "icon": "lucide-image",
-              "title": "devtools_network_requests"
-            }
-          },
-          {
-            "id": "a1aea7678f107adb",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "HTB Job Role Path/Web Penetration Tester/Web Requests/HTTP Headers.md",
-                "mode": "preview",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "HTTP Headers"
+              "title": "CSRF Cross Site Request Forgery"
             }
           }
-        ],
-        "currentTab": 5
+        ]
       }
     ],
     "direction": "vertical"
@@ -252,57 +185,56 @@
       "pdf-plus:PDF++: Toggle auto-paste": false
     }
   },
-  "active": "a1aea7678f107adb",
+  "active": "37b5c172c94b0062",
   "lastOpenFiles": [
-    "headers.html",
-    "HTB Job Role Path/Web Penetration Tester/Web Requests/HTTP Methods & Codes.md",
-    "HTB Job Role Path/Web Penetration Tester/Web Requests/HTTP Requests and Responses.md",
-    "HTB Job Role Path/Web Penetration Tester/Web Requests/HyperText Transfer Protocol (HTTP).md",
-    "HTB Job Role Path/Web Penetration Tester/Web Requests/Hypertext Transfer Protocol Secure (HTTPS).md",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Vulns/HTML Injection.md",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Vulns/XSS Cross Site Scripting.md",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Vulns/CSRF Cross Site Request Forgery.md",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Components/CSS.md",
+    "PDFs/EvilCUPS.pdf",
+    "csrf.html",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Vulns/Sensitive Data Exposure.md",
+    "xss.html",
+    "html-injection.html",
     "HTB Job Role Path/Web Penetration Tester/Web Requests/HTTP Headers.md",
-    "HTB Job Role Path/Web Penetration Tester/Web Requests/POST.md",
-    "HTB Job Role Path/Web Penetration Tester/Web Requests/CRUD API.md",
-    "CheatSheets/GTFOBins.md",
-    "Requests-Responses.html",
-    "HTB Job Role Path/Web Penetration Tester/Web Requests/GET.md",
-    "https.html",
-    "Images/devtools_network_requests_details.jpg",
     "Images/devtools_network_requests.jpg",
-    "HTB Job Role Path/Web Penetration Tester/Intro To Web App",
-    "http-protocol.html",
-    "http-methods.html",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/Intro To Web App/FrontEnd Vs BackEnd.md",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/Intro To Web App/Web App Layout.md",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/Intro To Web App/Intro.md",
+    "CryptoJacking/CryptoJacking Techniques.md",
+    "CMS/Wordpress.md",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/Hypertext Transfer Protocol Secure (HTTPS).md",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Components/JavaScript.md",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Components/HTML.md",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/CRUD API.md",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/HyperText Transfer Protocol (HTTP).md",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/POST.md",
+    "Web Focus Plan.md",
+    "Machine Lab Challenges.md",
+    "What is CyberWarfare.md",
+    "PDFs/Jerry.pdf",
+    "sensitive-data-exposure.html",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd/FrontEnd Vulns",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App/FrontEnd",
+    "frontend-js.html",
+    "frontend-css.html",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/HTTP Methods & Codes.md",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/GET.md",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/HTTP Requests and Responses.md",
+    "CheatSheets/GTFOBins.md",
+    "Images/devtools_network_requests_details.jpg",
     "HTB Job Role Path/Web Penetration Tester/Web Requests/Untitled.md",
     "Images/raw_request 1.png",
-    "POST.html.md",
     "Images/raw_request.png",
-    "GET.html",
-    "POST.html",
-    "Web Focus Plan.md",
-    "crud.md",
-    "Untitled.base",
-    "CRUD-API.html",
-    "Web-projects",
     "Images/http_auth_login.jpg",
     "Images/raw_response.png",
     "Images/https_google.png",
     "Images/https_google_enc.png",
     "Images/https_clear.png",
     "Images/HTTPS_Flow.png",
-    "Machine Lab Challenges.md",
-    "What is CyberWarfare.md",
     "MyFitnessPAL.canvas",
     "Untitled 1.canvas",
-    "CryptoJacking/CryptoJacking Techniques.md",
     "Untitled.canvas",
-    "ISR/Untitled.canvas",
-    "CMS/Wordpress.md",
-    "Bug Bounty Programs/AnyTask/Recon.md",
-    "ISR/Untitled.md",
-    "Bug Bounty Programs/CPSC/CPSC RECON.md",
-    "Bug Bounty Programs/CPSC/Untitled Kanban.md",
-    "ASDFD.md",
-    "Bug Bounty Programs/InterWellHealth/Recon.md",
-    "HTB Labs/Easy Labs/Nibbles.md",
-    "HTB Tracks/Hottest-CVEs/EvilCUPS.md"
+    "ISR/Untitled.canvas"
   ]
 }
