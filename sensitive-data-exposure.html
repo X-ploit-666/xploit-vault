@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front-End Security Decoded</title>
+    <style>
+        /* === CORE HACKER THEME === */
+        :root {
+            --bg-color: #050505;
+            --neon-green: #00ff33;
+            --neon-cyan: #00e5ff;
+            --neon-red: #ff003c;
+            --neon-alert: #ff9900;
+            --dim-red: rgba(255, 0, 60, 0.2);
+            --font-main: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--neon-green);
+            font-family: var(--font-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* === TYPOGRAPHY & GLITCH EFFECTS === */
+        h1, h2, h3 {
+            color: var(--neon-red);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--neon-red);
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+
+        .ascii-art {
+            white-space: pre;
+            color: var(--neon-red);
+            text-shadow: 0 0 5px var(--neon-red);
+            text-align: center;
+            font-size: clamp(8px, 1.2vw, 16px);
+            margin-bottom: 30px;
+        }
+
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--neon-green);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 var(--neon-cyan);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 44px, 0); }
+            20% { clip: rect(80px, 9999px, 90px, 0); }
+            40% { clip: rect(20px, 9999px, 30px, 0); }
+            60% { clip: rect(60px, 9999px, 70px, 0); }
+            80% { clip: rect(5px, 9999px, 15px, 0); }
+            100% { clip: rect(40px, 9999px, 50px, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            20% { clip: rect(10px, 9999px, 30px, 0); }
+            40% { clip: rect(45px, 9999px, 60px, 0); }
+            60% { clip: rect(85px, 9999px, 95px, 0); }
+            80% { clip: rect(20px, 9999px, 40px, 0); }
+            100% { clip: rect(50px, 9999px, 70px, 0); }
+        }
+
+        /* === LAYOUT & CONTAINERS === */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 1px solid var(--neon-red);
+            padding: 30px;
+            box-shadow: 0 0 15px var(--dim-red) inset;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255, 0, 60, 0.03) 0px,
+                rgba(255, 0, 60, 0.03) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+        }
+
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px dashed var(--neon-red);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: var(--neon-red);
+        }
+
+        .highlight-red { color: var(--neon-red); font-weight: bold; }
+        .highlight-green { color: var(--neon-green); font-weight: bold; }
+        .highlight-cyan { color: var(--neon-cyan); font-weight: bold; }
+
+        /* === CONTENT SECTIONS === */
+        p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .box {
+            border: 1px solid var(--neon-alert);
+            padding: 20px;
+            margin: 20px 0;
+            background: rgba(255, 153, 0, 0.05);
+            border-left: 5px solid var(--neon-alert);
+        }
+
+        /* === CODE BLOCKS === */
+        pre {
+            background-color: #111;
+            color: #fff;
+            padding: 15px;
+            border: 1px solid #444;
+            overflow-x: auto;
+            border-left: 3px solid var(--neon-red);
+            font-size: 1.1em;
+        }
+
+        code {
+            color: var(--neon-red);
+            font-weight: bold;
+        }
+
+        /* === INFOGRAPHIC / DIAGRAMS === */
+        .diagram-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+            font-family: monospace;
+            white-space: pre;
+            background: #0a0a0a;
+            padding: 20px;
+            border: 1px dashed var(--neon-red);
+            color: var(--neon-cyan);
+            overflow-x: auto;
+        }
+
+        .table-container {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .table-container th, .table-container td {
+            border: 1px solid var(--neon-red);
+            padding: 12px;
+            text-align: left;
+        }
+
+        .table-container th {
+            color: var(--bg-color);
+            background-color: var(--neon-red);
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="terminal-header">
+        <span>SECURITY.AUDIT: RUNNING</span>
+        <span class="glitch" data-text="THREAT_LEVEL: HIGH">THREAT_LEVEL: HIGH</span>
+    </div>
+
+    <div class="ascii-art">
+  ____  _____ ____ _   _ ____  ___ _______     __
+ / ___|| ____/ ___| | | |  _ \|_ _|_   _\ \   / /
+ \___ \|  _|| |   | | | | |_) || |  | |  \ \ / / 
+  ___) | |__| |___| |_| |  _ < | |  | |   \ V /  
+ |____/|_____\____|\___/|_| \_\___| |_|    \_/   
+    </div>
+
+    <!-- ==========================================
+         SECTION 1: PLAIN ENGLISH REWRITE
+         ========================================== -->
+    <h2 class="glitch" data-text="> 01_CLIENT_SIDE_DANGERS">> 01_CLIENT_SIDE_DANGERS</h2>
+    
+    <p>Everything we have talked about—HTML, CSS, and JavaScript—happens on the <span class="highlight-cyan">Client-Side</span>. This means the code runs directly on the user's computer, not on the company's main hidden server (the <span class="highlight-red">Back End</span>). Because of this, an attack on these parts usually doesn't break the main server forever. However, it puts the <span class="highlight-cyan">User</span> in great danger.</p>
+
+    <p>If a hacker finds a weakness in these front-end parts, they can target important people, like the website administrators. If they trick an admin, they can steal secret data, lock people out of the site, or even find a way to jump from the front end into the main back-end server to take full control.</p>
+
+    <div class="box">
+        <h3 style="margin-top:0; color: var(--neon-alert);">> SENSITIVE_DATA_EXPOSURE</h3>
+        <p><span class="highlight-red">Sensitive Data Exposure</span> happens when a website accidentally leaves private information in plain view for anyone to see. This usually happens in the <span class="highlight-cyan">Source Code</span>—the raw HTML and JavaScript that makes up the page. You can see this code on almost any website by right-clicking and choosing "View Page Source" or pressing <code>Ctrl + U</code>.</p>
+    </div>
+
+    <p>In this hidden code, hackers often find "low-hanging fruit"—easy mistakes that developers made. This includes forgotten usernames and passwords, secret links to hidden parts of the site, or private details about the users. One of the first things a security expert does is scan this source code to see what the developers accidentally left behind.</p>
+
+    <h2 class="glitch" data-text="> 02_PREVENTION_STRATEGY">> 02_PREVENTION_STRATEGY</h2>
+    <p>To keep a website safe, the front-end code should be "clean." It should only contain the bare minimum code needed to run the site. Developers should never leave notes (comments) about passwords or hidden links. They should also use a trick called <span class="highlight-cyan">Obfuscation</span> (making the code look like a messy, unreadable jumble) to make it much harder for hackers or automated tools to find any secrets.</p>
+
+    <!-- ==========================================
+         SECTION 2: CODE BREAKDOWN
+         ========================================== -->
+    <h2 class="glitch" data-text="> 03_VULNERABILITY_ANALYSIS">> 03_VULNERABILITY_ANALYSIS</h2>
+    <p>This code looks like a normal login form on the outside, but the source code tells a different story.</p>
+
+    <pre>
+&lt;form action="action_page.php" method="post"&gt;
+    &lt;div class="container"&gt;
+        &lt;label for="uname"&gt;&lt;b&gt;Username&lt;/b&gt;&lt;/label&gt;
+        &lt;input type="text" required&gt;
+
+        &lt;label for="psw"&gt;&lt;b&gt;Password&lt;/b&gt;&lt;/label&gt;
+        &lt;input type="password" required&gt;
+
+        &lt;!-- TODO: remove test credentials test:test --&gt;
+
+        &lt;button type="submit"&gt;Login&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/form&gt;</pre>
+
+    <table class="table-container">
+        <tr>
+            <th>Part of Code</th>
+            <th>What it actually means / The Danger</th>
+        </tr>
+        <tr>
+            <td><code>&lt;form action="..."&gt;</code></td>
+            <td>This tells the browser where to send the username and password when you click login. Here, it sends it to a file called <code>action_page.php</code>.</td>
+        </tr>
+        <tr>
+            <td><code>type="password"</code></td>
+            <td>This is why you see dots (****) instead of letters when you type your password. It hides the text from anyone standing behind you.</td>
+        </tr>
+        <tr>
+            <td><code>&lt;!-- ... --&gt;</code></td>
+            <td>This is an <span class="highlight-red">HTML Comment</span>. The browser ignores this text and does not show it on the webpage. It is meant only for the developers to read.</td>
+        </tr>
+        <tr>
+            <td><code>TODO: remove test credentials test:test</code></td>
+            <td><span class="highlight-red">CRITICAL LEAK:</span> The developer left a note to themselves. The text <code>test:test</code> is likely a valid username and password for testing the site. A hacker can now log in without permission.</td>
+        </tr>
+    </table>
+
+
+    <!-- ==========================================
+         SECTION 3: VISUAL INFOGRAPHIC
+         ========================================== -->
+    <h2 class="glitch" data-text="> 04_THE_ATTACK_PATH">> 04_THE_ATTACK_PATH</h2>
+    
+    <p>How "Front-End" leaks lead to "Back-End" disasters:</p>
+
+    <div class="diagram-container">
+[ THE HACKER ]
+     |
+     v
+[ VIEW PAGE SOURCE ] (Ctrl + U)
+     |
+     +-- Finds [ COMMENT ] (e.g., "admin:pass123")
+     |
+     v
+[ LOGIN AS ADMIN ] (Authorized Access)
+     |
+     +-- Accesses [ SENSITIVE DATA ] (Emails, Credit Cards)
+     |
+     +-- Accesses [ SERVER SETTINGS ]
+     |
+     v
+[ TOTAL SERVER COMPROMISE ] <--- THE GOAL
+    </div>
+
+    <p>Security Best Practices Checklist:</p>
+
+    <div class="diagram-container" style="color: var(--neon-red);">
++---------------------------------------------------+
+|  [ ] REMOVE ALL DEVELOPER COMMENTS                |
+|  [ ] DELETE "TEST" ACCOUNTS AND HIDDEN LINKS      |
+|  [ ] USE JAVASCRIPT OBFUSCATION (SCRAMBLING)      |
+|  [ ] SCAN CODE WITH AUTOMATED SECURITY TOOLS      |
+|  [ ] NEVER TRUST THE CLIENT-SIDE FOR SECURITY     |
++---------------------------------------------------+
+    </div>
+
+    <div class="terminal-header" style="margin-top: 40px; border-top: 2px dashed var(--neon-red); border-bottom: none; padding-top: 10px;">
+        <span>END OF MODULE</span>
+        <span>SYSTEM_SECURE_</span>
+    </div>
+</div>
+
+</body>
+</html>
