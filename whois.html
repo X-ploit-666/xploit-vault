@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WHOIS Protocol: The Internet's Phonebook</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Rajdhani', 'sans-serif'],
+                        mono: ['Share Tech Mono', 'monospace'],
+                    },
+                    colors: {
+                        deep: {
+                            900: '#0b0c10', // Dark Background
+                            800: '#1f2833', // Card Background
+                        },
+                        neon: {
+                            cyan: '#66fcf1',
+                            blue: '#45a29e',
+                            purple: '#d946ef',
+                            green: '#10b981',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0b0c10;
+            color: #c5c6c7;
+        }
+
+        /* Chart Container Styling - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+            max-width: 600px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Timeline Styling */
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #66fcf1, #d946ef);
+            z-index: 0;
+        }
+
+        .glass-panel {
+            background: rgba(31, 40, 51, 0.8);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(102, 252, 241, 0.2);
+        }
+    </style>
+    <!-- 
+    PALETTE: High-Contrast Neon Cyber
+    Background: #0b0c10 (Deep Black/Blue)
+    Text: #c5c6c7 (Light Grey)
+    Accents: Cyan (#66fcf1), Teal (#45a29e), Purple (#d946ef)
+    -->
+</head>
+<body class="antialiased selection:bg-neon-cyan selection:text-deep-900">
+
+    <!-- Header -->
+    <header class="w-full bg-deep-800 border-b-2 border-neon-cyan py-12 px-4 shadow-2xl relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMTAyLDI1MiwyNDEsMC4xKSIvPjwvc3ZnPg==')] opacity-20"></div>
+        <div class="max-w-6xl mx-auto text-center relative z-10">
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-2 text-white">
+                WHOIS <span class="text-neon-cyan">PROTOCOL</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-neon-blue font-mono">
+                // THE INTERNET'S PHONEBOOK
+            </p>
+            <div class="mt-6 inline-block px-4 py-2 border border-neon-purple rounded text-neon-purple font-mono text-sm">
+                PROTOCOL_STATUS: ACTIVE | RFC_812
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 gap-16">
+
+        <!-- SECTION 1: DEFINITION & ANATOMY -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div class="glass-panel p-8 rounded-xl shadow-lg">
+                <h2 class="text-3xl font-bold text-white mb-4 border-l-4 border-neon-cyan pl-4">What is WHOIS?</h2>
+                <p class="mb-4 text-lg leading-relaxed">
+                    WHOIS is a widely used query and response protocol designed to access databases storing details about internet resources. It functions as a **massive digital directory**, allowing users to identify the owners of domains, IP address blocks, and autonomous systems.
+                </p>
+                <p class="text-neon-blue font-mono text-sm">
+                    > ACCESSING: Domain Names (google.com)<br>
+                    > ACCESSING: IP Blocks<br>
+                    > ACCESSING: Autonomous Systems
+                </p>
+            </div>
+
+            <div class="glass-panel p-8 rounded-xl shadow-lg">
+                <h3 class="text-2xl font-bold text-center text-white mb-2">The Anatomy of a Record</h3>
+                <p class="text-center text-gray-400 text-sm mb-6">Key data fields returned in a standard query</p>
+                
+                <!-- Chart Container -->
+                <div class="chart-container">
+                    <canvas id="anatomyChart"></canvas>
+                </div>
+                <p class="mt-4 text-center text-xs text-neon-blue font-mono">
+                    * Visualization represents the 7 core components of a WHOIS record.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: HISTORY TIMELINE -->
+        <section>
+            <div class="mb-8 text-center">
+                <h2 class="text-3xl font-bold text-white mb-2">Evolution of the System</h2>
+                <p class="text-gray-400">From ARPANET origins to GDPR compliance.</p>
+            </div>
+
+            <div class="relative max-w-4xl mx-auto py-4">
+                <div class="timeline-line hidden md:block"></div>
+                
+                <!-- Event 1 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 relative">
+                    <div class="bg-deep-800 p-6 rounded-lg border border-neon-cyan shadow-[0_0_15px_rgba(102,252,241,0.2)] md:text-right">
+                        <h3 class="text-2xl font-bold text-neon-cyan">1970s: The Origin</h3>
+                        <p class="text-gray-300 mt-2">
+                            Created by **Elizabeth Feinler** at SRI. Designed to track users and hostnames on the ARPANET (Pre-Internet).
+                        </p>
+                    </div>
+                    <div class="hidden md:flex items-center justify-start pl-8">
+                        <div class="w-4 h-4 bg-neon-cyan rounded-full shadow-[0_0_10px_#66fcf1]"></div>
+                    </div>
+                </div>
+
+                <!-- Event 2 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 relative">
+                    <div class="hidden md:flex items-center justify-end pr-8">
+                        <div class="w-4 h-4 bg-neon-blue rounded-full shadow-[0_0_10px_#45a29e]"></div>
+                    </div>
+                    <div class="bg-deep-800 p-6 rounded-lg border border-neon-blue shadow-[0_0_15px_rgba(69,162,158,0.2)]">
+                        <h3 class="text-2xl font-bold text-neon-blue">1982: Standardization</h3>
+                        <p class="text-gray-300 mt-2">
+                            Formalized in **RFC 812**. This established the structured rules needed for the system to scale with the growing internet.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Event 3 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 relative">
+                    <div class="bg-deep-800 p-6 rounded-lg border border-neon-purple shadow-[0_0_15px_rgba(217,70,239,0.2)] md:text-right">
+                        <h3 class="text-2xl font-bold text-neon-purple">1998: ICANN & RIRs</h3>
+                        <p class="text-gray-300 mt-2">
+                            Formation of **ICANN** for global management. Shift to **Regional Internet Registries (RIRs)** to decentralize the database.
+                        </p>
+                    </div>
+                    <div class="hidden md:flex items-center justify-start pl-8">
+                        <div class="w-4 h-4 bg-neon-purple rounded-full shadow-[0_0_10px_#d946ef]"></div>
+                    </div>
+                </div>
+
+                <!-- Event 4 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
+                    <div class="hidden md:flex items-center justify-end pr-8">
+                        <div class="w-4 h-4 bg-white rounded-full shadow-[0_0_10px_#ffffff]"></div>
+                    </div>
+                    <div class="bg-deep-800 p-6 rounded-lg border border-white shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                        <h3 class="text-2xl font-bold text-white">2018+: GDPR & RDAP</h3>
+                        <p class="text-gray-300 mt-2">
+                            Privacy concerns led to **GDPR**, redacting personal info. **RDAP** is now emerging as the secure, privacy-conscious successor.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: SYSTEM ARCHITECTURE -->
+        <section class="glass-panel p-8 rounded-xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white mb-6 border-l-4 border-neon-purple pl-4">Distributed Architecture</h2>
+            <p class="mb-8 text-gray-300">
+                Understanding how a query travels from your terminal to the decentralized databases around the world.
+            </p>
+
+            <div class="max-w-5xl mx-auto flex flex-col items-center">
+                <!-- User -->
+                <div class="p-4 bg-neon-cyan text-deep-900 font-bold rounded shadow-[0_0_20px_#66fcf1] w-48 text-center mb-2">
+                    USER TERMINAL
+                </div>
+                <div class="h-8 w-1 bg-neon-cyan mb-2"></div>
+                <div class="text-neon-cyan text-xl mb-2">▼</div>
+
+                <!-- Protocol -->
+                <div class="p-4 border-2 border-neon-cyan text-neon-cyan font-mono rounded w-64 text-center mb-2 bg-deep-900">
+                    WHOIS PROTOCOL (TCP 43)
+                </div>
+                <div class="h-8 w-1 bg-neon-cyan mb-2"></div>
+                <div class="text-neon-cyan text-xl mb-2">▼</div>
+
+                <!-- Distributed System -->
+                <div class="w-full border border-gray-600 p-6 rounded-lg bg-deep-800 relative">
+                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-deep-800 px-2 text-gray-400 font-mono text-sm">
+                        REGIONAL INTERNET REGISTRIES (RIRs)
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mt-2">
+                        <div class="p-3 bg-gray-700 rounded border border-gray-600 text-sm">
+                            <strong class="text-neon-purple block">ARIN</strong>
+                            (North America)
+                        </div>
+                        <div class="p-3 bg-gray-700 rounded border border-gray-600 text-sm">
+                            <strong class="text-neon-purple block">RIPE NCC</strong>
+                            (Europe/Middle East)
+                        </div>
+                        <div class="p-3 bg-gray-700 rounded border border-gray-600 text-sm">
+                            <strong class="text-neon-purple block">APNIC</strong>
+                            (Asia Pacific)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h-8 w-1 bg-neon-purple mb-2"></div>
+                <div class="text-neon-purple text-xl mb-2">▼</div>
+
+                <!-- Result -->
+                <div class="p-4 bg-neon-purple text-white font-bold rounded shadow-[0_0_20px_#d946ef] w-full max-w-md text-center">
+                    QUERY RESULTS: CONTACTS, NAMESERVERS, DATES
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: RECONNAISSANCE & UTILITY -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+            <div class="glass-panel p-8 rounded-xl shadow-lg flex flex-col">
+                <h2 class="text-3xl font-bold text-white mb-4 border-l-4 border-neon-green pl-4">Reconnaissance Value</h2>
+                <p class="mb-6 text-gray-300">
+                    For penetration testers, WHOIS is a treasure trove. It provides critical insights into the target's digital footprint, helping to identify vulnerabilities before an attack occurs.
+                </p>
+
+                <!-- Chart Container -->
+                <div class="chart-container flex-grow">
+                    <canvas id="reconChart"></canvas>
+                </div>
+            </div>
+
+            <div class="glass-panel p-8 rounded-xl shadow-lg">
+                <h3 class="text-2xl font-bold text-white mb-6">Key Use Cases</h3>
+                
+                <div class="space-y-6">
+                    <!-- Case 1 -->
+                    <div class="border-l-4 border-neon-cyan pl-4">
+                        <h4 class="text-xl font-bold text-neon-cyan mb-1">Finding Targets (Social Engineering)</h4>
+                        <p class="text-sm text-gray-400">
+                            Identifying key personnel names and emails to craft targeted phishing campaigns or social engineering attacks.
+                        </p>
+                    </div>
+
+                    <!-- Case 2 -->
+                    <div class="border-l-4 border-neon-green pl-4">
+                        <h4 class="text-xl font-bold text-neon-green mb-1">Infrastructure Mapping</h4>
+                        <p class="text-sm text-gray-400">
+                            Discovering Name Servers and IP blocks to find potential entry points, misconfigurations, or "back doors".
+                        </p>
+                    </div>
+
+                    <!-- Case 3 -->
+                    <div class="border-l-4 border-neon-purple pl-4">
+                        <h4 class="text-xl font-bold text-neon-purple mb-1">Historical Analysis</h4>
+                        <p class="text-sm text-gray-400">
+                            Using tools to view past WHOIS records, tracking how a company's ownership or infrastructure has changed over time.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-4 bg-black rounded border border-gray-700 font-mono text-sm text-green-400">
+                    <p class="mb-2"><span class="text-blue-500">user@kali:~$</span> whois target.com</p>
+                    <p>> Domain Name: target.com</p>
+                    <p>> Registry Domain ID: 1234567_DOMAIN_COM</p>
+                    <p>> Registrar: GoDaddy.com, LLC</p>
+                    <p class="text-red-400">> Admin Email: admin@target.com [TARGET ACQUIRED]</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center py-8 border-t border-gray-800 text-gray-500 text-sm">
+            <p>&copy; 2026 Information Security Educational Infographic. Generated from source material.</p>
+        </footer>
+
+    </main>
+
+    <!-- CHART.JS LOGIC -->
+    <script>
+        // Global Defaults
+        Chart.defaults.color = '#c5c6c7';
+        Chart.defaults.font.family = 'Rajdhani';
+        Chart.defaults.font.size = 14;
+
+        // 1. Label Wrapping Function (Mandatory)
+        function wrapLabel(label) {
+            if (label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= 16) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // 2. Tooltip Configuration (Mandatory)
+        const commonTooltip = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            },
+            backgroundColor: 'rgba(11, 12, 16, 0.9)',
+            titleColor: '#66fcf1',
+            bodyColor: '#fff',
+            borderColor: '#45a29e',
+            borderWidth: 1
+        };
+
+        // --- CHART 1: ANATOMY (Polar Area) ---
+        const anatomyCtx = document.getElementById('anatomyChart').getContext('2d');
+        const rawAnatomyLabels = [
+            'Domain Name (The Asset)', 
+            'Registrar (The Vendor)', 
+            'Registrant (The Owner)', 
+            'Admin Contact (The Manager)', 
+            'Tech Contact (The Fixer)', 
+            'Creation & Expiry Dates', 
+            'Name Servers (The Traffic Director)'
+        ];
+        const processedAnatomyLabels = rawAnatomyLabels.map(wrapLabel);
+
+        new Chart(anatomyCtx, {
+            type: 'polarArea',
+            data: {
+                labels: processedAnatomyLabels,
+                datasets: [{
+                    label: 'Record Components',
+                    data: [10, 10, 10, 10, 10, 10, 10], // Equal weight
+                    backgroundColor: [
+                        'rgba(102, 252, 241, 0.6)', // Cyan
+                        'rgba(69, 162, 158, 0.6)',  // Teal
+                        'rgba(217, 70, 239, 0.6)',  // Purple
+                        'rgba(102, 252, 241, 0.4)',
+                        'rgba(69, 162, 158, 0.4)',
+                        'rgba(217, 70, 239, 0.4)',
+                        'rgba(255, 255, 255, 0.3)'
+                    ],
+                    borderColor: '#0b0c10',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        ticks: { display: false },
+                        grid: { color: '#1f2833' },
+                        pointLabels: {
+                            color: '#fff',
+                            font: { size: 12, weight: 'bold' }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: commonTooltip
+                }
+            }
+        });
+
+        // --- CHART 2: RECON UTILITY (Radar) ---
+        const reconCtx = document.getElementById('reconChart').getContext('2d');
+        const rawReconLabels = [
+            'Social Engineering (Target ID)',
+            'Infrastructure Mapping', 
+            'Historical Tracking', 
+            'Vulnerability Assessment',
+            'Legal & Compliance'
+        ];
+        const processedReconLabels = rawReconLabels.map(wrapLabel);
+
+        new Chart(reconCtx, {
+            type: 'radar',
+            data: {
+                labels: processedReconLabels,
+                datasets: [{
+                    label: 'Reconnaissance Value',
+                    data: [90, 85, 75, 60, 40], // Estimated values based on description
+                    backgroundColor: 'rgba(217, 70, 239, 0.2)', // Purple transparent
+                    borderColor: '#d946ef', // Purple solid
+                    pointBackgroundColor: '#66fcf1', // Cyan points
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#d946ef'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: '#45a29e' },
+                        grid: { color: '#1f2833' },
+                        pointLabels: {
+                            color: '#66fcf1',
+                            font: { size: 13 }
+                        },
+                        ticks: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: commonTooltip
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
