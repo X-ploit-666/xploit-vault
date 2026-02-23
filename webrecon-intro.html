@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Reconnaissance: The Terminal Guide</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        cyber: {
+                            bg: '#0f172a',      // Slate 900
+                            card: '#1e293b',    // Slate 800
+                            text: '#f8fafc',    // Slate 50
+                            accent1: '#06b6d4', // Cyan 500
+                            accent2: '#d946ef', // Fuchsia 500
+                            accent3: '#10b981', // Emerald 500
+                            accent4: '#f59e0b', // Amber 500
+                            danger: '#ef4444',  // Red 500
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0f172a; /* cyber-bg */
+            color: #f8fafc; /* cyber-text */
+        }
+        
+        /* Chart Container Styling - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            /* Height constraints */
+            height: 300px;
+            max-height: 400px; 
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Custom Scrollbar for Terminal Feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
+        }
+
+        .terminal-box {
+            border-left: 4px solid #10b981;
+            background: #020617;
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+    <!-- 
+        PALETTE: Cyber/Neon (Inferred from "Vibrant" request)
+        Background: #0f172a (Deep Slate)
+        Text: #f8fafc (White/Grey)
+        Accents: Cyan (#06b6d4), Fuchsia (#d946ef), Emerald (#10b981), Amber (#f59e0b)
+        NO SVG USED. NO MERMAID JS USED.
+    -->
+    <!--
+    SOURCE MATERIAL ANALYSIS & PLAN:
+    1. Narrative: Start with the definition (The "What"), move to Goals (The "Why"), compare Methods (The "How"), and end with the Process Flow.
+    2. Data Point: 4 Primary Goals -> Goal: Organize/Inform -> Viz: Polar Area Chart (Equally weighted pillars).
+    3. Data Point: Active Recon Techniques & Risks -> Goal: Compare -> Viz: Horizontal Bar Chart (Risk Scores mapped from High/Med/Low).
+    4. Data Point: Passive Recon Sources -> Goal: Inform/List -> Viz: Doughnut Chart.
+    5. Data Point: Recon Flow -> Goal: Process -> Viz: HTML/CSS Flowchart (No Mermaid/SVG).
+    -->
+</head>
+<body class="antialiased selection:bg-cyber-accent1 selection:text-cyber-bg">
+
+    <!-- Header / Hero -->
+    <header class="w-full bg-cyber-card border-b border-gray-700 py-12 px-4 shadow-lg relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyber-accent1 via-cyber-accent2 to-cyber-accent3"></div>
+        <div class="max-w-6xl mx-auto text-center">
+            <span class="inline-block py-1 px-3 rounded-full bg-gray-700 text-cyber-accent3 text-xs font-mono mb-4 tracking-widest border border-gray-600">
+                INFOSEC // MODULE 01
+            </span>
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-accent1 to-cyber-accent2">WEB RECONNAISSANCE</span>
+            </h1>
+            <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                The Terminal Guide to Systematic Information Gathering
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 gap-12">
+
+        <!-- SECTION 1: INTRODUCTION -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div class="bg-cyber-card p-8 rounded-xl shadow-xl border border-gray-700">
+                <h2 class="text-2xl font-bold mb-4 text-cyber-accent1 flex items-center">
+                    <span class="mr-2 text-3xl">&#9881;</span> What is Recon?
+                </h2>
+                <p class="text-gray-300 leading-relaxed mb-4">
+                    Web Reconnaissance is the <strong>systematic</strong> and <strong>meticulous</strong> process of collecting information about a target website. It acts as the "Information Gathering" phase, serving as the foundation for any thorough security assessment.
+                </p>
+                <div class="terminal-box p-4 rounded text-sm text-green-400 shadow-inner">
+                    <p class="mb-2"><span class="text-blue-400">root@kali:~$</span> define reconnaissance</p>
+                    <p class="opacity-80">> Preparatory phase before deep analysis.</p>
+                    <p class="opacity-80">> Identifying assets & hidden info.</p>
+                    <p class="opacity-80">> Analyzing attack surface.</p>
+                </div>
+            </div>
+            
+            <div class="bg-cyber-card p-8 rounded-xl shadow-xl border border-gray-700">
+                <h3 class="text-xl font-bold mb-6 text-center text-white">The 4 Primary Pillars</h3>
+                <p class="text-gray-400 text-sm text-center mb-4">Core goals of the reconnaissance phase</p>
+                
+                <!-- Chart Container -->
+                <div class="chart-container">
+                    <canvas id="goalsChart"></canvas>
+                </div>
+                <p class="mt-4 text-xs text-center text-gray-500">
+                    Attackers use this data to tailor attacks; Defenders use it to patch holes.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: ACTIVE VS PASSIVE -->
+        <section>
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-white mb-2">Methodologies</h2>
+                <p class="text-gray-400">Understanding the trade-off between stealth and depth.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- PASSIVE RECON CARD -->
+                <div class="bg-cyber-card rounded-xl shadow-xl overflow-hidden border border-gray-700">
+                    <div class="bg-gray-800 p-4 border-b border-gray-700 flex justify-between items-center">
+                        <h3 class="text-xl font-bold text-cyber-accent3 flex items-center">
+                            <span class="mr-2">&#128373;</span> Passive Recon
+                        </h3>
+                        <span class="text-xs bg-green-900 text-green-300 px-2 py-1 rounded border border-green-700">LOW RISK</span>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-300 mb-6 text-sm">
+                            Gathering info <strong>without touching</strong> the target. Relies on public resources. Stealthy, but limited to what is already exposed.
+                        </p>
+                        
+                        <!-- Chart Container -->
+                        <div class="chart-container" style="height: 250px;">
+                            <canvas id="passiveChart"></canvas>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 mt-6">
+                            <div class="bg-gray-900 p-3 rounded border border-gray-700">
+                                <h4 class="text-cyber-accent3 font-mono text-xs mb-1">WHOIS</h4>
+                                <p class="text-gray-500 text-xs">Domain ownership & contact details</p>
+                            </div>
+                            <div class="bg-gray-900 p-3 rounded border border-gray-700">
+                                <h4 class="text-cyber-accent3 font-mono text-xs mb-1">DNS</h4>
+                                <p class="text-gray-500 text-xs">Subdomains & Mail Servers</p>
+                            </div>
+                            <div class="bg-gray-900 p-3 rounded border border-gray-700">
+                                <h4 class="text-cyber-accent3 font-mono text-xs mb-1">Wayback Machine</h4>
+                                <p class="text-gray-500 text-xs">Historical website snapshots</p>
+                            </div>
+                            <div class="bg-gray-900 p-3 rounded border border-gray-700">
+                                <h4 class="text-cyber-accent3 font-mono text-xs mb-1">Social Media</h4>
+                                <p class="text-gray-500 text-xs">Employee roles & habits</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACTIVE RECON CARD -->
+                <div class="bg-cyber-card rounded-xl shadow-xl overflow-hidden border border-gray-700">
+                    <div class="bg-gray-800 p-4 border-b border-gray-700 flex justify-between items-center">
+                        <h3 class="text-xl font-bold text-cyber-danger flex items-center">
+                            <span class="mr-2">&#9889;</span> Active Recon
+                        </h3>
+                        <span class="text-xs bg-red-900 text-red-300 px-2 py-1 rounded border border-red-700">HIGH RISK</span>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-300 mb-6 text-sm">
+                            <strong>Direct interaction</strong> with the target system. Provides comprehensive data but triggers IDS/Firewalls.
+                        </p>
+                        
+                        <!-- Chart Container -->
+                        <div class="chart-container">
+                            <canvas id="activeRiskChart"></canvas>
+                        </div>
+
+                        <div class="mt-4 p-4 bg-gray-900 rounded border border-gray-700 font-mono text-xs text-gray-400">
+                            <p class="text-cyber-accent4 font-bold mb-2">// Common Tools</p>
+                            <ul class="list-disc pl-4 space-y-1">
+                                <li><strong class="text-white">Nmap:</strong> Port scanning & OS fingerprinting</li>
+                                <li><strong class="text-white">Nessus:</strong> Vulnerability scanning</li>
+                                <li><strong class="text-white">Burp Suite:</strong> Web Spidering & Crawling</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: CODE & TOOLS ANALYSIS -->
+        <section class="bg-cyber-card rounded-xl shadow-xl border border-gray-700 p-8">
+            <h2 class="text-2xl font-bold mb-6 text-white border-b border-gray-700 pb-2">Command Line Intelligence</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Command 1 -->
+                <div class="bg-gray-900 rounded-lg p-4 border-l-4 border-cyber-accent2">
+                    <code class="block text-cyber-accent2 font-bold mb-2">nmap -O [target]</code>
+                    <h4 class="text-white font-bold mb-1">OS Detection</h4>
+                    <p class="text-sm text-gray-400">Analyzes packet responses to fingerprint the Operating System (Windows vs Linux).</p>
+                </div>
+                <!-- Command 2 -->
+                <div class="bg-gray-900 rounded-lg p-4 border-l-4 border-cyber-accent1">
+                    <code class="block text-cyber-accent1 font-bold mb-2">nmap -sV [target]</code>
+                    <h4 class="text-white font-bold mb-1">Service Enumeration</h4>
+                    <p class="text-sm text-gray-400">Interrogates open ports to grab software version banners (e.g., Apache 2.4).</p>
+                </div>
+                <!-- Command 3 -->
+                <div class="bg-gray-900 rounded-lg p-4 border-l-4 border-cyber-accent4">
+                    <code class="block text-cyber-accent4 font-bold mb-2">dig [domain]</code>
+                    <h4 class="text-white font-bold mb-1">DNS Analysis</h4>
+                    <p class="text-sm text-gray-400">Queries DNS servers for infrastructure IP addresses without touching the web server.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: THE RECON FLOW -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-white mb-8">The Reconnaissance Lifecycle</h2>
+            
+            <!-- Custom HTML/CSS Flowchart (NO SVG/Mermaid) -->
+            <div class="max-w-4xl mx-auto">
+                <div class="flex flex-col items-center relative">
+                    
+                    <!-- Step 1 -->
+                    <div class="w-64 bg-gray-800 border-2 border-green-500 rounded-lg p-4 text-center shadow-[0_0_15px_rgba(16,185,129,0.3)] z-10">
+                        <h3 class="font-bold text-green-400">START</h3>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="h-8 w-0.5 bg-gray-600 my-1"></div>
+                    <div class="text-gray-500 text-xl">&#8595;</div>
+                    <div class="h-8 w-0.5 bg-gray-600 my-1"></div>
+
+                    <!-- Step 2: Split -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+                        <!-- Passive Branch -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-full bg-cyber-card border border-cyber-accent3 rounded-lg p-6 text-center shadow-lg relative h-full hover:bg-gray-800 transition-colors">
+                                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gray-900 px-2 text-xs text-cyber-accent3 font-mono border border-cyber-accent3 rounded">STEALTH MODE</div>
+                                <h4 class="text-xl font-bold text-white mb-2">Passive Recon</h4>
+                                <ul class="text-sm text-gray-400 space-y-1">
+                                    <li>Search Engines</li>
+                                    <li>Social Media</li>
+                                    <li>DNS / WHOIS</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Active Branch -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-full bg-cyber-card border border-cyber-danger rounded-lg p-6 text-center shadow-lg relative h-full hover:bg-gray-800 transition-colors">
+                                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gray-900 px-2 text-xs text-cyber-danger font-mono border border-cyber-danger rounded">NOISY MODE</div>
+                                <h4 class="text-xl font-bold text-white mb-2">Active Recon</h4>
+                                <ul class="text-sm text-gray-400 space-y-1">
+                                    <li>Port Scanning</li>
+                                    <li>Vuln Scanning</li>
+                                    <li>Spidering</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Convergence Arrow -->
+                    <div class="flex w-full justify-center mt-4">
+                        <div class="text-gray-500 text-2xl">&#8601; &nbsp; &#8600;</div>
+                    </div>
+
+                    <!-- Step 3: Intelligence -->
+                    <div class="w-full md:w-3/4 bg-gradient-to-r from-gray-900 to-gray-800 border border-cyber-accent1 rounded-lg p-6 text-center shadow-lg mt-4 z-10">
+                        <h3 class="font-bold text-cyber-accent1 text-lg mb-2">COLLECTED INTELLIGENCE</h3>
+                        <div class="flex flex-wrap justify-center gap-2">
+                            <span class="px-2 py-1 bg-gray-700 rounded text-xs text-gray-300">IP Addresses</span>
+                            <span class="px-2 py-1 bg-gray-700 rounded text-xs text-gray-300">Subdomains</span>
+                            <span class="px-2 py-1 bg-gray-700 rounded text-xs text-gray-300">Emails</span>
+                            <span class="px-2 py-1 bg-gray-700 rounded text-xs text-gray-300">Software Versions</span>
+                            <span class="px-2 py-1 bg-gray-700 rounded text-xs text-gray-300">Vulnerabilities</span>
+                        </div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="h-8 w-0.5 bg-gray-600 my-1"></div>
+                    <div class="text-gray-500 text-xl">&#8595;</div>
+                    <div class="h-8 w-0.5 bg-gray-600 my-1"></div>
+
+                    <!-- Step 4: Action -->
+                    <div class="w-64 bg-cyber-accent4 text-black font-bold rounded-lg p-4 text-center shadow-[0_0_20px_rgba(245,158,11,0.5)] z-10">
+                        TARGETED ATTACK / DEFENSE
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-600 text-sm py-8 border-t border-gray-800">
+            <p>&copy; 2024 Web Reconnaissance Analysis. Generated for Educational Purposes.</p>
+        </footer>
+
+    </main>
+
+    <!-- CHART.JS LOGIC -->
+    <script>
+        // Common Defaults
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.font.family = 'Inter';
+        
+        // 1. Label Wrapping Function (16 char limit)
+        function wrapLabel(label) {
+            if (label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= 16) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // 2. Tooltip Configuration (Mandatory)
+        const commonPlugins = {
+            legend: {
+                labels: { color: '#f8fafc' }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                titleColor: '#fff',
+                bodyColor: '#cbd5e1',
+                borderColor: '#334155',
+                borderWidth: 1,
+                callbacks: {
+                    title: function(tooltipItems) {
+                        const item = tooltipItems[0];
+                        let label = item.chart.data.labels[item.dataIndex];
+                        if (Array.isArray(label)) {
+                            return label.join(' ');
+                        } else {
+                            return label;
+                        }
+                    }
+                }
+            }
+        };
+
+        // --- CHART 1: PRIMARY GOALS (Polar Area) ---
+        const goalsCtx = document.getElementById('goalsChart').getContext('2d');
+        const rawGoalsLabels = ['Identifying Assets', 'Discovering Hidden Information', 'Analyzing Attack Surface', 'Gathering Intelligence'];
+        const processedGoalsLabels = rawGoalsLabels.map(wrapLabel);
+
+        new Chart(goalsCtx, {
+            type: 'polarArea',
+            data: {
+                labels: processedGoalsLabels,
+                datasets: [{
+                    label: 'Recon Pillars',
+                    data: [25, 25, 25, 25], // Equal weight as they are all "primary"
+                    backgroundColor: [
+                        'rgba(6, 182, 212, 0.7)', // Cyan
+                        'rgba(217, 70, 239, 0.7)', // Fuchsia
+                        'rgba(16, 185, 129, 0.7)', // Emerald
+                        'rgba(245, 158, 11, 0.7)'  // Amber
+                    ],
+                    borderColor: '#1e293b',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        ticks: { display: false },
+                        grid: { color: '#334155' },
+                        pointLabels: {
+                            color: '#f8fafc',
+                            font: { size: 12, weight: 'bold' }
+                        }
+                    }
+                },
+                plugins: commonPlugins
+            }
+        });
+
+        // --- CHART 2: PASSIVE SOURCES (Doughnut) ---
+        const passiveCtx = document.getElementById('passiveChart').getContext('2d');
+        const rawPassiveLabels = ['Search Engines', 'WHOIS Lookups', 'DNS Analysis', 'Web Archives', 'Social Media', 'Code Repos'];
+        const processedPassiveLabels = rawPassiveLabels.map(wrapLabel);
+
+        new Chart(passiveCtx, {
+            type: 'doughnut',
+            data: {
+                labels: processedPassiveLabels,
+                datasets: [{
+                    data: [20, 15, 20, 15, 15, 15], // Conceptual distribution
+                    backgroundColor: [
+                        '#06b6d4', // Cyan
+                        '#22d3ee', 
+                        '#67e8f9',
+                        '#10b981', // Emerald
+                        '#34d399',
+                        '#6ee7b7'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    ...commonPlugins,
+                    legend: {
+                        position: 'right',
+                        labels: { color: '#cbd5e1', font: { size: 11 } }
+                    }
+                }
+            }
+        });
+
+        // --- CHART 3: ACTIVE RISK (Horizontal Bar) ---
+        // Data Mapping: Low=3, Low-Med=5, Med-High=7, High=10
+        const activeCtx = document.getElementById('activeRiskChart').getContext('2d');
+        const rawActiveLabels = ['Port Scanning', 'Vulnerability Scanning', 'Network Mapping', 'Banner Grabbing', 'OS Fingerprinting', 'Service Enumeration', 'Web Spidering'];
+        const processedActiveLabels = rawActiveLabels.map(wrapLabel);
+        
+        // Color mapping based on risk
+        const riskColors = [
+            '#ef4444', // High (Red)
+            '#ef4444', // High
+            '#f59e0b', // Med-High (Amber)
+            '#10b981', // Low (Green)
+            '#10b981', // Low
+            '#10b981', // Low
+            '#f59e0b'  // Low-Med (Amber-ish)
+        ];
+
+        new Chart(activeCtx, {
+            type: 'bar',
+            data: {
+                labels: processedActiveLabels,
+                datasets: [{
+                    label: 'Risk of Detection (Estimated Score)',
+                    data: [10, 10, 7, 2, 3, 2, 5],
+                    backgroundColor: riskColors,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Horizontal Bar
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94a3b8' },
+                        min: 0,
+                        max: 10,
+                        title: { display: true, text: 'Detection Risk Level', color: '#64748b' }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#f8fafc', font: { size: 11 } }
+                    }
+                },
+                plugins: {
+                    ...commonPlugins,
+                    legend: { display: false }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
