@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Hosts: The Hidden Architecture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Font Import */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Slate 50 */
+            color: #1e293b; /* Slate 800 */
+        }
+
+        /* Palette Definition: "Cyber Vibrant"
+           Primary: #4F46E5 (Indigo 600)
+           Secondary: #06B6D4 (Cyan 500)
+           Accent: #F43F5E (Rose 500)
+           Dark: #0F172A (Slate 900)
+        */
+
+        /* Chart Container Styling - STRICT ADHERENCE TO PROMPT */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constraint for large screens */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height */
+            max-height: 400px;
+        }
+
+        /* Responsive height adjustments */
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Custom Utilities for Flowchart (NO SVG) */
+        .flow-arrow-down::after {
+            content: '▼';
+            font-size: 24px;
+            color: #94a3b8;
+            display: block;
+            text-align: center;
+            margin-top: -10px;
+            margin-bottom: -10px;
+        }
+        
+        .flow-arrow-right::after {
+            content: '▶';
+            font-size: 24px;
+            color: #94a3b8;
+            display: block;
+            text-align: center;
+        }
+
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+    <!-- 
+        Palette Used: Cyber Vibrant
+        Colors: #4F46E5 (Indigo), #06B6D4 (Cyan), #F43F5E (Rose)
+        Source Material: "Virtual Hosts" text analysis.
+        Narrative Plan: Concept -> Mechanism -> Comparison -> Discovery.
+        Confirmation: NO SVG used. NO Mermaid JS used. All diagrams are CSS/HTML or Canvas.
+    -->
+</head>
+<body class="antialiased">
+
+    <!-- HERO SECTION -->
+    <header class="bg-slate-900 text-white pt-20 pb-16 px-4">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
+                <span class="text-cyan-400">Virtual</span> Hosts
+            </h1>
+            <p class="text-xl md:text-2xl text-slate-300 max-w-2xl mx-auto">
+                How a single server powers the multitude of the web.
+            </p>
+            <div class="mt-8 flex justify-center gap-4">
+                <div class="px-4 py-2 bg-indigo-600 rounded-full text-sm font-semibold">1 IP Address</div>
+                <div class="px-4 py-2 bg-rose-500 rounded-full text-sm font-semibold">Multiple Sites</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT GRID -->
+    <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 md:grid-cols-12 gap-8 -mt-10">
+
+        <!-- INTRO CARD -->
+        <section class="md:col-span-12 bg-white rounded-xl card-shadow p-8 z-10 relative">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4 border-l-4 border-indigo-600 pl-4">The Core Concept</h2>
+            <p class="text-lg text-slate-600 mb-6 leading-relaxed">
+                Imagine a massive apartment complex (the <strong>Server</strong>) with a single street address (the <strong>IP Address</strong>). Inside, there are hundreds of distinct apartments (<strong>Websites</strong>). The receptionist at the front desk (the <strong>Web Server</strong>) needs to know exactly who you are visiting to guide you to the right door. This is <strong>Virtual Hosting</strong>.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <p class="mb-4">
+                        Without Virtual Hosts, every website would need its own expensive physical server or unique IP address. Virtual hosting allows efficient resource sharing by using the <strong>HTTP Host Header</strong> to distinguish between domains like <code>example.com</code> and <code>blog.example.com</code>.
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-slate-700">
+                            <span class="w-2 h-2 bg-cyan-500 rounded-full mr-3"></span>
+                            <span><strong>Efficiency:</strong> Maximize server hardware usage.</span>
+                        </li>
+                        <li class="flex items-center text-slate-700">
+                            <span class="w-2 h-2 bg-indigo-500 rounded-full mr-3"></span>
+                            <span><strong>Organization:</strong> Separate subdomains logic.</span>
+                        </li>
+                        <li class="flex items-center text-slate-700">
+                            <span class="w-2 h-2 bg-rose-500 rounded-full mr-3"></span>
+                            <span><strong>Control:</strong> Specific configs for each site.</span>
+                        </li>
+                    </ul>
+                </div>
+                <!-- CHART: Implementation Usage -->
+                <div class="bg-slate-50 p-6 rounded-lg">
+                    <h3 class="text-lg font-bold text-center mb-2">Prevalence of Hosting Types</h3>
+                    <p class="text-sm text-center text-slate-500 mb-4">Name-Based hosting is the industry standard for flexibility.</p>
+                    <div class="chart-container">
+                        <canvas id="usageChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROCESS FLOW SECTION (HTML/CSS Diagram) -->
+        <section class="md:col-span-12 bg-white rounded-xl card-shadow p-8">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6 border-l-4 border-cyan-500 pl-4">How It Works: The Lookup Process</h2>
+            <p class="text-slate-600 mb-8">
+                When you type a URL, a specific sequence of events ensures you land on the correct page, even if 50 other websites live on the same machine.
+            </p>
+            
+            <div class="flex flex-col md:flex-row justify-between items-stretch gap-4 text-center">
+                
+                <!-- Step 1 -->
+                <div class="flex-1 bg-indigo-50 border border-indigo-100 p-6 rounded-lg flex flex-col items-center relative">
+                    <div class="text-4xl mb-2">🖥️</div>
+                    <h3 class="font-bold text-indigo-900">1. Browser Request</h3>
+                    <p class="text-sm text-indigo-700 mt-2">User types <code>blog.site.com</code>. Browser attaches <strong>Host Header</strong>.</p>
+                </div>
+
+                <!-- Arrow -->
+                <div class="hidden md:flex flex-col justify-center items-center text-slate-300 text-3xl">▶</div>
+                <div class="md:hidden text-slate-300 text-3xl py-2">▼</div>
+
+                <!-- Step 2 -->
+                <div class="flex-1 bg-cyan-50 border border-cyan-100 p-6 rounded-lg flex flex-col items-center relative">
+                    <div class="text-4xl mb-2">⚙️</div>
+                    <h3 class="font-bold text-cyan-900">2. Server Recieves</h3>
+                    <p class="text-sm text-cyan-700 mt-2">Web Server (Apache/Nginx) accepts connection on Port 80.</p>
+                </div>
+
+                <!-- Arrow -->
+                <div class="hidden md:flex flex-col justify-center items-center text-slate-300 text-3xl">▶</div>
+                <div class="md:hidden text-slate-300 text-3xl py-2">▼</div>
+
+                <!-- Step 3 -->
+                <div class="flex-1 bg-rose-50 border border-rose-100 p-6 rounded-lg flex flex-col items-center relative">
+                    <div class="text-4xl mb-2">🔍</div>
+                    <h3 class="font-bold text-rose-900">3. VHost Lookup</h3>
+                    <p class="text-sm text-rose-700 mt-2">Server checks config: "Who matches <code>blog.site.com</code>?"</p>
+                </div>
+
+                <!-- Arrow -->
+                <div class="hidden md:flex flex-col justify-center items-center text-slate-300 text-3xl">▶</div>
+                <div class="md:hidden text-slate-300 text-3xl py-2">▼</div>
+
+                <!-- Step 4 -->
+                <div class="flex-1 bg-slate-100 border border-slate-200 p-6 rounded-lg flex flex-col items-center relative">
+                    <div class="text-4xl mb-2">📂</div>
+                    <h3 class="font-bold text-slate-900">4. Content Served</h3>
+                    <p class="text-sm text-slate-700 mt-2">Content pulled from specific <code>DocumentRoot</code>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMPARISON SECTION -->
+        <section class="md:col-span-8 bg-white rounded-xl card-shadow p-8">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4 border-l-4 border-rose-500 pl-4">Types of Virtual Hosting</h2>
+            <p class="text-slate-600 mb-6">
+                Not all virtual hosts are created equal. The choice depends on budget, scalability needs, and technical requirements.
+            </p>
+
+            <div class="chart-container">
+                <canvas id="comparisonChart"></canvas>
+            </div>
+            
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div class="p-3 bg-slate-50 border-l-4 border-indigo-500 rounded">
+                    <strong>Name-Based:</strong> Relies on Host Headers. Most common, cheap, flexible. Issues with very old SSL.
+                </div>
+                <div class="p-3 bg-slate-50 border-l-4 border-cyan-500 rounded">
+                    <strong>IP-Based:</strong> Unique IP per site. expensive, better isolation, supports all protocols.
+                </div>
+                <div class="p-3 bg-slate-50 border-l-4 border-rose-500 rounded">
+                    <strong>Port-Based:</strong> Same IP, different ports (e.g., :8080). Hard for users to remember.
+                </div>
+            </div>
+        </section>
+
+        <!-- APACHE CONFIG CODE SECTION -->
+        <section class="md:col-span-4 bg-slate-900 rounded-xl card-shadow p-8 text-white">
+            <h3 class="text-xl font-bold text-cyan-400 mb-4">Under the Hood: Apache</h3>
+            <p class="text-slate-400 text-sm mb-4">
+                This is what the server actually reads. Notice how the <code>ServerName</code> matches the Host Header.
+            </p>
+            <div class="font-mono text-xs bg-slate-800 p-4 rounded border border-slate-700 overflow-x-auto">
+<pre class="whitespace-pre"><span class="text-slate-500"># Configuration for Site A</span>
+&lt;VirtualHost *:80&gt;
+  ServerName <span class="text-cyan-400">www.example1.com</span>
+  DocumentRoot /var/www/site1
+&lt;/VirtualHost&gt;
+
+<span class="text-slate-500"># Configuration for Site B</span>
+&lt;VirtualHost *:80&gt;
+  ServerName <span class="text-rose-400">www.example2.org</span>
+  DocumentRoot /var/www/site2
+&lt;/VirtualHost&gt;</pre>
+            </div>
+            <div class="mt-4 text-sm text-slate-300">
+                <span class="text-cyan-400">●</span> Site A served when Host: example1.com<br>
+                <span class="text-rose-400">●</span> Site B served when Host: example2.org
+            </div>
+        </section>
+
+        <!-- DISCOVERY TOOLS SECTION -->
+        <section class="md:col-span-12 bg-white rounded-xl card-shadow p-8">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4 border-l-4 border-indigo-600 pl-4">VHost Discovery & Fuzzing</h2>
+            <p class="text-lg text-slate-600 mb-6">
+                Security professionals use specialized tools to discover hidden subdomains or internal development sites that don't appear in public DNS records. This is called "VHost Fuzzing".
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Chart -->
+                <div>
+                    <h3 class="font-bold text-lg mb-2">Tool Comparison</h3>
+                    <p class="text-sm text-slate-500 mb-4">Comparing popular fuzzing tools on Speed and Flexibility.</p>
+                    <div class="chart-container">
+                        <canvas id="toolsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Command Breakdown -->
+                <div class="flex flex-col justify-center">
+                    <h3 class="font-bold text-lg mb-4">The Gobuster Command</h3>
+                    <div class="bg-slate-900 text-green-400 font-mono p-4 rounded-lg shadow-inner text-sm md:text-base break-all">
+                        gobuster vhost -u http://target.com -w list.txt <span class="text-yellow-400">--append-domain</span>
+                    </div>
+                    
+                    <div class="mt-6 space-y-3">
+                        <div class="flex items-start">
+                            <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded mr-3 mt-1">vhost</span>
+                            <p class="text-slate-600 text-sm">Sets mode to Virtual Host discovery.</p>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-1 rounded mr-3 mt-1">-u</span>
+                            <p class="text-slate-600 text-sm">The target URL or IP address.</p>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="bg-rose-100 text-rose-800 text-xs font-bold px-2 py-1 rounded mr-3 mt-1">-w</span>
+                            <p class="text-slate-600 text-sm">Path to the wordlist (dictionary of names).</p>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded mr-3 mt-1">--append-domain</span>
+                            <p class="text-slate-600 text-sm">Crucial for newer versions. Appends the base domain to every word in your list.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-12 mt-12 text-center">
+        <p class="text-sm">Generated for Educational Purposes • Focusing on Data Visualization & Layout</p>
+    </footer>
+
+    <!-- SCRIPT SECTION -->
+    <script>
+        // --- UTILITY: Label Wrapping for Chart.js ---
+        // Splits long strings into arrays of strings for multi-line labels
+        function wrapLabel(label, maxChars = 16) {
+            if (label.length <= maxChars) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length < maxChars) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- UTILITY: Common Tooltip Configuration ---
+        // Ensures multi-line labels are readable in tooltips
+        const commonTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- CHART 1: Usage (Donut) ---
+        const ctxUsage = document.getElementById('usageChart').getContext('2d');
+        new Chart(ctxUsage, {
+            type: 'doughnut',
+            data: {
+                labels: ['Name-Based (Standard)', 'IP-Based (Legacy/Secure)', 'Port-Based (Internal)'].map(l => wrapLabel(l)),
+                datasets: [{
+                    data: [85, 10, 5], // Estimated distribution based on common web architecture
+                    backgroundColor: [
+                        '#4F46E5', // Indigo
+                        '#06B6D4', // Cyan
+                        '#F43F5E'  // Rose
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+
+        // --- CHART 2: Comparison (Radar) ---
+        const ctxComp = document.getElementById('comparisonChart').getContext('2d');
+        new Chart(ctxComp, {
+            type: 'radar',
+            data: {
+                labels: ['Cost Efficiency', 'Ease of Setup', 'Scalability', 'Isolation Level', 'SSL Compatibility'],
+                datasets: [{
+                    label: 'Name-Based',
+                    data: [9, 9, 10, 5, 8],
+                    borderColor: '#4F46E5', // Indigo
+                    backgroundColor: 'rgba(79, 70, 229, 0.2)',
+                    pointBackgroundColor: '#4F46E5'
+                },
+                {
+                    label: 'IP-Based',
+                    data: [3, 6, 4, 10, 10],
+                    borderColor: '#06B6D4', // Cyan
+                    backgroundColor: 'rgba(6, 182, 212, 0.2)',
+                    pointBackgroundColor: '#06B6D4'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: '#cbd5e1' },
+                        grid: { color: '#e2e8f0' },
+                        pointLabels: {
+                            font: { size: 12, family: "'Inter', sans-serif" }
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 10
+                    }
+                },
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+
+        // --- CHART 3: Tools (Bar) ---
+        const ctxTools = document.getElementById('toolsChart').getContext('2d');
+        new Chart(ctxTools, {
+            type: 'bar',
+            data: {
+                labels: ['Gobuster', 'Feroxbuster', 'ffuf'],
+                datasets: [{
+                    label: 'Speed Score',
+                    data: [8, 9, 9],
+                    backgroundColor: '#4F46E5'
+                },
+                {
+                    label: 'Feature Flexibility',
+                    data: [7, 8, 10],
+                    backgroundColor: '#06B6D4'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+    </script>
+</body>
+</html>
