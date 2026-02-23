@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNS Reconnaissance Decrypted</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome (for icons, using webfonts, NOT SVG logic in body) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#0f172a',       // Slate 900
+                            card: '#1e293b',     // Slate 800
+                            text: '#f8fafc',     // Slate 50
+                            primary: '#10b981',  // Emerald 500 (Neon Green)
+                            secondary: '#8b5cf6', // Violet 500 (Neon Purple)
+                            accent: '#ec4899',   // Pink 500 (Neon Pink)
+                            info: '#3b82f6'      // Blue 500
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['Courier New', 'Courier', 'monospace'],
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #10b981;
+        }
+
+        /* Chart Container Rules */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Tailwind max-w-xl approx */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Connector Lines for HTML Diagrams */
+        .connector-line {
+            width: 2px;
+            background-color: #3b82f6;
+            margin: 0 auto;
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-cyber-bg text-cyber-text font-sans antialiased selection:bg-cyber-primary selection:text-cyber-bg">
+
+    <!-- 
+        PALETTE: Neon Cyber
+        Background: #0f172a (Deep Slate)
+        Card: #1e293b (Lighter Slate)
+        Text: #f8fafc (White)
+        Primary: #10b981 (Neon Green)
+        Secondary: #8b5cf6 (Neon Purple)
+        Accent: #ec4899 (Neon Pink)
+    -->
+
+    <!-- 
+        NARRATIVE PLAN:
+        1. Hero: Title and Hook (The Phonebook of the Internet).
+        2. Jargon: Grid of definitions for key terms (Subdomain, OSINT, etc.).
+        3. The Toolbox: Bubble Chart comparing tools by Depth vs Ease.
+        4. The Dig Command: Bar chart of common flags.
+        5. Visual Flow: HTML diagram of the Query Process.
+        6. Anatomy of Output: Doughnut chart & text breakdown of the response structure.
+        7. Footer: Warning.
+    -->
+
+    <!-- 
+        VISUALIZATION CHOICES (NO SVG):
+        1. Toolbox Landscape -> Goal: Compare/Relationships -> Bubble Chart (Chart.js) -> Shows 3 dimensions: Ease, Depth, Popularity.
+        2. Dig Command Flags -> Goal: Compare -> Horizontal Bar Chart (Chart.js) -> Shows utility frequency.
+        3. Response Structure -> Goal: Inform/Composition -> Doughnut Chart (Chart.js) -> Shows parts of the response.
+        4. Process Flow -> Goal: Organize -> HTML/CSS Diagram -> Uses Flexbox and borders (No Mermaid).
+    -->
+
+    <!-- 
+        CONFIRMATION:
+        NEITHER Mermaid JS NOR SVG were used anywhere in the output.
+    -->
+
+    <!-- Navbar/Header -->
+    <header class="sticky top-0 z-50 bg-cyber-bg/90 backdrop-blur-md border-b border-cyber-card shadow-lg">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold font-mono text-cyber-primary glow-text">
+                <span class="text-cyber-accent">&gt;</span> DNS_RECON
+            </h1>
+            <nav class="hidden md:flex space-x-6 text-sm font-semibold">
+                <a href="#overview" class="hover:text-cyber-primary transition">Overview</a>
+                <a href="#toolbox" class="hover:text-cyber-primary transition">Toolbox</a>
+                <a href="#process" class="hover:text-cyber-primary transition">Process</a>
+                <a href="#anatomy" class="hover:text-cyber-primary transition">Anatomy</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 space-y-24">
+
+        <!-- Hero Section -->
+        <section id="overview" class="text-center max-w-4xl mx-auto mt-10">
+            <h2 class="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight">
+                Digging <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-primary to-cyber-secondary">DNS</span>
+            </h2>
+            <p class="text-lg md:text-xl text-gray-400 mb-8 leading-relaxed">
+                The Domain Name System (DNS) is the internet's phonebook. <strong class="text-cyber-text">Web Reconnaissance</strong> is the art of reading between the lines of that phonebook to find hidden entry points, servers, and secrets.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                <div class="bg-cyber-card p-6 rounded-xl border-l-4 border-cyber-primary shadow-lg">
+                    <h3 class="text-xl font-bold text-cyber-primary mb-2">🔭 The Goal</h3>
+                    <p class="text-sm text-gray-300">Gather technical details (IPs, subdomains, mail servers) to understand the target's infrastructure.</p>
+                </div>
+                <div class="bg-cyber-card p-6 rounded-xl border-l-4 border-cyber-accent shadow-lg">
+                    <h3 class="text-xl font-bold text-cyber-accent mb-2">🕵️ The Method</h3>
+                    <p class="text-sm text-gray-300">Use specialized tools to query DNS servers for specific "records" that reveal how a domain works.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Jargon Buster -->
+        <section>
+            <div class="mb-10 text-center">
+                <h3 class="text-3xl font-bold mb-4 font-mono">
+                    <span class="text-cyber-secondary">#</span> DEFINING_THE_JARGON
+                </h3>
+                <p class="text-gray-400 max-w-2xl mx-auto">Before we dig, we must understand the language. Here are the key concepts of DNS reconnaissance.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-cyber-card p-6 rounded-lg hover:bg-opacity-80 transition hover:-translate-y-1 duration-300 border border-gray-700">
+                    <div class="text-3xl mb-4">🌐</div>
+                    <h4 class="font-bold text-lg mb-2 text-cyber-info">Subdomain</h4>
+                    <p class="text-sm text-gray-400">A child of the main domain (e.g., <code>blog.site.com</code>). Finding these often reveals hidden dev or admin panels.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-cyber-card p-6 rounded-lg hover:bg-opacity-80 transition hover:-translate-y-1 duration-300 border border-gray-700">
+                    <div class="text-3xl mb-4">🔓</div>
+                    <h4 class="font-bold text-lg mb-2 text-cyber-accent">Zone Transfer</h4>
+                    <p class="text-sm text-gray-400">A security flaw where a server gives you its <em>entire</em> list of records. Rare, but a goldmine.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-cyber-card p-6 rounded-lg hover:bg-opacity-80 transition hover:-translate-y-1 duration-300 border border-gray-700">
+                    <div class="text-3xl mb-4">🔨</div>
+                    <h4 class="font-bold text-lg mb-2 text-cyber-secondary">Brute-Forcing</h4>
+                    <p class="text-sm text-gray-400">Guessing thousands of names (admin, test, dev) to see if they exist on the target server.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-cyber-card p-6 rounded-lg hover:bg-opacity-80 transition hover:-translate-y-1 duration-300 border border-gray-700">
+                    <div class="text-3xl mb-4">📍</div>
+                    <h4 class="font-bold text-lg mb-2 text-cyber-primary">A & MX Records</h4>
+                    <p class="text-sm text-gray-400"><strong>A:</strong> The IPv4 Address.<br><strong>MX:</strong> The Mail Server.<br>The most basic building blocks of recon.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Toolbox (Bubble Chart) -->
+        <section id="toolbox" class="bg-gradient-to-b from-cyber-card to-cyber-bg p-8 rounded-2xl shadow-2xl border border-gray-800">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                <div class="lg:col-span-1">
+                    <h3 class="text-3xl font-bold mb-4 font-mono text-cyber-primary">
+                        <span class="text-white">&gt;</span> THE_TOOLBOX
+                    </h3>
+                    <p class="text-gray-300 mb-6">
+                        Not all tools are created equal. Some are surgical instruments (`dig`), while others are automated scouts (`dnsenum`).
+                    </p>
+                    <ul class="space-y-4 text-sm">
+                        <li class="flex items-center">
+                            <span class="w-3 h-3 rounded-full bg-cyber-primary mr-3"></span>
+                            <span><strong>Dig:</strong> The "Master Key". High depth, manual control.</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-3 h-3 rounded-full bg-cyber-accent mr-3"></span>
+                            <span><strong>Nslookup:</strong> "Quick Look". Good for basic checks.</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-3 h-3 rounded-full bg-cyber-secondary mr-3"></span>
+                            <span><strong>Automated Tools:</strong> (Fierce, Dnsenum) Combine techniques for speed.</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="lg:col-span-2">
+                    <div class="bg-cyber-bg p-4 rounded-xl border border-gray-700">
+                        <!-- CHART CONTAINER -->
+                        <div class="chart-container">
+                            <canvas id="toolboxChart"></canvas>
+                        </div>
+                        <p class="text-center text-xs text-gray-500 mt-2 font-mono">Chart: Tool Complexity vs. Information Depth</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Process (HTML Flow Diagram) -->
+        <section id="process">
+            <div class="text-center mb-10">
+                <h3 class="text-3xl font-bold mb-4 font-mono">
+                    <span class="text-cyber-info">~</span> THE_RECON_PROCESS
+                </h3>
+                <p class="text-gray-400">How a DNS query travels from your terminal to the truth.</p>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-center items-stretch space-y-8 md:space-y-0 md:space-x-4 max-w-5xl mx-auto">
+                
+                <!-- Step 1 -->
+                <div class="flex-1 flex flex-col items-center">
+                    <div class="bg-cyber-card w-full p-6 rounded-xl border-t-4 border-cyber-accent shadow-lg text-center h-full relative">
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-cyber-accent text-white px-3 py-1 rounded-full text-xs font-bold">YOU</div>
+                        <div class="text-4xl mb-4">💻</div>
+                        <h4 class="font-bold text-lg mb-2">1. Choose Tool</h4>
+                        <p class="text-sm text-gray-400">Select <code>dig</code> for power or <code>host</code> for speed. Formulate your question.</p>
+                        <div class="mt-4 bg-black p-2 rounded text-xs font-mono text-green-400 text-left">
+                            $ dig google.com
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Connector -->
+                <div class="hidden md:flex flex-col justify-center items-center text-cyber-info">
+                    <div class="text-2xl animate-pulse">➡</div>
+                </div>
+                <div class="md:hidden flex justify-center text-cyber-info py-2">
+                    <div class="text-2xl animate-pulse">⬇</div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex-1 flex flex-col items-center">
+                    <div class="bg-cyber-card w-full p-6 rounded-xl border-t-4 border-cyber-info shadow-lg text-center h-full relative">
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-cyber-info text-white px-3 py-1 rounded-full text-xs font-bold">INTERNET</div>
+                        <div class="text-4xl mb-4">☁️</div>
+                        <h4 class="font-bold text-lg mb-2">2. DNS Query</h4>
+                        <p class="text-sm text-gray-400">The request travels to the DNS Server (e.g., 8.8.8.8) asking for the 'A Record'.</p>
+                    </div>
+                </div>
+
+                <!-- Connector -->
+                <div class="hidden md:flex flex-col justify-center items-center text-cyber-info">
+                    <div class="text-2xl animate-pulse">➡</div>
+                </div>
+                <div class="md:hidden flex justify-center text-cyber-info py-2">
+                    <div class="text-2xl animate-pulse">⬇</div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex-1 flex flex-col items-center">
+                    <div class="bg-cyber-card w-full p-6 rounded-xl border-t-4 border-cyber-primary shadow-lg text-center h-full relative">
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-cyber-primary text-cyber-bg px-3 py-1 rounded-full text-xs font-bold">SERVER</div>
+                        <div class="text-4xl mb-4">📄</div>
+                        <h4 class="font-bold text-lg mb-2">3. Response</h4>
+                        <p class="text-sm text-gray-400">The server replies with the Header, Question confirmation, and the Answer.</p>
+                        <div class="mt-4 bg-black p-2 rounded text-xs font-mono text-white text-left">
+                            ANSWER: 142.251.47.142
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Deep Dive: dig (Bar Chart) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+            <div>
+                <h3 class="text-3xl font-bold mb-4 font-mono text-cyber-primary">
+                    <span class="text-white">&gt;</span> MASTERING_DIG
+                </h3>
+                <p class="text-gray-300 mb-6">
+                    <code>dig</code> allows specific queries. Knowing which "flag" or record type to use determines what secrets you uncover.
+                </p>
+                <div class="bg-cyber-card rounded-xl p-4 border border-gray-700 font-mono text-sm space-y-2 overflow-x-auto">
+                    <div class="flex gap-2">
+                        <span class="text-cyber-accent">dig</span> 
+                        <span class="text-white">domain.com</span> 
+                        <span class="text-gray-500"># Basic IP check</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="text-cyber-accent">dig</span> 
+                        <span class="text-white">domain.com</span> 
+                        <span class="text-cyber-info">MX</span>
+                        <span class="text-gray-500"># Find mail servers</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="text-cyber-accent">dig</span> 
+                        <span class="text-white">domain.com</span> 
+                        <span class="text-cyber-info">NS</span>
+                        <span class="text-gray-500"># Find Name Servers</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="text-cyber-accent">dig</span> 
+                        <span class="text-white">domain.com</span> 
+                        <span class="text-cyber-info">-x IP</span>
+                        <span class="text-gray-500"># Reverse Lookup</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-cyber-card p-6 rounded-xl border border-gray-700">
+                <h4 class="text-center font-bold mb-4 text-gray-300">Common Record Types Queried</h4>
+                <!-- CHART CONTAINER -->
+                <div class="chart-container">
+                    <canvas id="digFlagsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Anatomy of a Response (Doughnut & Structural HTML) -->
+        <section id="anatomy" class="bg-cyber-card p-8 rounded-2xl shadow-xl border border-gray-700">
+            <h3 class="text-3xl font-bold mb-8 text-center font-mono">
+                <span class="text-cyber-accent">{}</span> RESPONSE_ANATOMY
+            </h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Visual Breakdown (Doughnut) -->
+                <div class="flex flex-col items-center justify-center">
+                    <p class="text-gray-300 mb-4 text-center">Breakdown of the output size & importance</p>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="anatomyChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Structural Breakdown (Code Block Style) -->
+                <div class="space-y-4 font-mono text-sm">
+                    <!-- Header -->
+                    <div class="border-l-4 border-gray-500 pl-4 py-2 hover:bg-gray-800 transition">
+                        <span class="text-xs uppercase tracking-widest text-gray-500 font-bold block mb-1">1. The Header</span>
+                        <p class="text-gray-300">status: <span class="text-cyber-primary">NOERROR</span>, id: 16449</p>
+                        <p class="text-gray-500 text-xs mt-1">Status code and transaction ID.</p>
+                    </div>
+                    
+                    <!-- Question -->
+                    <div class="border-l-4 border-cyber-info pl-4 py-2 hover:bg-gray-800 transition">
+                        <span class="text-xs uppercase tracking-widest text-cyber-info font-bold block mb-1">2. Question Section</span>
+                        <p class="text-gray-300">;google.com. IN <span class="text-cyber-info">A</span></p>
+                        <p class="text-gray-500 text-xs mt-1">Confirms you asked for the A Record.</p>
+                    </div>
+
+                    <!-- Answer -->
+                    <div class="border-l-4 border-cyber-primary pl-4 py-2 bg-gray-800/50 hover:bg-gray-800 transition">
+                        <span class="text-xs uppercase tracking-widest text-cyber-primary font-bold block mb-1">3. Answer Section (The Payload)</span>
+                        <p class="text-gray-300">google.com. 0 IN A <span class="text-cyber-primary font-bold">142.251.47.142</span></p>
+                        <p class="text-gray-500 text-xs mt-1">The actual IP address and TTL (Time To Live).</p>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="border-l-4 border-gray-500 pl-4 py-2 hover:bg-gray-800 transition">
+                        <span class="text-xs uppercase tracking-widest text-gray-500 font-bold block mb-1">4. The Footer</span>
+                        <p class="text-gray-300">Query time: 0 msec</p>
+                        <p class="text-gray-500 text-xs mt-1">Metadata about the query speed and server.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer / Warning -->
+        <footer class="mt-12 p-6 border-t border-gray-800 text-center">
+            <div class="bg-red-900/20 border border-red-800 p-4 rounded-lg inline-block max-w-2xl">
+                <h5 class="text-red-500 font-bold uppercase mb-1">⚠️ Final Warning</h5>
+                <p class="text-gray-400 text-sm">
+                    Excessive queries can trigger security alarms. Always obtain permission (authorization) before performing deep reconnaissance on any target. Do not abuse these tools.
+                </p>
+            </div>
+            <p class="text-gray-600 text-xs mt-8">Generated for Educational Purposes • DNS Reconnaissance Module</p>
+        </footer>
+
+    </main>
+
+    <!-- Chart Configuration Script -->
+    <script>
+        // --- UTILITY: Label Wrapping Function (16 char limit) ---
+        function wrapLabel(str, maxLen = 16) {
+            if (str.length <= maxLen) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= maxLen) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- CHART: Toolbox Landscape (Bubble Chart) ---
+        const ctxToolbox = document.getElementById('toolboxChart').getContext('2d');
+        const toolboxChart = new Chart(ctxToolbox, {
+            type: 'bubble',
+            data: {
+                datasets: [{
+                    label: 'DNS Tools',
+                    data: [
+                        { x: 2, y: 9, r: 20, tool: 'dig' },          // Hard to use, Deep Info, High Versatility
+                        { x: 9, y: 3, r: 10, tool: 'nslookup' },     // Easy to use, Shallow Info, Low Versatility
+                        { x: 8, y: 2, r: 8, tool: 'host' },          // Very Easy, Shallow, Low Versatility
+                        { x: 5, y: 8, r: 15, tool: 'dnsenum' },      // Medium Ease, Deep Info, Med Versatility
+                        { x: 9, y: 4, r: 12, tool: 'Online Tools' }, // Easy, Med Info, Med Versatility
+                        { x: 4, y: 7, r: 14, tool: 'fierce' }        // Med Hard, Deep Info, Med Versatility
+                    ],
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.7)', // dig (Primary)
+                        'rgba(236, 72, 153, 0.7)', // nslookup (Accent)
+                        'rgba(139, 92, 246, 0.7)', // host (Secondary)
+                        'rgba(59, 130, 246, 0.7)', // dnsenum (Info)
+                        'rgba(255, 255, 255, 0.5)',
+                        'rgba(100, 100, 100, 0.5)'
+                    ],
+                    borderColor: '#0f172a',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Ease of Use (1=Hard, 10=Easy)', color: '#94a3b8' },
+                        grid: { color: '#334155' },
+                        ticks: { color: '#cbd5e1' },
+                        min: 0, max: 10
+                    },
+                    y: {
+                        title: { display: true, text: 'Depth of Information', color: '#94a3b8' },
+                        grid: { color: '#334155' },
+                        ticks: { color: '#cbd5e1' },
+                        min: 0, max: 10
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                // Custom Tooltip for Bubbles to show Tool Name
+                                const item = tooltipItems[0];
+                                return item.raw.tool;
+                            },
+                            label: function(context) {
+                                return `Ease: ${context.raw.x}, Depth: ${context.raw.y}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- CHART: Dig Flags Frequency (Bar Chart) ---
+        // Labels processed for wrapping
+        const rawDigLabels = ['A (IPv4 Address)', 'MX (Mail Server)', 'NS (Name Server)', 'TXT (Text/Verify)', 'AAAA (IPv6 Address)', 'SOA (Authority)'];
+        const processedDigLabels = rawDigLabels.map(l => wrapLabel(l, 16));
+
+        const ctxDig = document.getElementById('digFlagsChart').getContext('2d');
+        const digFlagsChart = new Chart(ctxDig, {
+            type: 'bar',
+            data: {
+                labels: processedDigLabels,
+                datasets: [{
+                    label: 'Recon Value Score',
+                    data: [95, 85, 80, 70, 60, 40], // Conceptual utility score
+                    backgroundColor: [
+                        '#10b981', // A
+                        '#3b82f6', // MX
+                        '#ec4899', // NS
+                        '#8b5cf6', // TXT
+                        '#64748b', // AAAA
+                        '#475569'  // SOA
+                    ],
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Horizontal Bar
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#cbd5e1' }
+                    },
+                    y: {
+                        grid: { color: '#334155' },
+                        ticks: { color: '#cbd5e1', font: { size: 11 } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                    return label.join(' ');
+                                } else {
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- CHART: Anatomy Breakdown (Doughnut Chart) ---
+        const rawAnatomyLabels = ['Answer Section', 'Header Info', 'Question Section', 'Footer Metadata'];
+        const processedAnatomyLabels = rawAnatomyLabels.map(l => wrapLabel(l, 16));
+
+        const ctxAnatomy = document.getElementById('anatomyChart').getContext('2d');
+        const anatomyChart = new Chart(ctxAnatomy, {
+            type: 'doughnut',
+            data: {
+                labels: processedAnatomyLabels,
+                datasets: [{
+                    data: [50, 20, 15, 15], // Conceptual visual weight
+                    backgroundColor: [
+                        '#10b981', // Answer (Primary)
+                        '#64748b', // Header
+                        '#3b82f6', // Question
+                        '#475569'  // Footer
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#cbd5e1', padding: 20 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                    return label.join(' ');
+                                } else {
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
