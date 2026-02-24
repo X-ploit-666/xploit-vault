@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding robots.txt | The Website Etiquette Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #F0F4F8; color: #102A43; }
+        .gradient-bg { background: linear-gradient(135deg, #007BFF 0%, #00C851 100%); }
+        .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        
+        /* Chart Container Styles - Mandatory Compliance */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constraint for large screens */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height */
+            max-height: 400px;
+        }
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Custom Diagram Styles (No SVG) */
+        .flow-step { border-left: 4px solid #007BFF; padding-left: 1rem; position: relative; }
+        .flow-step::before { content: ''; position: absolute; left: -10px; top: 0; width: 16px; height: 16px; background: #007BFF; border-radius: 50%; }
+        .dashed-line { border-left: 2px dashed #CBD5E0; height: 2rem; margin-left: 6px; }
+
+        /* Palette: Vibrant Blue & Green */
+        .text-primary-blue { color: #007BFF; }
+        .bg-primary-blue { background-color: #007BFF; }
+        .text-accent-green { color: #00C851; }
+        .bg-accent-green { background-color: #00C851; }
+        .text-danger-red { color: #FF4444; }
+    </style>
+    <!-- 
+        Palette: "Energetic Blue & Green" 
+        Primary: #007BFF (Vibrant Blue)
+        Secondary: #00C851 (Success Green)
+        Background: #F0F4F8 (Cool Grey/Blue)
+        Constraint Check: NO SVG used. NO Mermaid JS used.
+    -->
+    <!-- 
+        Narrative Plan Summary:
+        1. Intro: House Party Metaphor.
+        2. Definition: What is it?
+        3. Mechanics: Syntax & Directives (Chart: Command Frequency).
+        4. Importance: Server Health & Ethics (Chart: Compliance, Chart: Load).
+        5. Security: Reconnaissance (Diagram: Attack Flow).
+        6. Analysis: Code breakdown.
+    -->
+</head>
+<body class="antialiased">
+
+    <!-- Header / Hero Section -->
+    <header class="gradient-bg text-white py-16 px-4">
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="text-6xl mb-4">🤖 📜</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Understanding robots.txt</h1>
+            <p class="text-xl md:text-2xl font-light opacity-90">The Internet's Etiquette Guide</p>
+        </div>
+    </header>
+
+    <!-- Content Container -->
+    <main class="max-w-5xl mx-auto px-4 py-12 space-y-16">
+
+        <!-- Section 1: The Metaphor (Introduction) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 border-l-4 border-blue-500 pl-4">The "House Party" Analogy</h2>
+                <p class="text-gray-600 mb-4 leading-relaxed">
+                    Imagine a grand house party. You are a guest, free to mingle in the living room and kitchen. But then you see a door marked <strong>"Private"</strong>. You know that means "keep out."
+                </p>
+                <p class="text-gray-600 leading-relaxed">
+                    <strong>robots.txt</strong> is that sign for the internet. It acts as a virtual etiquette guide for <strong>bots</strong> (automated software), telling them which "rooms" (webpages) they can enter and which are off-limits.
+                </p>
+            </div>
+            <div class="card p-8 flex flex-col items-center justify-center bg-blue-50">
+                <div class="text-center">
+                    <div class="text-8xl mb-2">🏠</div>
+                    <div class="flex justify-center space-x-4 mt-4">
+                        <div class="bg-green-100 border-2 border-green-500 text-green-700 px-4 py-2 rounded-lg font-bold">
+                            ✅ Public Room
+                        </div>
+                        <div class="bg-red-100 border-2 border-red-500 text-red-700 px-4 py-2 rounded-lg font-bold">
+                            ⛔ Private Room
+                        </div>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-500 italic">Bots check the sign before entering.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: What & Where (Definition) -->
+        <section>
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-800">What exactly is it?</h2>
+                <p class="text-gray-600 mt-2 max-w-2xl mx-auto">A simple text file living in the root directory of a website that follows the <strong>Robots Exclusion Standard</strong>.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Concept 1 -->
+                <div class="card p-6 text-center">
+                    <div class="text-4xl mb-4">📂</div>
+                    <h3 class="text-xl font-bold mb-2">The Location</h3>
+                    <p class="text-sm text-gray-600">Always found at the root.</p>
+                    <code class="block mt-3 bg-gray-100 p-2 rounded text-xs text-blue-600">example.com/robots.txt</code>
+                </div>
+                <!-- Concept 2 -->
+                <div class="card p-6 text-center">
+                    <div class="text-4xl mb-4">👮‍♂️</div>
+                    <h3 class="text-xl font-bold mb-2">The Directives</h3>
+                    <p class="text-sm text-gray-600">Instructions like "Allow" or "Disallow" that tell bots where to go.</p>
+                </div>
+                <!-- Concept 3 -->
+                <div class="card p-6 text-center">
+                    <div class="text-4xl mb-4">🤖</div>
+                    <h3 class="text-xl font-bold mb-2">The User-Agent</h3>
+                    <p class="text-sm text-gray-600">Target specific bots (like Googlebot) or everyone using a wildcard (*).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: The Directives (How it Works) -->
+        <section class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">The Language of Control</h2>
+            <p class="text-gray-600 mb-8">
+                The file uses specific commands to communicate. While there are many nuances, four directives make up the vast majority of a robots.txt file.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <span class="text-2xl mr-3">⛔</span>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Disallow</h4>
+                                <p class="text-sm text-gray-600">"Do not go here." Used to hide admin pages or private data.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-2xl mr-3">✅</span>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Allow</h4>
+                                <p class="text-sm text-gray-600">"You can go here." Overrides a Disallow rule for specific sub-folders.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-2xl mr-3">⏳</span>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Crawl-delay</h4>
+                                <p class="text-sm text-gray-600">"Slow down." Sets a timer (seconds) between requests to save the server.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-2xl mr-3">🗺️</span>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Sitemap</h4>
+                                <p class="text-sm text-gray-600">"Here is the map." Points bots to the XML sitemap for easy indexing.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chart: Common Directives -->
+                <div class="flex flex-col justify-center">
+                    <div class="chart-container">
+                        <canvas id="directivesChart"></canvas>
+                    </div>
+                    <p class="text-center text-xs text-gray-500 mt-2">Figure 1: Conceptual frequency of directives in a typical file.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Why Respect It? (Importance) -->
+        <section>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Why is this file important?</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <!-- Chart: Bot Compliance -->
+                <div class="card p-6">
+                    <h3 class="text-lg font-bold mb-4 text-center">Bot Compliance & Ethics</h3>
+                    <p class="text-sm text-gray-600 mb-4 text-center">Not all bots are created equal. While "Good" bots (like Google) follow the rules to protect your site, "Bad" bots might ignore them.</p>
+                    <div class="chart-container">
+                        <canvas id="complianceChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart: Server Load -->
+                <div class="card p-6">
+                    <h3 class="text-lg font-bold mb-4 text-center">Protecting Server Health</h3>
+                    <p class="text-sm text-gray-600 mb-4 text-center">Without `Crawl-delay` or `Disallow` rules, aggressive bots can overwhelm a server, causing it to crash for real users.</p>
+                    <div class="chart-container">
+                        <canvas id="serverLoadChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3 Pillars Text -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                <div class="p-4 bg-blue-50 rounded-lg">
+                    <div class="font-bold text-primary-blue mb-1">Server Health</div>
+                    <p class="text-xs text-gray-600">Prevents crashes from excessive traffic.</p>
+                </div>
+                <div class="p-4 bg-blue-50 rounded-lg">
+                    <div class="font-bold text-primary-blue mb-1">Privacy</div>
+                    <p class="text-xs text-gray-600">Keeps private files out of search results.</p>
+                </div>
+                <div class="p-4 bg-blue-50 rounded-lg">
+                    <div class="font-bold text-primary-blue mb-1">Legal & Ethical</div>
+                    <p class="text-xs text-gray-600">Ignoring it can violate Terms of Service.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Security Perspective (Reconnaissance) -->
+        <section class="bg-gray-900 text-white p-8 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold mb-2 text-blue-400">The Double-Edged Sword</h2>
+            <p class="text-gray-400 mb-8">How security experts (and hackers) use robots.txt for <strong>Web Reconnaissance</strong>.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="mb-4">While intended for good, the file is public. Security professionals analyze it to map the website's hidden structure.</p>
+                    <ul class="space-y-4 text-sm text-gray-300">
+                        <li class="flex items-start">
+                            <span class="mr-2">🕵️‍♂️</span>
+                            <span><strong>Finding Hidden Folders:</strong> If you Disallow <code>/secret-backup/</code>, you just told the attacker it exists.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2">🗺️</span>
+                            <span><strong>Mapping Structure:</strong> Reveals sections not linked in the main menu.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2">🍯</span>
+                            <span><strong>Spotting Traps:</strong> "Honeypot" directories designed to catch malicious bots.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Structured HTML Diagram (No Mermaid/SVG) -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-center font-mono text-blue-400 mb-4">Attacker Workflow</h3>
+                    
+                    <div class="flex flex-col items-center">
+                        <!-- Step 1 -->
+                        <div class="w-full bg-gray-700 p-3 rounded text-center font-mono text-sm border-l-4 border-blue-500">
+                            1. Visit example.com/robots.txt
+                        </div>
+                        <div class="h-6 w-0.5 bg-gray-600 my-1"></div>
+                        <div class="text-gray-500 text-xs">▼</div>
+                        
+                        <!-- Step 2 -->
+                        <div class="w-full bg-gray-700 p-3 rounded text-center font-mono text-sm border-l-4 border-blue-500 mt-1">
+                            2. Read "Disallow" paths
+                        </div>
+                        <div class="h-6 w-0.5 bg-gray-600 my-1"></div>
+                        <div class="text-gray-500 text-xs">▼</div>
+
+                        <!-- Step 3 -->
+                        <div class="w-full bg-gray-700 p-3 rounded text-center font-mono text-sm border-l-4 border-red-500 mt-1">
+                            3. Identify Sensitive Targets
+                            <br><span class="text-xs text-gray-400">(e.g., /admin/, /logs/)</span>
+                        </div>
+                        <div class="h-6 w-0.5 bg-gray-600 my-1"></div>
+                        <div class="text-gray-500 text-xs">▼</div>
+
+                        <!-- Step 4 -->
+                        <div class="w-full bg-gray-700 p-3 rounded text-center font-mono text-sm border-l-4 border-green-500 mt-1">
+                            4. Launch Targeted Probe
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Example Analysis -->
+        <section>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Analyzing a Real File</h2>
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+                <div class="bg-gray-100 px-6 py-3 border-b border-gray-200 flex items-center">
+                    <span class="text-gray-500 mr-2">📄</span>
+                    <span class="font-mono text-sm font-bold text-gray-700">robots.txt</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2">
+                    <!-- Code Panel -->
+                    <div class="bg-gray-50 p-6 font-mono text-sm leading-relaxed text-gray-800">
+                        <div class="mb-4">
+                            <span class="text-purple-600 font-bold">User-agent:</span> *<br>
+                            <span class="text-red-600 font-bold">Disallow:</span> /admin/<br>
+                            <span class="text-red-600 font-bold">Disallow:</span> /private/<br>
+                            <span class="text-green-600 font-bold">Allow:</span> /public/
+                        </div>
+                        <div class="mb-4">
+                            <span class="text-purple-600 font-bold">User-agent:</span> Googlebot<br>
+                            <span class="text-blue-600 font-bold">Crawl-delay:</span> 10
+                        </div>
+                        <div>
+                            <span class="text-gray-600 font-bold">Sitemap:</span> https://www.example.com/sitemap.xml
+                        </div>
+                    </div>
+                    
+                    <!-- Explainer Panel -->
+                    <div class="p-6 bg-white border-l border-gray-100 flex flex-col justify-center space-y-4">
+                        <div class="flex items-start">
+                            <span class="bg-purple-100 text-purple-600 text-xs font-bold px-2 py-1 rounded mr-2 mt-1">1</span>
+                            <p class="text-sm text-gray-600"><strong>Wildcard (*):</strong> The first block applies to ALL bots. They are blocked from Admin/Private areas.</p>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="bg-green-100 text-green-600 text-xs font-bold px-2 py-1 rounded mr-2 mt-1">2</span>
+                            <p class="text-sm text-gray-600"><strong>Specific Allow:</strong> Even though /private/ might be blocked, /public/ is explicitly open.</p>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="bg-blue-100 text-blue-600 text-xs font-bold px-2 py-1 rounded mr-2 mt-1">3</span>
+                            <p class="text-sm text-gray-600"><strong>Googlebot Specific:</strong> Google gets special instructions to wait 10 seconds between requests.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center text-gray-500 py-12 text-sm">
+            <p>Generated for educational purposes based on "Robots.txt Explained".</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- 1. Helper Function: Label Wrapping for Chart.js ---
+        // Splits long strings into arrays of shorter strings (approx 16 chars)
+        function wrapLabels(labels) {
+            return labels.map(label => {
+                if (label.length <= 16) return label;
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = words[0];
+
+                for (let i = 1; i < words.length; i++) {
+                    if (currentLine.length + 1 + words[i].length <= 16) {
+                        currentLine += ' ' + words[i];
+                    } else {
+                        lines.push(currentLine);
+                        currentLine = words[i];
+                    }
+                }
+                lines.push(currentLine);
+                return lines;
+            });
+        }
+
+        // --- 2. Chart Configurations ---
+        
+        // Common Options for Style
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        font: { family: "'Poppins', sans-serif" },
+                        color: '#102A43'
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(16, 42, 67, 0.9)',
+                    titleFont: { family: "'Poppins', sans-serif", size: 14 },
+                    bodyFont: { family: "'Poppins', sans-serif", size: 13 },
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        // Chart 1: Directives Usage (Bar Chart)
+        const ctxDirectives = document.getElementById('directivesChart').getContext('2d');
+        const rawDirectivesLabels = ['Disallow (Block)', 'Allow (Permit)', 'Sitemap (Map)', 'Crawl-delay (Wait)'];
+        new Chart(ctxDirectives, {
+            type: 'bar',
+            data: {
+                labels: wrapLabels(rawDirectivesLabels),
+                datasets: [{
+                    label: 'Frequency of Use (Conceptual)',
+                    data: [90, 40, 30, 15], // Conceptual data based on common usage
+                    backgroundColor: [
+                        '#FF4444', // Disallow - Red
+                        '#00C851', // Allow - Green
+                        '#007BFF', // Sitemap - Blue
+                        '#FFBB33'  // Delay - Orange
+                    ],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        display: false // Hide Y axis numbers for cleaner look
+                    },
+                    x: {
+                        ticks: {
+                            font: { family: "'Poppins', sans-serif" },
+                            color: '#102A43'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart 2: Bot Compliance (Donut Chart)
+        const ctxCompliance = document.getElementById('complianceChart').getContext('2d');
+        const rawComplianceLabels = ['Respectful Bots (Google/Bing)', 'Rogue Bots (Scrapers/Spam)'];
+        new Chart(ctxCompliance, {
+            type: 'doughnut',
+            data: {
+                labels: wrapLabels(rawComplianceLabels),
+                datasets: [{
+                    data: [80, 20], // Illustrative split based on text "most legitimate... will respect"
+                    backgroundColor: ['#00C851', '#FF4444'],
+                    hoverOffset: 4
+                }]
+            },
+            options: commonOptions
+        });
+
+        // Chart 3: Server Load Simulation (Line Chart)
+        const ctxServer = document.getElementById('serverLoadChart').getContext('2d');
+        const rawServerLabels = ['0s', '2s', '4s', '6s', '8s', '10s'];
+        new Chart(ctxServer, {
+            type: 'line',
+            data: {
+                labels: rawServerLabels, // Short enough, no wrap needed
+                datasets: [
+                    {
+                        label: 'Load Without Crawl-delay',
+                        data: [10, 50, 95, 80, 90, 85], // Spiky, high load
+                        borderColor: '#FF4444',
+                        backgroundColor: 'rgba(255, 68, 68, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Load With Crawl-delay: 10',
+                        data: [10, 15, 12, 18, 15, 20], // Low, stable load
+                        borderColor: '#007BFF',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Server Stress Level' }
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
