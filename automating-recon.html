@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automating Web Reconnaissance | Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Palette: Vibrant Cyberpunk/Tech 
+           Primary: #3b82f6 (Blue-500)
+           Secondary: #8b5cf6 (Purple-500)
+           Accent: #f43f5e (Rose-500)
+           Background: #f8fafc (Slate-50)
+           Text: #0f172a (Slate-900)
+        */
+        body { font-family: 'Roboto', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        
+        .gradient-text {
+            background: linear-gradient(to right, #3b82f6, #8b5cf6, #f43f5e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .card-shadow { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        
+        /* Chart Container Styling - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constraint width */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Default height */
+            max-height: 400px;
+        }
+        
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Workflow Connector Lines (No SVG) */
+        .connector-line-vertical {
+            width: 2px;
+            background-color: #cbd5e1;
+            height: 20px;
+            margin: 0 auto;
+        }
+    </style>
+    <!-- 
+        NARRATIVE PLAN:
+        1. Intro: What is Recon & Automation? (Text + Big Number stats concept)
+        2. Benefits: 5 Key advantages (Cards)
+        3. Framework Landscape: Comparison of tools (Bar Chart)
+        4. Deep Dive FinalRecon: Feature Breakdown (Doughnut Chart)
+        5. Workflow: Step-by-step Installation (Tailwind Flow Diagram)
+        6. Glossary: Key terms (Grid)
+    -->
+    <!-- 
+        CHART SELECTION JUSTIFICATION (NO SVG):
+        1. Framework Comparison -> Bar Chart (Chart.js) -> Compare number of features/scope mentioned.
+        2. FinalRecon Composition -> Doughnut Chart (Chart.js) -> Show distribution of feature types (Network vs Content vs Meta).
+        3. Benefits -> CSS Cards -> Qualitative data.
+        4. Workflow -> HTML/CSS Grid -> Sequential process.
+    -->
+</head>
+<body class="antialiased">
+
+    <!-- Header Section -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50 bg-opacity-90 backdrop-blur-md">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-black tracking-tight text-slate-800">
+                RECON<span class="text-blue-600">AUTOMATION</span>
+            </h1>
+            <nav class="hidden md:flex space-x-6 text-sm font-bold text-slate-600">
+                <a href="#intro" class="hover:text-blue-600 transition">Intro</a>
+                <a href="#benefits" class="hover:text-blue-600 transition">Benefits</a>
+                <a href="#tools" class="hover:text-blue-600 transition">Tools</a>
+                <a href="#finalrecon" class="hover:text-blue-600 transition">FinalRecon</a>
+                <a href="#workflow" class="hover:text-blue-600 transition">Workflow</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero / Introduction -->
+    <section id="intro" class="py-12 md:py-20 container mx-auto px-6 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-4xl md:text-6xl font-black mb-6 leading-tight">
+                Stop Guessing. <br>Start <span class="gradient-text">Automating.</span>
+            </h2>
+            <p class="text-xl text-slate-600 mb-10 leading-relaxed">
+                Reconnaissance is the foundation of security assessments. Manual gathering is prone to error and slow. 
+                <span class="font-bold text-blue-600">Automation</span> scales your ability to gather information, identify vulnerabilities, and map attack vectors rapidly.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 text-left">
+                <div class="bg-white p-8 rounded-2xl card-shadow border-l-4 border-blue-500">
+                    <h3 class="text-xl font-bold mb-2">Man vs. Machine</h3>
+                    <p class="text-slate-500">Manual recon is time-consuming. Automated tools act as force multipliers, freeing up valuable time for analysis and decision-making.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl card-shadow border-l-4 border-purple-500">
+                    <h3 class="text-xl font-bold mb-2">The Goal</h3>
+                    <p class="text-slate-500">Gather info at scale. From DNS enumeration to web crawling, automation ensures comprehensive coverage of potential attack surfaces.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Benefits of Automation -->
+    <section id="benefits" class="bg-slate-50 py-16 border-t border-slate-200">
+        <div class="container mx-auto px-6">
+            <div class="mb-12 text-center max-w-2xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">Why Automate Reconnaissance?</h2>
+                <p class="text-slate-600">Five core pillars define the advantage of using frameworks over manual methods.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white p-6 rounded-xl card-shadow hover:-translate-y-1 transition duration-300">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h3 class="font-bold text-lg mb-2">Efficiency</h3>
+                    <p class="text-sm text-slate-500">Performs repetitive tasks faster, freeing up human time.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white p-6 rounded-xl card-shadow hover:-translate-y-1 transition duration-300">
+                    <div class="text-4xl mb-4">📈</div>
+                    <h3 class="font-bold text-lg mb-2">Scalability</h3>
+                    <p class="text-sm text-slate-500">Scale efforts across hundreds of targets simultaneously.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white p-6 rounded-xl card-shadow hover:-translate-y-1 transition duration-300">
+                    <div class="text-4xl mb-4">🎯</div>
+                    <h3 class="font-bold text-lg mb-2">Consistency</h3>
+                    <p class="text-sm text-slate-500">Predefined rules ensure reproducible, error-free results.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-white p-6 rounded-xl card-shadow hover:-translate-y-1 transition duration-300">
+                    <div class="text-4xl mb-4">🛡️</div>
+                    <h3 class="font-bold text-lg mb-2">Coverage</h3>
+                    <p class="text-sm text-slate-500">Wide range of tasks from DNS to crawling in one go.</p>
+                </div>
+                <!-- Card 5 -->
+                <div class="bg-white p-6 rounded-xl card-shadow hover:-translate-y-1 transition duration-300">
+                    <div class="text-4xl mb-4">🔗</div>
+                    <h3 class="font-bold text-lg mb-2">Integration</h3>
+                    <p class="text-sm text-slate-500">Seamless workflow into vulnerability assessment tools.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Tool Landscape (Chart) -->
+    <section id="tools" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-800 mb-4">The Recon Framework Landscape</h2>
+                    <p class="text-slate-600 mb-6">
+                        Several powerful frameworks exist, each with unique strengths. While some focus on specific tasks like email gathering, others offer a complete modular suite for web analysis.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-blue-500 mr-2">◼</span>
+                            <span class="text-sm text-slate-600"><strong>FinalRecon:</strong> Python-based, modular, great for web-specific tasks.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-500 mr-2">◼</span>
+                            <span class="text-sm text-slate-600"><strong>Recon-ng:</strong> Powerful, modular framework similar to Metasploit.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-pink-500 mr-2">◼</span>
+                            <span class="text-sm text-slate-600"><strong>theHarvester:</strong> Specialized in emails, subdomains, and names.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <h3 class="text-center font-bold text-slate-700 mb-4">Tool Feature Density Comparison</h3>
+                    <!-- Chart Container -->
+                    <div class="chart-container">
+                        <canvas id="toolsChart"></canvas>
+                    </div>
+                    <p class="text-xs text-center text-slate-400 mt-4">Comparing key capabilities mentioned in source material.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: FinalRecon Deep Dive -->
+    <section id="finalrecon" class="py-16 bg-slate-900 text-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-black mb-4"><span class="text-blue-400">Deep Dive:</span> FinalRecon</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">
+                    FinalRecon is an "All-in-One" web reconnaissance tool. It aggregates multiple data sources to build a comprehensive profile of a target website.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Visualizing Features -->
+                <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                    <h3 class="text-xl font-bold mb-6 text-center">Recon Capabilities Breakdown</h3>
+                    <div class="chart-container">
+                        <canvas id="featuresChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Feature List -->
+                <div class="space-y-6">
+                    <div class="flex flex-col space-y-4">
+                        <div class="p-4 bg-slate-800 rounded-lg border-l-4 border-blue-500">
+                            <h4 class="font-bold text-lg text-blue-400">Network & Infrastructure</h4>
+                            <p class="text-sm text-slate-300">DNS Enumeration (40+ types), Subdomain Discovery (using APIs like Shodan/VirusTotal), and Port Scanning.</p>
+                        </div>
+                        <div class="p-4 bg-slate-800 rounded-lg border-l-4 border-purple-500">
+                            <h4 class="font-bold text-lg text-purple-400">Content & Structure</h4>
+                            <p class="text-sm text-slate-300">Crawls HTML/CSS/JS, maps internal/external links, analyzes robots.txt & sitemap.xml, and finds hidden directories.</p>
+                        </div>
+                        <div class="p-4 bg-slate-800 rounded-lg border-l-4 border-pink-500">
+                            <h4 class="font-bold text-lg text-pink-400">Metadata & History</h4>
+                            <p class="text-sm text-slate-300">Extracts Header info, Whois registration details, SSL Certificates, and historical data via Wayback Machine.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Workflow / How-To -->
+    <section id="workflow" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4 text-center">Installation & Usage Workflow</h2>
+                <p class="text-center text-slate-500 max-w-2xl mx-auto">
+                    Getting started with FinalRecon is a simple 4-step process on Linux systems. Follow this path to launch your first scan.
+                </p>
+            </div>
+
+            <!-- Custom HTML Process Flow -->
+            <div class="max-w-4xl mx-auto">
+                <!-- Step 1 & 2 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-4">
+                    <!-- Step 1 -->
+                    <div class="relative bg-blue-50 border-2 border-blue-200 p-6 rounded-xl">
+                        <div class="absolute -top-4 -left-4 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg">1</div>
+                        <h4 class="font-bold text-blue-800 mb-2">Download</h4>
+                        <code class="block bg-blue-900 text-blue-100 p-2 rounded text-xs mb-2">git clone https://github.com/thewhiteh4t/FinalRecon.git</code>
+                        <p class="text-xs text-blue-700">Clones the repository from GitHub to your local machine.</p>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="relative bg-purple-50 border-2 border-purple-200 p-6 rounded-xl">
+                        <div class="absolute -top-4 -left-4 w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg">2</div>
+                        <h4 class="font-bold text-purple-800 mb-2">Navigate</h4>
+                        <code class="block bg-purple-900 text-purple-100 p-2 rounded text-xs mb-2">cd FinalRecon</code>
+                        <p class="text-xs text-purple-700">Enter the newly created directory.</p>
+                    </div>
+                </div>
+
+                <!-- Connector -->
+                <div class="hidden md:flex justify-center mb-4 text-slate-300 text-2xl">⬇</div>
+
+                <!-- Step 3 & 4 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-4">
+                    <!-- Step 3 -->
+                    <div class="relative bg-pink-50 border-2 border-pink-200 p-6 rounded-xl">
+                        <div class="absolute -top-4 -left-4 w-10 h-10 bg-pink-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg">3</div>
+                        <h4 class="font-bold text-pink-800 mb-2">Dependencies</h4>
+                        <code class="block bg-pink-900 text-pink-100 p-2 rounded text-xs mb-2">pip3 install -r requirements.txt</code>
+                        <p class="text-xs text-pink-700">Installs required Python libraries.</p>
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="relative bg-amber-50 border-2 border-amber-200 p-6 rounded-xl">
+                        <div class="absolute -top-4 -left-4 w-10 h-10 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold shadow-lg">4</div>
+                        <h4 class="font-bold text-amber-800 mb-2">Permissions</h4>
+                        <code class="block bg-amber-900 text-amber-100 p-2 rounded text-xs mb-2">chmod +x ./finalrecon.py</code>
+                        <p class="text-xs text-amber-700">Makes the script executable.</p>
+                    </div>
+                </div>
+
+                <!-- Connector -->
+                <div class="flex justify-center mb-4 text-slate-300 text-2xl">⬇</div>
+
+                <!-- Execution Terminal -->
+                <div class="bg-slate-900 rounded-xl shadow-2xl overflow-hidden max-w-2xl mx-auto border border-slate-700">
+                    <div class="bg-slate-800 px-4 py-2 flex items-center space-x-2 border-b border-slate-700">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="ml-2 text-xs text-slate-400">Terminal</span>
+                    </div>
+                    <div class="p-6 font-mono text-sm">
+                        <p class="text-green-400 mb-2">$ ./finalrecon.py --headers --whois --url http://inlanefreight.com</p>
+                        <p class="text-slate-400 mb-1">[+] Target : http://inlanefreight.com</p>
+                        <p class="text-slate-400 mb-1">[!] Headers : Apache/2.4.41 (Ubuntu)</p>
+                        <p class="text-slate-400 mb-1">[!] Whois : Amazon Registrar, Inc.</p>
+                        <p class="text-blue-400 animate-pulse">_ Scan Complete</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Glossary -->
+    <section class="py-16 bg-slate-50 border-t border-slate-200">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-slate-800 mb-8 text-center">Tech Glossary</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                    <h5 class="font-bold text-blue-600 mb-1">DNS</h5>
+                    <p class="text-sm text-slate-600">The "phonebook" of the internet turning names (google.com) into numbers (IP addresses).</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                    <h5 class="font-bold text-purple-600 mb-1">Port Scanning</h5>
+                    <p class="text-sm text-slate-600">Checking "digital doors" on a server to see which services are open and listening.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                    <h5 class="font-bold text-pink-600 mb-1">Crawler</h5>
+                    <p class="text-sm text-slate-600">A bot that automatically navigates through a website, following links to map its structure.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                    <h5 class="font-bold text-amber-600 mb-1">Subdomain</h5>
+                    <p class="text-sm text-slate-600">A child domain of the main site (e.g., <code>blog.example.com</code>) often hosting different services.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                    <h5 class="font-bold text-slate-600 mb-1">SSL/TLS</h5>
+                    <p class="text-sm text-slate-600">Digital certificates that prove a website's identity and enable encrypted connections.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                    <h5 class="font-bold text-slate-600 mb-1">GitHub</h5>
+                    <p class="text-sm text-slate-600">A platform where developers store, share, and collaborate on code repositories.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center border-t border-slate-800">
+        <div class="container mx-auto px-6">
+            <p class="mb-2">Generated Infographic based on "Automating Web Reconnaissance" Guide.</p>
+            <p class="text-xs">NO SVG | NO MERMAID | 100% Canvas & CSS</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Charts -->
+    <script>
+        // --- 1. Label Wrapping Utility (Mandatory) ---
+        function wrapLabel(str, maxLen) {
+            if (str.length <= maxLen) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= maxLen) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- 2. Tooltip Configuration (Mandatory) ---
+        const tooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- 3. Chart Initialization ---
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            // Chart 1: Framework Comparison (Bar Chart)
+            const toolsCtx = document.getElementById('toolsChart').getContext('2d');
+            
+            // Data derived from source material feature descriptions
+            const toolLabels = ['FinalRecon', 'Recon-ng', 'theHarvester', 'SpiderFoot', 'OSINT Framework'];
+            const processedToolLabels = toolLabels.map(l => wrapLabel(l, 16));
+
+            new Chart(toolsCtx, {
+                type: 'bar',
+                data: {
+                    labels: processedToolLabels,
+                    datasets: [{
+                        label: 'Feature Count / Versatility',
+                        data: [11, 5, 5, 4, 1], // Based on number of distinct features listed in source text
+                        backgroundColor: [
+                            '#3b82f6', // Blue
+                            '#8b5cf6', // Purple
+                            '#ec4899', // Pink
+                            '#f59e0b', // Amber
+                            '#64748b'  // Slate
+                        ],
+                        borderWidth: 0,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y', // Horizontal Bar
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: tooltipConfig,
+                        title: {
+                            display: false,
+                            text: 'Comparison of Tool Scope'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: { display: false },
+                            title: { display: true, text: 'Reported Capabilities' }
+                        },
+                        y: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: FinalRecon Features (Doughnut)
+            const featuresCtx = document.getElementById('featuresChart').getContext('2d');
+
+            const featureLabels = [
+                'Headers Info', 'Whois Lookup', 'SSL Info', 
+                'Crawler (HTML/JS)', 'Link Analysis', 'Files (Robots/Sitemap)', 
+                'Wayback Machine', 'DNS Enum', 'Subdomain Enum', 
+                'Directory Enum', 'Port Scan'
+            ];
+            const processedFeatureLabels = featureLabels.map(l => wrapLabel(l, 16));
+
+            // Categorized for colors: 
+            // Blue = Network (DNS, Sub, Dir, Port)
+            // Purple = Content (Crawl, Links, Files)
+            // Pink = Metadata (Headers, Whois, SSL, Wayback)
+            const featureColors = [
+                '#ec4899', '#ec4899', '#ec4899', // Pink (Meta)
+                '#8b5cf6', '#8b5cf6', '#8b5cf6', // Purple (Content)
+                '#ec4899', // Pink (Wayback)
+                '#3b82f6', '#3b82f6', '#3b82f6', '#3b82f6' // Blue (Network)
+            ];
+
+            new Chart(featuresCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: processedFeatureLabels,
+                    datasets: [{
+                        label: 'Recon Module',
+                        data: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // Equal weight for visualization
+                        backgroundColor: featureColors,
+                        borderColor: '#1e293b', // Match background
+                        borderWidth: 2,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            position: 'right',
+                            labels: { color: '#cbd5e1', font: { size: 10 } }
+                        },
+                        tooltip: tooltipConfig
+                    },
+                    cutout: '60%'
+                }
+            });
+        });
+    </script>
+</body>
+</html>
