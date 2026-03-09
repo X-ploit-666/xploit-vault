@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Crawling: A Visual Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #3B82F6; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2563EB; }
+
+        /* Chart Container Strict Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Utility for Flow Diagram Arrows */
+        .arrow-right::after {
+            content: "→";
+            font-size: 2rem;
+            color: #94A3B8;
+            margin: 0 1rem;
+        }
+        @media (max-width: 768px) {
+            .arrow-right::after {
+                content: "↓";
+                display: block;
+                margin: 0.5rem auto;
+                transform: rotate(0deg);
+                text-align: center;
+            }
+        }
+
+        /* Material Design Card Hover */
+        .material-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .material-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+    </style>
+    <!-- 
+    Analysis of Source Material:
+    - Topic: Web Crawling Mechanics & Data Extraction.
+    - Narrative: Definition -> Mechanism -> Strategies -> Data Types -> Contextual Intelligence.
+    - Key Visuals Needed: Process flow, Strategy comparison, Data composition, File types.
+    
+    Visualization Plan Summary:
+    1. Intro: Text & CSS Visuals.
+    2. Process: HTML Flowchart (Seed -> Queue).
+    3. Strategies: Chart.js Scatter Plot (visualizing node distribution for Breadth vs Depth).
+    4. Data Extraction: Doughnut Chart (Composition of findings).
+    5. Sensitive Files: Horizontal Bar Chart (Ranking common exposures).
+    6. Context: HTML Equation Layout.
+    
+    Color Palette Selected: Vibrant Cyber Blue/Purple
+    - Primary: #3B82F6 (Blue)
+    - Secondary: #8B5CF6 (Purple)
+    - Accent: #EC4899 (Pink)
+    -->
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-blue-200 selection:text-blue-900">
+
+    <!-- Navigation / Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+                Web Crawling<span class="text-slate-400 font-light hidden sm:inline"> | A Simplified Guide</span>
+            </h1>
+            <nav class="hidden md:flex space-x-6 text-sm font-medium text-slate-500">
+                <a href="#how-it-works" class="hover:text-blue-600 transition">Process</a>
+                <a href="#strategies" class="hover:text-blue-600 transition">Strategies</a>
+                <a href="#data-extraction" class="hover:text-blue-600 transition">Extraction</a>
+                <a href="#context" class="hover:text-blue-600 transition">Context</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+        <!-- HERO SECTION -->
+        <section class="text-center space-y-6">
+            <div class="inline-block p-4 rounded-full bg-blue-100 text-blue-600 mb-4 animate-bounce">
+                <!-- Simple CSS Icon using generic unicode -->
+                <span class="text-4xl">🕸️</span>
+            </div>
+            <h2 class="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900">
+                The Digital Spider
+            </h2>
+            <p class="max-w-2xl mx-auto text-xl text-slate-600 leading-relaxed">
+                Crawling is the automated process of browsing the World Wide Web. Like a spider navigating its web, a <strong>Crawler</strong> (or bot) systematically follows links to discover, index, and analyze the internet's vast data.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-blue-500 material-card">
+                    <h3 class="font-bold text-lg mb-2">Automated</h3>
+                    <p class="text-sm text-slate-500">Operates without human intervention using algorithms.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-purple-500 material-card">
+                    <h3 class="font-bold text-lg mb-2">Systematic</h3>
+                    <p class="text-sm text-slate-500">Follows real paths, distinguishing it from random guessing.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-pink-500 material-card">
+                    <h3 class="font-bold text-lg mb-2">Recursive</h3>
+                    <p class="text-sm text-slate-500">Finds links, visits them, finds more links, and repeats.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: HOW IT WORKS (FLOWCHART) -->
+        <section id="how-it-works" class="scroll-mt-24">
+            <div class="mb-10 text-center md:text-left">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">The Crawling Loop</h2>
+                <p class="text-lg text-slate-600 max-w-3xl">
+                    The operation is simple yet powerful. It starts with a single "Seed URL" and expands exponentially. This diagram illustrates the continuous cycle of discovery.
+                </p>
+            </div>
+
+            <!-- Structured HTML Flowchart -->
+            <div class="bg-white p-8 rounded-2xl shadow-lg overflow-hidden">
+                <div class="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0 text-center">
+                    
+                    <!-- Step 1 -->
+                    <div class="relative group w-full md:w-1/5">
+                        <div class="bg-blue-50 border-2 border-blue-200 p-4 rounded-lg shadow-sm group-hover:bg-blue-100 transition">
+                            <div class="text-2xl mb-2">🌱</div>
+                            <h4 class="font-bold text-blue-900">Seed URL</h4>
+                            <p class="text-xs text-blue-700 mt-1">Starting Page</p>
+                        </div>
+                    </div>
+                    
+                    <div class="hidden md:block text-slate-300 text-3xl font-light">→</div>
+                    <div class="md:hidden text-slate-300 text-3xl font-light">↓</div>
+
+                    <!-- Step 2 -->
+                    <div class="relative group w-full md:w-1/5">
+                        <div class="bg-indigo-50 border-2 border-indigo-200 p-4 rounded-lg shadow-sm group-hover:bg-indigo-100 transition">
+                            <div class="text-2xl mb-2">🔍</div>
+                            <h4 class="font-bold text-indigo-900">Parse</h4>
+                            <p class="text-xs text-indigo-700 mt-1">Read Content</p>
+                        </div>
+                    </div>
+
+                    <div class="hidden md:block text-slate-300 text-3xl font-light">→</div>
+                    <div class="md:hidden text-slate-300 text-3xl font-light">↓</div>
+
+                    <!-- Step 3 -->
+                    <div class="relative group w-full md:w-1/5">
+                        <div class="bg-purple-50 border-2 border-purple-200 p-4 rounded-lg shadow-sm group-hover:bg-purple-100 transition">
+                            <div class="text-2xl mb-2">⛏️</div>
+                            <h4 class="font-bold text-purple-900">Extract</h4>
+                            <p class="text-xs text-purple-700 mt-1">Find Links</p>
+                        </div>
+                    </div>
+
+                    <div class="hidden md:block text-slate-300 text-3xl font-light">→</div>
+                    <div class="md:hidden text-slate-300 text-3xl font-light">↓</div>
+
+                    <!-- Step 4 -->
+                    <div class="relative group w-full md:w-1/5">
+                        <div class="bg-pink-50 border-2 border-pink-200 p-4 rounded-lg shadow-sm group-hover:bg-pink-100 transition">
+                            <div class="text-2xl mb-2">📋</div>
+                            <h4 class="font-bold text-pink-900">Queue</h4>
+                            <p class="text-xs text-pink-700 mt-1">To-Do List</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Loop Back Visual -->
+                <div class="mt-8 flex items-center justify-center space-x-2 text-slate-400 text-sm italic">
+                    <span class="text-2xl">↺</span>
+                    <span>The process repeats for every item in the Queue</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: STRATEGIES -->
+        <section id="strategies" class="scroll-mt-24">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4">Strategic Approaches</h2>
+                    <p class="text-lg text-slate-600 mb-6">
+                        Crawlers don't just wander aimlessly; they follow a strategy. The choice depends on whether the goal is a broad map of the site or finding specific assets buried deep within the structure.
+                    </p>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-md mb-6 border-l-4 border-blue-500">
+                        <h3 class="font-bold text-xl text-blue-900 mb-2">Breadth-First (Wide)</h3>
+                        <p class="text-slate-600 mb-2">Explores the entire surface level before moving down.</p>
+                        <ul class="list-disc list-inside text-sm text-slate-500">
+                            <li>Prioritizes website structure mapping.</li>
+                            <li>Visits all neighbors of the seed first.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500">
+                        <h3 class="font-bold text-xl text-purple-900 mb-2">Depth-First (Deep)</h3>
+                        <p class="text-slate-600 mb-2">Drills down a single path until it hits a dead end.</p>
+                        <ul class="list-disc list-inside text-sm text-slate-500">
+                            <li>Good for finding specific hidden content.</li>
+                            <li>Backtracks only when necessary.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Visualization: Scatter Plot to Simulate Tree Nodes -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-center font-bold text-slate-700 mb-4">Visualizing the Traversal Shape</h3>
+                    <div class="chart-container">
+                        <canvas id="strategyChart"></canvas>
+                    </div>
+                    <p class="text-center text-xs text-slate-400 mt-4">
+                        *Points represent pages. Blue emphasizes width, Purple emphasizes depth.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: DATA EXTRACTION -->
+        <section id="data-extraction" class="scroll-mt-24 bg-slate-100 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4">The Harvest: What Do Crawlers Collect?</h2>
+                    <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                        Crawlers are information vacuums. While links are the primary target for navigation, the metadata, comments, and files found along the way often hold the most value for reconnaissance.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Chart 1: Data Types Composition -->
+                    <div class="bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center">
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Composition of Extracted Data</h3>
+                        <p class="text-sm text-slate-500 mb-6 text-center">Breaking down the typical volume of data types found during a crawl.</p>
+                        <div class="chart-container">
+                            <canvas id="dataTypeChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 2: Sensitive Files Ranking -->
+                    <div class="bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center">
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Commonly Exposed Sensitive Files</h3>
+                        <p class="text-sm text-slate-500 mb-6 text-center">Frequency of accidental exposure found by crawlers.</p>
+                        <div class="chart-container">
+                            <canvas id="filesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
+                    <div class="bg-white p-4 rounded-lg shadow text-center">
+                        <div class="font-bold text-blue-600">Links</div>
+                        <div class="text-xs text-slate-500">Maps internal & external relationships.</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow text-center">
+                        <div class="font-bold text-purple-600">Comments</div>
+                        <div class="text-xs text-slate-500">Reveals dev notes & logic.</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow text-center">
+                        <div class="font-bold text-pink-600">Metadata</div>
+                        <div class="text-xs text-slate-500">Hidden authors & tech specs.</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow text-center">
+                        <div class="font-bold text-red-600">Sensitive Files</div>
+                        <div class="text-xs text-slate-500">Backups & Configs.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: CONTEXT ANALYSIS -->
+        <section id="context" class="scroll-mt-24 pb-12">
+            <div class="max-w-4xl mx-auto text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Connecting the Dots</h2>
+                <p class="text-lg text-slate-600">
+                    A single piece of data is rarely a "smoking gun." The real power of crawling comes from context—combining seemingly mundane findings to reveal critical vulnerabilities.
+                </p>
+            </div>
+
+            <!-- The Equation Visual -->
+            <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-3xl p-8 md:p-12 shadow-2xl">
+                <h3 class="text-center text-blue-300 font-mono mb-8 uppercase tracking-widest text-sm">Vulnerability Discovery Logic</h3>
+                
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-8 md:space-y-0 md:space-x-4">
+                    
+                    <!-- Factor 1 -->
+                    <div class="flex-1 bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 text-center w-full">
+                        <div class="text-3xl mb-2">📁</div>
+                        <h4 class="font-bold text-blue-200">The Pattern</h4>
+                        <p class="text-sm text-slate-300 mt-2">Many links pointing to <code class="bg-black/30 px-1 rounded">/files/</code> directory.</p>
+                    </div>
+
+                    <div class="text-3xl font-bold text-blue-500">+</div>
+
+                    <!-- Factor 2 -->
+                    <div class="flex-1 bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 text-center w-full">
+                        <div class="text-3xl mb-2">💬</div>
+                        <h4 class="font-bold text-purple-200">The Comment</h4>
+                        <p class="text-sm text-slate-300 mt-2">Dev mentions "Check the file server."</p>
+                    </div>
+
+                    <div class="text-3xl font-bold text-blue-500">+</div>
+
+                    <!-- Factor 3 -->
+                    <div class="flex-1 bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 text-center w-full">
+                        <div class="text-3xl mb-2">🔓</div>
+                        <h4 class="font-bold text-pink-200">The Access</h4>
+                        <p class="text-sm text-slate-300 mt-2">Directory browsing is enabled.</p>
+                    </div>
+                </div>
+
+                <div class="text-center text-4xl font-bold text-blue-500 my-8">=</div>
+
+                <!-- Result -->
+                <div class="bg-red-500/20 border border-red-500 p-6 rounded-xl text-center max-w-2xl mx-auto">
+                    <h4 class="text-2xl font-bold text-red-300 mb-2">CRITICAL DISCOVERY</h4>
+                    <p class="text-slate-200">The "/files/" directory is the exposed file server containing sensitive company documents.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-slate-500 text-sm">
+            <p>&copy; 2024 Infographic generated based on "Web Crawling: A Simplified Guide".</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. Label Wrapping Utility (Required) ---
+        function wrapLabel(label) {
+            const MAX_LENGTH = 16;
+            if (label.length <= MAX_LENGTH) return label;
+            
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= MAX_LENGTH) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- 2. Tooltip Config Generator (Required) ---
+        function getTooltipConfig() {
+            return {
+                callbacks: {
+                    title: function(tooltipItems) {
+                        const item = tooltipItems[0];
+                        let label = item.chart.data.labels[item.dataIndex];
+                        if (Array.isArray(label)) {
+                            return label.join(' ');
+                        } else {
+                            return label;
+                        }
+                    }
+                }
+            };
+        }
+
+        // --- 3. Chart Implementations ---
+
+        // Chart A: Strategies Visualization (Scatter Plot simulating tree nodes)
+        const ctxStrategy = document.getElementById('strategyChart').getContext('2d');
+        
+        // Data for Breadth First (Wide) - Level 1 mostly
+        const breadthData = [
+            {x: 1, y: 4}, {x: 2, y: 4}, {x: 3, y: 4}, // Level 1 (Wide)
+            {x: 1, y: 3}, {x: 2, y: 3}, {x: 3, y: 3}  // Level 2 (Shallow)
+        ];
+
+        // Data for Depth First (Deep) - Single path mostly
+        const depthData = [
+            {x: 5, y: 4}, // Level 1
+            {x: 5, y: 3}, // Level 2
+            {x: 5, y: 2}, // Level 3
+            {x: 5, y: 1}, // Level 4
+            {x: 6, y: 1}  // Backtrack/Neighbor deep
+        ];
+
+        new Chart(ctxStrategy, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Breadth-First Focus',
+                    data: breadthData,
+                    backgroundColor: '#3B82F6', // Blue
+                    pointRadius: 8
+                }, {
+                    label: 'Depth-First Focus',
+                    data: depthData,
+                    backgroundColor: '#8B5CF6', // Purple
+                    pointRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { 
+                        display: false, 
+                        min: 0, 
+                        max: 7 
+                    },
+                    y: { 
+                        display: false, // Hide axis for purely visual effect
+                        min: 0, 
+                        max: 5 
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + " Node";
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart B: Data Types Composition (Doughnut)
+        const ctxDataTypes = document.getElementById('dataTypeChart').getContext('2d');
+        const rawLabelsDataTypes = ['Internal Links', 'External Links', 'Metadata', 'Page Content', 'Comments', 'Sensitive Files'];
+        const wrappedLabelsDataTypes = rawLabelsDataTypes.map(wrapLabel);
+
+        new Chart(ctxDataTypes, {
+            type: 'doughnut',
+            data: {
+                labels: wrappedLabelsDataTypes,
+                datasets: [{
+                    data: [45, 25, 10, 10, 5, 5], // Representative percentages
+                    backgroundColor: [
+                        '#3B82F6', // Blue
+                        '#60A5FA', // Light Blue
+                        '#8B5CF6', // Purple
+                        '#A78BFA', // Light Purple
+                        '#EC4899', // Pink
+                        '#F43F5E'  // Red (Files)
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { boxWidth: 12, font: { size: 11 } }
+                    },
+                    tooltip: getTooltipConfig()
+                }
+            }
+        });
+
+        // Chart C: Sensitive Files Ranking (Horizontal Bar)
+        const ctxFiles = document.getElementById('filesChart').getContext('2d');
+        const rawLabelsFiles = ['Backup Files (.bak/.old)', 'Config Files (web.config)', 'Log Files (error_log)', 'API Keys & Secrets'];
+        const wrappedLabelsFiles = rawLabelsFiles.map(wrapLabel);
+
+        new Chart(ctxFiles, {
+            type: 'bar',
+            data: {
+                labels: wrappedLabelsFiles,
+                datasets: [{
+                    label: 'Exposure Likelihood',
+                    data: [85, 60, 45, 20], // Representative Score
+                    backgroundColor: '#EC4899', // Pink
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Horizontal Bar
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        display: false // Clean look
+                    },
+                    y: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: getTooltipConfig()
+                }
+            }
+        });
+    </script>
+</body>
+</html>

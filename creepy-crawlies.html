@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Crawling Simplified: An Infographic Guide</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Palette: Cyber Vibrant 
+         Background: #0f172a (Slate 900)
+         Card Bg: #1e293b (Slate 800)
+         Text Main: #f8fafc (Slate 50)
+         Accent 1 (Cyan): #06b6d4 
+         Accent 2 (Pink): #ec4899
+         Accent 3 (Yellow): #eab308
+    -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#0f172a',
+                            card: '#1e293b',
+                            text: '#f8fafc',
+                            cyan: '#06b6d4',
+                            pink: '#ec4899',
+                            yellow: '#eab308',
+                            purple: '#8b5cf6'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Chart Container Styling Rules */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Max width constraint */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height */
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Custom Scrollbar for a "Tech" feel */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4;
+        }
+
+        /* Utility for flow lines */
+        .flow-line {
+            width: 4px;
+            background: linear-gradient(to bottom, #06b6d4, #ec4899);
+        }
+    </style>
+    <!-- 
+        Palette: Cyber Vibrant
+        Rationale: High contrast, modern tech aesthetic suitable for "Web Crawling/Hacking" topics.
+        NO SVG USED. NO MERMAID JS USED.
+    -->
+    <!--
+        Plan Summary:
+        1. Intro: What is crawling?
+        2. Tools Radar Chart: Comparing Burp, ZAP, Scrapy, Nutch.
+        3. Process Flow: Vertical timeline of the coding steps.
+        4. JSON Structure: Doughnut chart of data types.
+        5. Ethics: Warning cards.
+    -->
+    <!--
+        Visualization Choices:
+        1. Tools Comparison -> Goal: Compare -> Radar Chart (Chart.js) -> Good for multi-variable comparison.
+        2. JSON Structure -> Goal: Inform/Composition -> Doughnut Chart (Chart.js) -> Shows parts of the whole capture.
+        3. Process -> Goal: Organize -> HTML/CSS Timeline -> Linear progression.
+    -->
+</head>
+<body class="bg-cyber-bg text-cyber-text font-sans antialiased selection:bg-cyber-pink selection:text-white">
+
+    <!-- HERO SECTION -->
+    <header class="w-full py-16 px-4 md:px-8 text-center border-b border-cyber-card bg-gradient-to-b from-gray-900 to-cyber-bg">
+        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-cyber-purple">
+                Web Crawling
+            </span>
+            <span class="text-white">Simplified</span>
+        </h1>
+        <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-8">
+            Automating the exploration of the digital world. Discover how digital robots map the web, uncover secrets, and gather data for you.
+        </p>
+        <div class="flex justify-center gap-4">
+            <div class="px-6 py-2 rounded-full border border-cyber-cyan text-cyber-cyan text-sm font-semibold shadow-[0_0_10px_rgba(6,182,212,0.3)]">
+                Automated
+            </div>
+            <div class="px-6 py-2 rounded-full border border-cyber-pink text-cyber-pink text-sm font-semibold shadow-[0_0_10px_rgba(236,72,153,0.3)]">
+                Efficient
+            </div>
+            <div class="px-6 py-2 rounded-full border border-cyber-yellow text-cyber-yellow text-sm font-semibold shadow-[0_0_10px_rgba(234,179,8,0.3)]">
+                Scalable
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-24">
+
+        <!-- SECTION 1: THE LANDSCAPE (Tools Comparison) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <h2 class="text-3xl font-bold border-l-4 border-cyber-cyan pl-4">The Crawler's Arsenal</h2>
+                <p class="text-gray-300 leading-relaxed">
+                    You don't have to explore the vast web alone. Specialized tools act as your digital fleet, each designed for specific missions—from security testing to massive scale indexing. Choosing the right tool depends on whether you need deep security analysis, custom data extraction, or raw power.
+                </p>
+                
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="p-4 bg-cyber-card rounded-lg border-l-4 border-cyber-purple shadow-lg">
+                        <h3 class="font-bold text-cyber-purple text-lg">Burp Suite & OWASP ZAP</h3>
+                        <p class="text-sm text-gray-400">Best for: <span class="text-white">Security Mapping</span></p>
+                        <p class="text-sm text-gray-400 mt-1">Excellent at finding hidden vulnerabilities.</p>
+                    </div>
+                    <div class="p-4 bg-cyber-card rounded-lg border-l-4 border-cyber-pink shadow-lg">
+                        <h3 class="font-bold text-cyber-pink text-lg">Scrapy (Python)</h3>
+                        <p class="text-sm text-gray-400">Best for: <span class="text-white">Custom Reconnaissance</span></p>
+                        <p class="text-sm text-gray-400 mt-1">Flexible framework for tailored data extraction.</p>
+                    </div>
+                    <div class="p-4 bg-cyber-card rounded-lg border-l-4 border-cyber-yellow shadow-lg">
+                        <h3 class="font-bold text-cyber-yellow text-lg">Apache Nutch</h3>
+                        <p class="text-sm text-gray-400">Best for: <span class="text-white">Massive Scale</span></p>
+                        <p class="text-sm text-gray-400 mt-1">Power to crawl the entire web, high complexity.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center w-full">
+                <div class="chart-container bg-cyber-card rounded-xl p-4 shadow-2xl border border-gray-700">
+                    <canvas id="toolsRadarChart"></canvas>
+                </div>
+                <p class="mt-4 text-center text-sm text-gray-500 italic">
+                    Comparing key attributes: Security Focus, Customizability, Scalability, and Ease of Use.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: ETHICS & RULES -->
+        <section class="bg-gradient-to-r from-cyber-card to-gray-900 rounded-2xl p-8 md:p-12 shadow-inner border border-gray-700">
+            <h2 class="text-3xl font-bold mb-8 text-center text-cyber-yellow">Rules of Engagement</h2>
+            <p class="text-center text-gray-300 max-w-3xl mx-auto mb-12">
+                With great power comes great responsibility. Crawling puts load on servers and accesses private data. Always adhere to these core ethical principles.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <!-- Rule 1 -->
+                <div class="group hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 mx-auto bg-cyber-cyan/20 rounded-full flex items-center justify-center mb-4 text-3xl">
+                        🤝
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Ask Permission</h3>
+                    <p class="text-gray-400 text-sm">Always obtain authorization before crawling, especially for invasive scans.</p>
+                </div>
+                <!-- Rule 2 -->
+                <div class="group hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 mx-auto bg-cyber-pink/20 rounded-full flex items-center justify-center mb-4 text-3xl">
+                        📉
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Respect Resources</h3>
+                    <p class="text-gray-400 text-sm">Don't overload the server. Limit your request rate to avoid crashing the site.</p>
+                </div>
+                <!-- Rule 3 -->
+                <div class="group hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 mx-auto bg-cyber-yellow/20 rounded-full flex items-center justify-center mb-4 text-3xl">
+                        ⚖️
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Be Ethical</h3>
+                    <p class="text-gray-400 text-sm">Follow the law and responsible disclosure practices if you find vulnerabilities.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: THE PROCESS (Timeline) -->
+        <section>
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-white">The Reconnaissance Mission</h2>
+                <p class="text-gray-400 mt-2">Deploying <span class="text-cyber-cyan font-mono">ReconSpider</span> with Scrapy</p>
+            </div>
+
+            <div class="relative max-w-4xl mx-auto">
+                <!-- Vertical Line -->
+                <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 bg-gray-700 md:-ml-0.5"></div>
+
+                <!-- Step 1 -->
+                <div class="relative flex flex-col md:flex-row items-center justify-between mb-16">
+                    <div class="order-1 w-full md:w-[45%] md:text-right md:pr-8 pl-12 md:pl-0 mb-4 md:mb-0">
+                        <h3 class="text-2xl font-bold text-cyber-cyan">1. Preparation</h3>
+                        <p class="text-gray-300 mt-2 text-sm">Install the framework. We use <strong>pip3</strong> to install Scrapy and its dependencies, setting up the environment.</p>
+                    </div>
+                    <div class="z-10 order-1 flex items-center justify-center w-10 h-10 bg-cyber-card border-4 border-cyber-cyan rounded-full absolute left-0 md:left-1/2 md:-translate-x-1/2 shadow-[0_0_15px_rgba(6,182,212,0.5)]">
+                        <span class="text-xs font-bold text-white">01</span>
+                    </div>
+                    <div class="order-1 w-full md:w-[45%] md:pl-8 pl-12">
+                        <div class="bg-black rounded-md p-4 font-mono text-sm text-green-400 border border-gray-700 shadow-lg">
+                            <span class="text-cyber-pink">root@htb:$</span> pip3 install scrapy
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative flex flex-col md:flex-row items-center justify-between mb-16">
+                    <div class="order-1 w-full md:w-[45%] md:pr-8 pl-12 md:pl-0 mb-4 md:mb-0 md:text-right hidden md:block">
+                        <div class="bg-black rounded-md p-4 font-mono text-sm text-green-400 border border-gray-700 shadow-lg">
+                            <span class="text-cyber-pink">root@htb:$</span> wget -O ReconSpider.zip ...<br>
+                            <span class="text-cyber-pink">root@htb:$</span> unzip ReconSpider.zip
+                        </div>
+                    </div>
+                    <div class="z-10 order-1 flex items-center justify-center w-10 h-10 bg-cyber-card border-4 border-cyber-pink rounded-full absolute left-0 md:left-1/2 md:-translate-x-1/2 shadow-[0_0_15px_rgba(236,72,153,0.5)]">
+                        <span class="text-xs font-bold text-white">02</span>
+                    </div>
+                    <div class="order-1 w-full md:w-[45%] md:pl-8 pl-12">
+                        <h3 class="text-2xl font-bold text-cyber-pink">2. Acquisition</h3>
+                        <p class="text-gray-300 mt-2 text-sm">Download the custom spider. We use <strong>wget</strong> to fetch the zip file and <strong>unzip</strong> to extract the python script.</p>
+                        <!-- Mobile Code View -->
+                        <div class="md:hidden mt-4 bg-black rounded-md p-4 font-mono text-sm text-green-400 border border-gray-700 shadow-lg">
+                            <span class="text-cyber-pink">root@htb:$</span> wget -O ReconSpider.zip ...<br>
+                            <span class="text-cyber-pink">root@htb:$</span> unzip ReconSpider.zip
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative flex flex-col md:flex-row items-center justify-between">
+                    <div class="order-1 w-full md:w-[45%] md:text-right md:pr-8 pl-12 md:pl-0 mb-4 md:mb-0">
+                        <h3 class="text-2xl font-bold text-cyber-yellow">3. Execution</h3>
+                        <p class="text-gray-300 mt-2 text-sm">Launch the spider. The script runs against the target domain, mapping the site and collecting data artifacts.</p>
+                    </div>
+                    <div class="z-10 order-1 flex items-center justify-center w-10 h-10 bg-cyber-card border-4 border-cyber-yellow rounded-full absolute left-0 md:left-1/2 md:-translate-x-1/2 shadow-[0_0_15px_rgba(234,179,8,0.5)]">
+                        <span class="text-xs font-bold text-white">03</span>
+                    </div>
+                    <div class="order-1 w-full md:w-[45%] md:pl-8 pl-12">
+                        <div class="bg-black rounded-md p-4 font-mono text-sm text-green-400 border border-gray-700 shadow-lg">
+                            <span class="text-cyber-pink">root@htb:$</span> python3 ReconSpider.py http://inlanefreight.com
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: DATA ANATOMY (JSON) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="order-2 md:order-1 flex flex-col items-center w-full">
+                <div class="chart-container bg-cyber-card rounded-xl p-4 shadow-2xl border border-gray-700">
+                    <canvas id="jsonDoughnutChart"></canvas>
+                </div>
+                <p class="mt-4 text-center text-sm text-gray-500 italic">
+                    Visualizing the composition of data in <code>results.json</code>.
+                </p>
+            </div>
+
+            <div class="order-1 md:order-2 space-y-6">
+                <h2 class="text-3xl font-bold border-l-4 border-cyber-purple pl-4">Decodng the Output</h2>
+                <p class="text-gray-300 leading-relaxed">
+                    The spider stores its findings in a <code>results.json</code> file. This "digital filing cabinet" organizes data into specific keys. Understanding this structure is crucial for post-scan analysis.
+                </p>
+                <div class="space-y-3">
+                    <div class="flex items-start">
+                        <div class="w-3 h-3 rounded-full bg-cyber-cyan mt-1.5 mr-3 flex-shrink-0"></div>
+                        <div>
+                            <strong class="text-white block">Network Map (Links & Files)</strong>
+                            <span class="text-sm text-gray-400">URLs of internal pages, external PDFs, and documents.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-3 h-3 rounded-full bg-cyber-pink mt-1.5 mr-3 flex-shrink-0"></div>
+                        <div>
+                            <strong class="text-white block">Code Artifacts (JS & Comments)</strong>
+                            <span class="text-sm text-gray-400">JavaScript files and developer HTML comments (often containing clues).</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-3 h-3 rounded-full bg-cyber-yellow mt-1.5 mr-3 flex-shrink-0"></div>
+                        <div>
+                            <strong class="text-white block">Contact Points (Emails & Forms)</strong>
+                            <span class="text-sm text-gray-400">Email addresses for phishing vectors and form fields for injection testing.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="mt-24 pt-8 border-t border-gray-800 text-center pb-8">
+            <p class="text-gray-500 text-sm">
+                Generated from "Web Crawling Simplified" &middot; Canvas Infographics
+            </p>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- HELPER: WRAP LABEL FUNCTION (16 Char Limit) ---
+        function wrapLabel(label) {
+            if (typeof label !== 'string' || label.length <= 16) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= 16) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- COMMON TOOLTIP CONFIGURATION ---
+        const commonTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- CHART 1: TOOLS RADAR CHART ---
+        const ctxRadar = document.getElementById('toolsRadarChart').getContext('2d');
+        
+        // Data derived from text descriptions
+        const radarLabels = ["Security Focus", "Scalability", "Ease of Use", "Customizability"];
+        const wrappedRadarLabels = radarLabels.map(wrapLabel);
+
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: wrappedRadarLabels,
+                datasets: [
+                    {
+                        label: 'Burp / OWASP ZAP',
+                        data: [9, 5, 8, 6], // High Security, Med Scale, High Ease
+                        backgroundColor: 'rgba(6, 182, 212, 0.2)', // Cyan transparent
+                        borderColor: '#06b6d4',
+                        pointBackgroundColor: '#06b6d4',
+                        pointBorderColor: '#fff'
+                    },
+                    {
+                        label: 'Scrapy',
+                        data: [5, 8, 6, 10], // Med Security, High Scale, Med Ease, High Custom
+                        backgroundColor: 'rgba(236, 72, 153, 0.2)', // Pink transparent
+                        borderColor: '#ec4899',
+                        pointBackgroundColor: '#ec4899',
+                        pointBorderColor: '#fff'
+                    },
+                    {
+                        label: 'Apache Nutch',
+                        data: [4, 10, 3, 9], // Low Security specific, Massive Scale, Hard Ease
+                        backgroundColor: 'rgba(234, 179, 8, 0.2)', // Yellow transparent
+                        borderColor: '#eab308',
+                        pointBackgroundColor: '#eab308',
+                        pointBorderColor: '#fff'
+                    }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        pointLabels: {
+                            color: '#f8fafc',
+                            font: { size: 12 }
+                        },
+                        ticks: { display: false, backdropColor: 'transparent' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#f8fafc' },
+                        position: 'bottom'
+                    },
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+
+        // --- CHART 2: JSON STRUCTURE DOUGHNUT ---
+        const ctxDoughnut = document.getElementById('jsonDoughnutChart').getContext('2d');
+        
+        // Labels based on JSON keys
+        const jsonLabels = [
+            "Links (Navigation)",
+            "Images & Media",
+            "JS Files (Code)",
+            "External Files (PDFs)",
+            "Emails (Contact)",
+            "Comments (Hidden)"
+        ];
+        const wrappedJsonLabels = jsonLabels.map(wrapLabel);
+
+        // Mock data to represent a typical "distribution" of findings
+        const jsonData = [45, 25, 15, 5, 5, 5]; 
+
+        new Chart(ctxDoughnut, {
+            type: 'doughnut',
+            data: {
+                labels: wrappedJsonLabels,
+                datasets: [{
+                    data: jsonData,
+                    backgroundColor: [
+                        '#06b6d4', // Cyan
+                        '#22d3ee', // Light Cyan
+                        '#ec4899', // Pink
+                        '#f472b6', // Light Pink
+                        '#eab308', // Yellow
+                        '#a855f7'  // Purple
+                    ],
+                    borderColor: '#1e293b', // Match card bg
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        labels: { color: '#f8fafc', font: { size: 11 } },
+                        position: 'right'
+                    },
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+    </script>
+</body>
+</html>

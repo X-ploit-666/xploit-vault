@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Blueprint of the Web: Architecture & Security</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Chart Container Class */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        /* CSS Shapes for Diagrams (NO SVG) */
+        .db-shape {
+            width: 60px;
+            height: 70px;
+            background: linear-gradient(to bottom, #cbd5e1 0%, #94a3b8 100%);
+            border-radius: 10px / 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #475569;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .db-shape::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -2px;
+            width: calc(100% + 4px);
+            height: 20px;
+            background: #e2e8f0;
+            border: 2px solid #475569;
+            border-radius: 50%;
+        }
+        .server-shape {
+            width: 80px;
+            height: 100px;
+            background-color: #1e293b;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding: 10px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            border-bottom: 4px solid #0f172a;
+        }
+        .server-slot {
+            width: 100%;
+            height: 12px;
+            background-color: #334155;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            padding-left: 4px;
+        }
+        .server-light {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #22c55e;
+            box-shadow: 0 0 5px #22c55e;
+        }
+        .connection-line {
+            height: 4px;
+            background-color: #94a3b8;
+            flex-grow: 1;
+            margin: 0 10px;
+            border-radius: 2px;
+        }
+    </style>
+    <!-- 
+    Plan Summary:
+    1. Header: Title and Intro.
+    2. Evolution Section: Radar Chart comparing Web 1.0, Web 2.0, Native Apps.
+    3. Architecture Section: Visualizing Hosting Models using CSS shapes.
+    4. Layers Section: Explanation of Presentation/Application/Data tiers.
+    5. Front vs Back End: Doughnut Chart showing tech stack diversity.
+    6. Security Section: Bar Chart of OWASP Vulnerabilities + Risk explanations.
+    7. Modern Stack: Microservices explanation with CSS Grid cards.
+    
+    Palette Used:
+    Primary: Indigo-800 (#3730a3)
+    Secondary: Cyan-500 (#06b6d4)
+    Accent: Rose-600 (#e11d48)
+    Background: Slate-50 (#f8fafc)
+    
+    Visualizations:
+    - Radar Chart (Chart.js): Comparison
+    - Doughnut Chart (Chart.js): Composition
+    - Bar Chart (Chart.js): Ranking/Risk
+    - CSS Diagrams: Flow/Structure
+    -->
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans leading-relaxed">
+
+    <!-- Navigation / Header -->
+    <nav class="bg-indigo-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold tracking-wide text-cyan-400">WEB<span class="text-white">ARCH</span></span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#evolution" class="hover:bg-indigo-700 px-3 py-2 rounded-md text-sm font-medium">Evolution</a>
+                        <a href="#hosting" class="hover:bg-indigo-700 px-3 py-2 rounded-md text-sm font-medium">Hosting</a>
+                        <a href="#layers" class="hover:bg-indigo-700 px-3 py-2 rounded-md text-sm font-medium">Layers</a>
+                        <a href="#security" class="hover:bg-indigo-700 px-3 py-2 rounded-md text-sm font-medium">Security</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-cyan-800 text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
+                The Architecture of the Web
+            </h1>
+            <p class="text-xl md:text-2xl text-cyan-200 max-w-3xl mx-auto">
+                From static pages to powerful, secure, and distributed applications. Understanding the invisible engine behind your browser.
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+        <!-- SECTION 1: Evolution (Radar Chart) -->
+        <section id="evolution" class="scroll-mt-24">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-indigo-900 mb-4">Evolution of Digital Interaction</h2>
+                <div class="w-24 h-1 bg-cyan-500 mx-auto rounded"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="bg-white p-8 rounded-xl shadow-lg border-l-4 border-indigo-500">
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800">Web 1.0 vs. Web 2.0 vs. Native</h3>
+                    <p class="text-slate-600 mb-4">
+                        We have moved from static digital brochures to fully functional applications running in the browser. 
+                        <strong>Web Applications (Web 2.0)</strong> combine the accessibility of websites with the interactivity of native software.
+                    </p>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 h-6 w-6 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center font-bold text-xs mr-3">1</span>
+                            <span class="text-sm text-slate-700"><strong>Web 1.0:</strong> Static content. Hard to update. No interaction.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 h-6 w-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs mr-3">2</span>
+                            <span class="text-sm text-slate-700"><strong>Native Apps:</strong> Fast, hardware access, but require installation and manual updates.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 h-6 w-6 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-xs mr-3">3</span>
+                            <span class="text-sm text-slate-700"><strong>Web Apps:</strong> Instant updates, accessible anywhere, zero installation.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Radar Chart Container -->
+                <div class="bg-white p-4 rounded-xl shadow-lg">
+                    <div class="chart-container">
+                        <canvas id="evolutionChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-slate-500 mt-4 italic">Comparing key attributes of different application types.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Hosting Infrastructure (CSS Diagrams) -->
+        <section id="hosting" class="scroll-mt-24 bg-indigo-50 p-8 rounded-2xl">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-indigo-900 mb-4">Infrastructure Models</h2>
+                <p class="text-slate-600 max-w-2xl mx-auto">
+                    How servers and databases are arranged determines the security, reliability, and scalability of an application.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Model 1: The Risky Single Server -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <div class="bg-rose-100 p-4 border-b border-rose-200">
+                        <h3 class="font-bold text-rose-800 text-lg">1. The "All-in-One" (Risky)</h3>
+                    </div>
+                    <div class="p-6 flex flex-col items-center justify-center h-64 bg-slate-100 relative">
+                        <!-- Diagram -->
+                        <div class="server-shape transform scale-125 border-rose-500 border-2">
+                            <div class="server-slot"><div class="server-light bg-rose-500"></div></div>
+                            <div class="server-slot"><div class="server-light bg-rose-500"></div></div>
+                            <div class="server-slot"><div class="server-light bg-rose-500"></div></div>
+                        </div>
+                        <div class="absolute bottom-4 text-xs font-mono bg-white px-2 py-1 rounded border border-slate-300">
+                            App + DB + OS
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-sm text-slate-600">
+                            Everything lives on one machine. If the server is hacked or crashes, <strong>everything is lost</strong>.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Model 2: Segmentation -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <div class="bg-cyan-100 p-4 border-b border-cyan-200">
+                        <h3 class="font-bold text-cyan-900 text-lg">2. Separated Database</h3>
+                    </div>
+                    <div class="p-6 flex flex-col items-center justify-center h-64 bg-slate-100">
+                        <div class="flex items-center w-full justify-center">
+                            <div class="server-shape">
+                                <div class="server-slot"><div class="server-light"></div></div>
+                                <div class="server-slot"><div class="server-light"></div></div>
+                            </div>
+                            <div class="connection-line"></div>
+                            <div class="db-shape text-xs font-bold text-slate-700">DB</div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-sm text-slate-600">
+                            Web Server and Database are separate. If the web server is compromised, the database has an extra layer of protection.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Model 3: Redundancy -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 lg:col-span-1 md:col-span-2">
+                    <div class="bg-indigo-100 p-4 border-b border-indigo-200">
+                        <h3 class="font-bold text-indigo-900 text-lg">3. Multi-Server & Redundancy</h3>
+                    </div>
+                    <div class="p-6 flex flex-col items-center justify-center h-64 bg-slate-100">
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="server-shape transform scale-75">
+                                <div class="server-slot"><div class="server-light"></div></div>
+                            </div>
+                            <div class="server-shape transform scale-75">
+                                <div class="server-slot"><div class="server-light"></div></div>
+                            </div>
+                        </div>
+                        <div class="w-full h-1 bg-slate-400 rounded mb-4"></div>
+                        <div class="flex gap-4">
+                            <div class="db-shape transform scale-75 text-[10px] font-bold">Primary</div>
+                            <div class="db-shape transform scale-75 text-[10px] font-bold opacity-50">Backup</div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-sm text-slate-600">
+                            Uses Load Balancers and Backup Databases. High availability and strong security segmentation.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 3: Front End vs Back End (Doughnut Chart) -->
+        <section id="layers" class="scroll-mt-24">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Text Content -->
+                <div>
+                    <h2 class="text-3xl font-bold text-indigo-900 mb-6">The Full Stack Ecosystem</h2>
+                    <p class="text-lg text-slate-700 mb-6">
+                        A web application is divided into the <strong>Front End</strong> (what you see) and the <strong>Back End</strong> (what processes data).
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-white p-6 rounded-lg shadow border-l-4 border-cyan-400">
+                            <h3 class="text-xl font-bold text-cyan-700 mb-2">Front End (The Trinity)</h3>
+                            <p class="text-slate-600 text-sm mb-3">Runs in the browser. Must be responsive for all devices.</p>
+                            <div class="flex space-x-2">
+                                <span class="bg-orange-100 text-orange-800 text-xs font-bold px-2 py-1 rounded">HTML (Structure)</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded">CSS (Style)</span>
+                                <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded">JS (Logic)</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow border-l-4 border-indigo-600">
+                            <h3 class="text-xl font-bold text-indigo-800 mb-2">Back End (The Engine)</h3>
+                            <p class="text-slate-600 text-sm mb-3">Runs on the server. Handles authentication, databases, and business logic.</p>
+                            <p class="text-xs text-slate-500">Includes: Web Servers (Apache/NGINX), Databases (SQL/NoSQL), and Logic Frameworks.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doughnut Chart -->
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-lg font-semibold text-center mb-4">Technology Landscape</h3>
+                    <div class="chart-container">
+                        <canvas id="stackChart"></canvas>
+                    </div>
+                    <p class="text-center text-xs text-slate-400 mt-4">
+                        *Illustrative representation of the variety of technologies in each layer.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Security Risks (Bar Chart) -->
+        <section id="security" class="scroll-mt-24">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-rose-700 mb-2">The Danger Zone: Security Risks</h2>
+                <p class="text-slate-600">
+                    Web apps are global targets. Attackers look for specific vulnerabilities to steal data or seize control.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Bar Chart -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 ml-4">OWASP Top Vulnerabilities & Impact</h3>
+                    <div class="chart-container" style="max-width: 100%;">
+                        <canvas id="securityChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Context Cards -->
+                <div class="space-y-4">
+                    <div class="bg-rose-50 p-5 rounded-lg border border-rose-100">
+                        <h4 class="font-bold text-rose-800">SQL Injection (SQLi)</h4>
+                        <p class="text-sm text-rose-900 mt-1">
+                            Attackers inject malicious commands into input fields to trick the database into revealing hidden secrets.
+                        </p>
+                    </div>
+                    <div class="bg-indigo-50 p-5 rounded-lg border border-indigo-100">
+                        <h4 class="font-bold text-indigo-800">IDOR</h4>
+                        <p class="text-sm text-indigo-900 mt-1">
+                            Insecure Direct Object Reference. Changing a URL ID (e.g., /user/5 to /user/6) to view someone else's profile.
+                        </p>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-lg border border-slate-200">
+                        <h4 class="font-bold text-slate-800">Broken Access Control</h4>
+                        <p class="text-sm text-slate-600 mt-1">
+                            The #1 vulnerability. Regular users finding ways to access Admin functions due to poor design.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Modern Architecture (Grid) -->
+        <section class="bg-slate-800 text-white p-12 rounded-3xl">
+            <div class="mb-10 text-center">
+                <h2 class="text-3xl font-bold text-cyan-400 mb-4">The Future: Microservices & Serverless</h2>
+                <p class="text-slate-300 max-w-2xl mx-auto">
+                    Moving away from giant "Monolith" apps to agile, independent functions.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Microservice Card 1 -->
+                <div class="bg-slate-700 p-6 rounded-xl border border-slate-600 hover:border-cyan-400 transition-colors">
+                    <div class="h-10 w-10 bg-indigo-500 rounded-lg mb-4 flex items-center justify-center font-bold">A</div>
+                    <h3 class="font-bold text-lg mb-2">User Auth</h3>
+                    <p class="text-sm text-slate-400">Handles logins only. Written in Python.</p>
+                </div>
+                <!-- Microservice Card 2 -->
+                <div class="bg-slate-700 p-6 rounded-xl border border-slate-600 hover:border-cyan-400 transition-colors">
+                    <div class="h-10 w-10 bg-cyan-500 rounded-lg mb-4 flex items-center justify-center font-bold">B</div>
+                    <h3 class="font-bold text-lg mb-2">Payments</h3>
+                    <p class="text-sm text-slate-400">Processes money. Secure. Written in Java.</p>
+                </div>
+                <!-- Microservice Card 3 -->
+                <div class="bg-slate-700 p-6 rounded-xl border border-slate-600 hover:border-cyan-400 transition-colors">
+                    <div class="h-10 w-10 bg-rose-500 rounded-lg mb-4 flex items-center justify-center font-bold">C</div>
+                    <h3 class="font-bold text-lg mb-2">Search</h3>
+                    <p class="text-sm text-slate-400">Fast indexing. Written in Node.js.</p>
+                </div>
+                <!-- Serverless Card -->
+                <div class="bg-gradient-to-br from-indigo-900 to-indigo-800 p-6 rounded-xl border border-indigo-500 shadow-xl">
+                    <h3 class="font-bold text-lg text-cyan-300 mb-2">Serverless</h3>
+                    <p class="text-sm text-slate-300">
+                        No servers to manage. Code runs in stateless containers (like Docker) only when needed. Scalability is automatic.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-400 py-12">
+            <p>Generated for educational purposes based on "Web Application Layout" & "Front End vs Back End" source materials.</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- DATA PREPARATION & HELPERS ---
+        
+        // Helper: Word Wrapping for Labels > 16 chars
+        function splitLabel(label) {
+            if (label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= 16) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // Shared Tooltip Config
+        const tooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- CHART 1: EVOLUTION (Radar) ---
+        const ctxEvolution = document.getElementById('evolutionChart').getContext('2d');
+        const evolutionLabels = ["Interactivity", "Update Speed", "Accessibility", "Hardware Access", "Independence"];
+        
+        new Chart(ctxEvolution, {
+            type: 'radar',
+            data: {
+                labels: evolutionLabels.map(splitLabel),
+                datasets: [
+                    {
+                        label: 'Web 1.0',
+                        data: [1, 1, 4, 0, 5],
+                        fill: true,
+                        backgroundColor: 'rgba(148, 163, 184, 0.2)', // Slate
+                        borderColor: '#94a3b8',
+                        pointBackgroundColor: '#94a3b8',
+                        pointBorderColor: '#fff'
+                    },
+                    {
+                        label: 'Native Apps',
+                        data: [5, 2, 2, 5, 2],
+                        fill: true,
+                        backgroundColor: 'rgba(225, 29, 72, 0.2)', // Rose
+                        borderColor: '#e11d48',
+                        pointBackgroundColor: '#e11d48',
+                        pointBorderColor: '#fff'
+                    },
+                    {
+                        label: 'Web Apps (2.0)',
+                        data: [5, 5, 5, 3, 5],
+                        fill: true,
+                        backgroundColor: 'rgba(6, 182, 212, 0.2)', // Cyan
+                        borderColor: '#06b6d4',
+                        pointBackgroundColor: '#06b6d4',
+                        pointBorderColor: '#fff'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: tooltipConfig
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: '#e2e8f0' },
+                        grid: { color: '#e2e8f0' },
+                        pointLabels: {
+                            font: { size: 12, family: 'sans-serif' },
+                            color: '#475569'
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 5
+                    }
+                }
+            }
+        });
+
+        // --- CHART 2: TECH STACK (Doughnut) ---
+        const ctxStack = document.getElementById('stackChart').getContext('2d');
+        
+        new Chart(ctxStack, {
+            type: 'doughnut',
+            data: {
+                labels: ['HTML/CSS/JS (Front)', 'PHP/Laravel (Back)', 'Python/Django (Back)', 'Java/Spring (Back)', 'Databases (SQL/NoSQL)'],
+                datasets: [{
+                    data: [35, 15, 15, 15, 20], // Illustrative distribution
+                    backgroundColor: [
+                        '#06b6d4', // Cyan (Front)
+                        '#4338ca', // Indigo (Back)
+                        '#6366f1', // Indigo Light
+                        '#3730a3', // Indigo Dark
+                        '#1e293b'  // Slate (DB)
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right' },
+                    tooltip: tooltipConfig
+                }
+            }
+        });
+
+        // --- CHART 3: SECURITY RISKS (Bar) ---
+        const ctxSecurity = document.getElementById('securityChart').getContext('2d');
+        const securityRawLabels = [
+            "Broken Access Control", 
+            "Cryptographic Failures", 
+            "Injection (SQLi/XSS)", 
+            "Insecure Design", 
+            "Security Misconfig"
+        ];
+
+        new Chart(ctxSecurity, {
+            type: 'bar',
+            data: {
+                labels: securityRawLabels.map(splitLabel),
+                datasets: [{
+                    label: 'Risk Impact Score (Illustrative)',
+                    data: [95, 85, 90, 80, 75],
+                    backgroundColor: [
+                        '#be123c', // Deep Rose (High Risk)
+                        '#fb7185',
+                        '#e11d48',
+                        '#f43f5e',
+                        '#fda4af'
+                    ],
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y', // Horizontal Bar
+                plugins: {
+                    legend: { display: false },
+                    tooltip: tooltipConfig
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        beginAtZero: true,
+                        max: 100
+                    },
+                    y: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
+

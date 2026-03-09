@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Proxies: The Security Interceptor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #06b6d4; 
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0891b2; 
+        }
+
+        /* Chart Container - Strict Size Control */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Neon Glow Utility */
+        .text-glow {
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+        
+        .border-glow {
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+        }
+
+        /* Background Pattern */
+        .bg-cyber-grid {
+            background-color: #0f172a;
+            background-image: linear-gradient(rgba(30, 41, 59, 0.5) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(30, 41, 59, 0.5) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+    <!-- 
+        Palette: Cyber Security Neon
+        Background: Slate-900 (#0f172a)
+        Primary: Cyan-500 (#06b6d4)
+        Secondary: Purple-500 (#a855f7)
+        Text: Slate-200 (#e2e8f0)
+        
+        NARRATIVE PLAN:
+        1. Intro: The context of modern apps and backend servers.
+        2. Diagram: HTML/CSS visual of the Proxy MITM architecture.
+        3. Analysis: Bar chart of Proxy Capabilities (Fuzzing, Scanning, etc.).
+        4. Comparison: Radar chart comparing Burp Suite vs ZAP.
+        5. Setup: Timeline of getting started.
+        
+        CONFIRMATION:
+        - NO SVG used.
+        - NO Mermaid JS used.
+        - Chart.js used with canvas.
+        - Label wrapping logic included.
+    -->
+</head>
+<body class="bg-cyber-grid text-slate-200 font-sans antialiased selection:bg-cyan-500 selection:text-white">
+
+    <!-- Header Section -->
+    <header class="w-full py-16 px-4 border-b border-cyan-900/50 bg-slate-900/90 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="inline-block px-3 py-1 mb-4 text-xs font-mono text-cyan-400 border border-cyan-500 rounded-full bg-cyan-900/20">
+                MODULE: WEB APPLICATION SECURITY
+            </div>
+            <h1 class="text-4xl md:text-6xl font-black tracking-tight text-white mb-4 text-glow">
+                WEB PROXIES
+            </h1>
+            <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto">
+                The essential "Man-in-the-Middle" tools for modern penetration testing. Intercept, analyze, and secure the conversation between user and server.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
+
+        <!-- SECTION 1: Architecture Diagram -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="text-3xl font-bold text-cyan-400 mb-4 border-l-4 border-cyan-500 pl-4">How It Works</h2>
+                <p class="text-slate-300 mb-4 text-lg leading-relaxed">
+                    Modern applications don't store everything on your device. They constantly talk to <strong>back-end servers</strong> to process data. To secure these servers, we must test the messages sent to them.
+                </p>
+                <div class="bg-slate-800/50 p-6 rounded-lg border border-slate-700">
+                    <h3 class="text-white font-bold mb-2">The "Man-in-the-Middle"</h3>
+                    <p class="text-sm text-slate-400">
+                        A Web Proxy sits between your browser and the server. It captures <strong>HTTP (Port 80)</strong> and <strong>HTTPS (Port 443)</strong> traffic, allowing you to pause, view, and modify requests before they reach their destination.
+                    </p>
+                </div>
+            </div>
+
+            <!-- HTML/CSS Diagram (No SVG) -->
+            <div class="bg-slate-900 border border-slate-700 rounded-xl p-8 shadow-2xl relative overflow-hidden border-glow">
+                <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 pointer-events-none"></div>
+                
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 relative z-10">
+                    
+                    <!-- Client -->
+                    <div class="flex flex-col items-center text-center w-32">
+                        <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-4xl border-2 border-slate-600 shadow-lg">
+                            💻
+                        </div>
+                        <span class="mt-3 font-mono text-sm text-cyan-300 font-bold">User Device</span>
+                        <span class="text-xs text-slate-500">Browser/Phone</span>
+                    </div>
+
+                    <!-- Arrow 1 -->
+                    <div class="flex-1 flex flex-col items-center">
+                        <span class="text-xs text-slate-400 font-mono mb-1">Request</span>
+                        <div class="h-1 w-full bg-gradient-to-r from-slate-600 via-cyan-500 to-slate-600 rounded"></div>
+                        <span class="text-2xl text-cyan-500 mt-[-14px]">▶</span>
+                    </div>
+
+                    <!-- PROXY -->
+                    <div class="flex flex-col items-center text-center w-40">
+                        <div class="w-20 h-20 bg-slate-900 rounded-lg flex items-center justify-center text-5xl border-2 border-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.3)] z-20">
+                            🛡️
+                        </div>
+                        <span class="mt-3 font-mono text-sm text-white font-bold bg-cyan-900/50 px-2 py-1 rounded">WEB PROXY</span>
+                        <span class="text-xs text-cyan-200 mt-1">Intercept & Edit</span>
+                    </div>
+
+                    <!-- Arrow 2 -->
+                    <div class="flex-1 flex flex-col items-center">
+                        <span class="text-xs text-slate-400 font-mono mb-1">Forward</span>
+                        <div class="h-1 w-full bg-gradient-to-r from-slate-600 via-purple-500 to-slate-600 rounded"></div>
+                        <span class="text-2xl text-purple-500 mt-[-14px]">▶</span>
+                    </div>
+
+                    <!-- Server -->
+                    <div class="flex flex-col items-center text-center w-32">
+                        <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-4xl border-2 border-slate-600 shadow-lg">
+                            🏢
+                        </div>
+                        <span class="mt-3 font-mono text-sm text-purple-300 font-bold">Back-End</span>
+                        <span class="text-xs text-slate-500">Data Center</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Capabilities Chart -->
+        <section class="bg-slate-800/30 rounded-2xl p-6 md:p-10 border border-slate-700">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="md:col-span-1">
+                    <h2 class="text-3xl font-bold text-purple-400 mb-4">Core Utilities</h2>
+                    <p class="text-slate-300 mb-6 text-sm leading-relaxed">
+                        Beyond just "catching" messages, proxies are versatile toolkits. They automate the finding of security holes ("Scanning"), send massive amounts of random data to break things ("Fuzzing"), and map out the entire structure of a website.
+                    </p>
+                    <ul class="space-y-3 text-sm text-slate-400">
+                        <li class="flex items-center"><span class="w-2 h-2 bg-cyan-500 rounded-full mr-2"></span> <strong>Interception:</strong> Manual editing of data.</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span> <strong>Fuzzing:</strong> Stress testing inputs.</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-pink-500 rounded-full mr-2"></span> <strong>Crawling:</strong> Finding all pages.</li>
+                    </ul>
+                </div>
+                <div class="md:col-span-2 flex flex-col items-center justify-center">
+                    <div class="chart-container">
+                        <canvas id="capabilitiesChart"></canvas>
+                    </div>
+                    <p class="text-center text-xs text-slate-500 mt-4">
+                        Estimated utility frequency in a standard Web Penetration Test.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Burp vs ZAP Comparison -->
+        <section>
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">The Tool Comparison</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">
+                    The two industry titans: <strong>Burp Suite</strong> (The Standard) vs. <strong>OWASP ZAP</strong> (The Open Source Challenger). Which one should you choose?
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                
+                <!-- Tool Cards -->
+                <div class="space-y-6">
+                    <!-- Burp Card -->
+                    <div class="bg-slate-800 border-l-4 border-cyan-500 p-6 rounded-r-xl shadow-lg relative overflow-hidden group">
+                        <div class="absolute right-0 top-0 text-9xl font-black text-slate-700 opacity-10 -mr-4 -mt-4 group-hover:opacity-20 transition-opacity select-none">B</div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Burp Suite</h3>
+                        <div class="flex gap-2 mb-4">
+                            <span class="px-2 py-1 bg-cyan-900 text-cyan-300 text-xs rounded font-bold">Industry Standard</span>
+                            <span class="px-2 py-1 bg-slate-700 text-slate-300 text-xs rounded">Paid Pro Version</span>
+                        </div>
+                        <p class="text-slate-400 text-sm mb-4">
+                            Excellent UI and a built-in browser. The Community version is powerful but throttled. The Pro version unlocks automation.
+                        </p>
+                        <div class="text-xs font-mono text-cyan-400">
+                            > best_for: "Advanced Corporate Pentesters"
+                        </div>
+                    </div>
+
+                    <!-- ZAP Card -->
+                    <div class="bg-slate-800 border-l-4 border-purple-500 p-6 rounded-r-xl shadow-lg relative overflow-hidden group">
+                        <div class="absolute right-0 top-0 text-9xl font-black text-slate-700 opacity-10 -mr-4 -mt-4 group-hover:opacity-20 transition-opacity select-none">Z</div>
+                        <h3 class="text-2xl font-bold text-white mb-2">OWASP ZAP</h3>
+                        <div class="flex gap-2 mb-4">
+                            <span class="px-2 py-1 bg-purple-900 text-purple-300 text-xs rounded font-bold">Open Source</span>
+                            <span class="px-2 py-1 bg-green-900 text-green-300 text-xs rounded">100% Free</span>
+                        </div>
+                        <p class="text-slate-400 text-sm mb-4">
+                            No paywalls, no throttling, and growing fast. Community-driven updates bring "Pro" features to everyone for free.
+                        </p>
+                        <div class="text-xs font-mono text-purple-400">
+                            > best_for: "Students & Budget-Conscious Pros"
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Radar Chart -->
+                <div class="bg-slate-800/50 rounded-2xl p-4 border border-slate-700 flex flex-col justify-center">
+                    <h4 class="text-center text-white font-bold mb-4">Feature & Usage Analysis</h4>
+                    <div class="chart-container">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Setup Workflow -->
+        <section class="border-t border-slate-800 pt-16">
+            <h2 class="text-3xl font-bold text-white mb-10 text-center">Initialization Workflow</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Step 1 -->
+                <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 hover:border-cyan-500 transition-colors">
+                    <div class="text-4xl mb-4">💾</div>
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2">1. Install</h3>
+                    <p class="text-sm text-slate-400 mb-3">
+                        Download the installer or use the universal JAR file if you have Java installed.
+                    </p>
+                    <code class="block bg-black p-2 rounded text-xs font-mono text-green-400">
+                        $ java -jar burpsuite.jar
+                    </code>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 hover:border-purple-500 transition-colors">
+                    <div class="text-4xl mb-4">📂</div>
+                    <h3 class="text-xl font-bold text-purple-400 mb-2">2. Project</h3>
+                    <p class="text-sm text-slate-400">
+                        <strong>Burp Free:</strong> Temporary projects only (no saving).<br>
+                        <strong>ZAP:</strong> Option to persist session to disk immediately.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 hover:border-pink-500 transition-colors">
+                    <div class="text-4xl mb-4">⚙️</div>
+                    <h3 class="text-xl font-bold text-pink-400 mb-2">3. Config</h3>
+                    <p class="text-sm text-slate-400 mb-3">
+                        Use "Default Configurations" to start. Set UI to "Dark Mode" for better ergonomics.
+                    </p>
+                    <div class="w-full h-2 bg-slate-700 rounded-full mt-2 overflow-hidden">
+                        <div class="h-full bg-pink-500 w-2/3"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-800 py-8 mt-12 text-center text-slate-600 text-sm">
+        <p>Infographic generated based on "Simplified Guide to Web Proxies" module.</p>
+    </footer>
+
+    <script>
+        // --- UTILITY: Label Wrapping Logic (16 char limit) ---
+        function formatLabels(labels) {
+            return labels.map(label => {
+                if (label.length > 16) {
+                    const words = label.split(' ');
+                    const lines = [];
+                    let currentLine = words[0];
+
+                    for (let i = 1; i < words.length; i++) {
+                        if ((currentLine + " " + words[i]).length <= 16) {
+                            currentLine += " " + words[i];
+                        } else {
+                            lines.push(currentLine);
+                            currentLine = words[i];
+                        }
+                    }
+                    lines.push(currentLine);
+                    return lines;
+                }
+                return label;
+            });
+        }
+
+        // --- CHART DEFAULTS ---
+        Chart.defaults.color = '#94a3b8'; // slate-400
+        Chart.defaults.borderColor = '#1e293b'; // slate-800
+        Chart.defaults.font.family = 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+
+        // Mandatory Tooltip Configuration
+        const commonTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            },
+            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+            titleColor: '#22d3ee', // cyan-400
+            bodyColor: '#e2e8f0',
+            borderColor: '#06b6d4',
+            borderWidth: 1,
+            padding: 12,
+            cornerRadius: 6,
+            displayColors: true
+        };
+
+        // --- CHART 1: Capabilities (Horizontal Bar) ---
+        const ctxCapabilities = document.getElementById('capabilitiesChart').getContext('2d');
+        const capLabels = [
+            'Request Interception', 
+            'Vulnerability Scanning', 
+            'Web Fuzzing', 
+            'Site Mapping', 
+            'Configuration Testing'
+        ];
+        
+        new Chart(ctxCapabilities, {
+            type: 'bar',
+            data: {
+                labels: formatLabels(capLabels),
+                datasets: [{
+                    label: 'Workflow Relevance Score',
+                    data: [100, 85, 80, 70, 60], // Based on importance described in text
+                    backgroundColor: [
+                        'rgba(6, 182, 212, 0.8)', // Cyan
+                        'rgba(168, 85, 247, 0.8)', // Purple
+                        'rgba(236, 72, 153, 0.8)', // Pink
+                        'rgba(6, 182, 212, 0.5)',
+                        'rgba(168, 85, 247, 0.5)'
+                    ],
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Horizontal
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: '#334155' },
+                        ticks: { display: false } // Clean look
+                    },
+                    y: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+
+        // --- CHART 2: Comparison (Radar) ---
+        const ctxComparison = document.getElementById('comparisonChart').getContext('2d');
+        const compLabels = [
+            'Free Features', 
+            'Speed (Unpaid)', 
+            'User Interface', 
+            'Industry Adoption', 
+            'Automation (Free)'
+        ];
+
+        new Chart(ctxComparison, {
+            type: 'radar',
+            data: {
+                labels: formatLabels(compLabels),
+                datasets: [
+                    {
+                        label: 'Burp Suite',
+                        data: [5, 4, 10, 10, 3], // High UI/Industry, Low Free Speed/Auto
+                        backgroundColor: 'rgba(6, 182, 212, 0.2)', // Cyan transparent
+                        borderColor: '#06b6d4',
+                        pointBackgroundColor: '#06b6d4',
+                        pointBorderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'OWASP ZAP',
+                        data: [10, 10, 7, 6, 10], // High Free/Speed/Auto, Lower UI/Industry
+                        backgroundColor: 'rgba(168, 85, 247, 0.2)', // Purple transparent
+                        borderColor: '#a855f7',
+                        pointBackgroundColor: '#a855f7',
+                        pointBorderColor: '#fff',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: '#475569' },
+                        grid: { color: '#334155' },
+                        pointLabels: {
+                            color: '#e2e8f0',
+                            font: { size: 11, weight: 'bold' }
+                        },
+                        ticks: { display: false, backdropColor: 'transparent' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#cbd5e1' }
+                    },
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+    </script>
+</body>
+</html>

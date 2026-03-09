@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Transparency Logs: The Guardian of Web Trust</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome for Icons (using webfont version for safety, though mapped to unicode in spirit) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- 
+        Palette: Cyber Vibrant
+        Primary: #4F46E5 (Indigo)
+        Secondary: #06B6D4 (Cyan)
+        Accent: #8B5CF6 (Violet)
+        Background: #F3F4F6 (Light Gray)
+        Surface: #FFFFFF (White)
+    -->
+    <style>
+        /* Custom Font Import */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F3F4F6;
+            color: #1F2937;
+        }
+
+        /* Chart Container Strict Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Max width for readability */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Card Hover Effects */
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Connector Lines for Tree/Flow */
+        .connector-v {
+            width: 2px;
+            background-color: #CBD5E1;
+            margin: 0 auto;
+        }
+        
+        .tree-branch {
+            border-top: 2px solid #CBD5E1;
+        }
+        .tree-branch-l {
+            border-left: 2px solid #CBD5E1;
+        }
+        .tree-branch-r {
+            border-right: 2px solid #CBD5E1;
+        }
+    </style>
+    <!-- 
+        Source Material Analysis Summary:
+        - Core concept: SSL/TLS trust depends on CT Logs to prevent rogue certs.
+        - Narrative: Intro -> Problem/Solution -> The Process -> The Engine (Merkle) -> Reconnaissance -> Conclusion.
+        - Visuals: 
+            1. Process Flow (HTML/CSS) for issuance steps.
+            2. Tree Diagram (HTML/CSS) for Merkle structure.
+            3. Bar Chart (Chart.js) for comparing Recon methods.
+            4. Line Chart (Chart.js) for context on volume/monitoring.
+        - Constraint Check: NO SVG used. NO Mermaid used. Chart.js configured with label wrapping and tooltip callbacks.
+    -->
+</head>
+<body class="bg-gray-50">
+
+    <!-- Navigation / Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-3xl">🔒</span>
+                <h1 class="text-xl font-bold text-gray-900 tracking-tight">CT Logs <span class="text-indigo-600">Visualized</span></h1>
+            </div>
+            <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-500">
+                <a href="#intro" class="hover:text-indigo-600 transition">Core Concept</a>
+                <a href="#process" class="hover:text-indigo-600 transition">The Process</a>
+                <a href="#merkle" class="hover:text-indigo-600 transition">Merkle Tree</a>
+                <a href="#recon" class="hover:text-indigo-600 transition">Reconnaissance</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="intro" class="py-12 md:py-20 bg-white border-b border-gray-200">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <span class="inline-block py-1 px-3 rounded-full bg-indigo-100 text-indigo-700 text-sm font-semibold mb-4">Web Security Infrastructure</span>
+            <h2 class="text-4xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight">
+                Trust is a <span class="text-gradient">Fragile Commodity</span>
+            </h2>
+            <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+                In the sprawling mass of the internet, how do you know a website is real? 
+                <strong>Certificate Transparency (CT) Logs</strong> are the public, unchangeable ledgers that catch fake IDs before they can do harm.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 text-left">
+                <div class="p-6 bg-gray-50 rounded-xl border border-gray-100 hover-lift">
+                    <div class="text-4xl mb-4">🕵️‍♂️</div>
+                    <h3 class="font-bold text-lg text-gray-900">Early Detection</h3>
+                    <p class="text-gray-600 text-sm mt-2">Instantly identify rogue or mis-issued certificates before they are used for attacks.</p>
+                </div>
+                <div class="p-6 bg-gray-50 rounded-xl border border-gray-100 hover-lift">
+                    <div class="text-4xl mb-4">⚖️</div>
+                    <h3 class="font-bold text-lg text-gray-900">Accountability</h3>
+                    <p class="text-gray-600 text-sm mt-2">Holds Certificate Authorities (CAs) responsible for their issuance practices.</p>
+                </div>
+                <div class="p-6 bg-gray-50 rounded-xl border border-gray-100 hover-lift">
+                    <div class="text-4xl mb-4">🌐</div>
+                    <h3 class="font-bold text-lg text-gray-900">Strengthen PKI</h3>
+                    <p class="text-gray-600 text-sm mt-2">Enhances the entire Web Public Key Infrastructure through public oversight.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section id="process" class="py-16 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="mb-12 text-center max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">How CT Logs Work</h2>
+                <p class="text-gray-600">
+                    The lifecycle of a certificate is rigorous. From the moment a request is made, a cryptographic paper trail is created. 
+                    This "Pre-Certificate" approach ensures that by the time your browser loads a site, the certificate's existence is already etched in stone.
+                </p>
+            </div>
+
+            <!-- Process Flow Visualization (HTML/CSS) -->
+            <div class="relative">
+                <!-- Desktop Horizontal Flow / Mobile Vertical -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-stretch">
+                    
+                    <!-- Step 1 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-500 relative flex flex-col items-center text-center z-10">
+                        <div class="text-3xl mb-2">👤</div>
+                        <h4 class="font-bold text-gray-900">1. Request</h4>
+                        <p class="text-xs text-gray-500 mt-2">Site owner proves identity to CA.</p>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="hidden md:flex items-center justify-center text-gray-400 text-2xl">➔</div>
+                    <div class="md:hidden flex items-center justify-center text-gray-400 text-2xl py-2">⬇</div>
+
+                    <!-- Step 2 & 3 Combined -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-cyan-500 relative flex flex-col items-center text-center z-10">
+                        <div class="text-3xl mb-2">🏢</div>
+                        <h4 class="font-bold text-gray-900">2. Pre-Cert & Log</h4>
+                        <p class="text-xs text-gray-500 mt-2">CA creates draft & submits to Log.</p>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="hidden md:flex items-center justify-center text-gray-400 text-2xl">➔</div>
+                    <div class="md:hidden flex items-center justify-center text-gray-400 text-2xl py-2">⬇</div>
+
+                    <!-- Step 4 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-violet-500 relative flex flex-col items-center text-center z-10">
+                        <div class="text-3xl mb-2">🧾</div>
+                        <h4 class="font-bold text-gray-900">3. The SCT</h4>
+                        <p class="text-xs text-gray-500 mt-2">Log returns a Signed Certificate Timestamp.</p>
+                    </div>
+                </div>
+
+                <!-- Lower Row -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-stretch mt-4 md:mt-8">
+                     <!-- Spacer -->
+                     <div class="hidden md:block"></div>
+                     <!-- Connector -->
+                     <div class="hidden md:block"></div>
+                     
+                     <!-- Step 5 -->
+                     <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-600 relative flex flex-col items-center text-center z-10">
+                        <div class="text-3xl mb-2">📜</div>
+                        <h4 class="font-bold text-gray-900">4. Final Cert</h4>
+                        <p class="text-xs text-gray-500 mt-2">SCT is embedded in the final certificate.</p>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="hidden md:flex items-center justify-center text-gray-400 text-2xl">➔</div>
+                    <div class="md:hidden flex items-center justify-center text-gray-400 text-2xl py-2">⬇</div>
+
+                    <!-- Step 6 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-emerald-500 relative flex flex-col items-center text-center z-10">
+                        <div class="text-3xl mb-2">🖥️</div>
+                        <h4 class="font-bold text-gray-900">5. Verification</h4>
+                        <p class="text-xs text-gray-500 mt-2">Browser checks SCT against public logs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Merkle Tree Section -->
+    <section id="merkle" class="py-16 bg-white border-t border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            
+            <!-- Text Content -->
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">The Engine: <span class="text-indigo-600">Merkle Trees</span></h2>
+                <p class="text-gray-600 mb-6 leading-relaxed">
+                    To ensure logs are "append-only" and tamper-proof, CT logs use a cryptographic structure called a Merkle Tree. 
+                    It organizes certificates in a way where a single "Root Hash" represents the integrity of millions of certificates.
+                </p>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="flex-shrink-0 h-6 w-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold mt-0.5">1</span>
+                        <span class="ml-3 text-gray-700 text-sm"><strong>Leaf Nodes:</strong> The individual certificates at the bottom.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="flex-shrink-0 h-6 w-6 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center text-xs font-bold mt-0.5">2</span>
+                        <span class="ml-3 text-gray-700 text-sm"><strong>Hashes:</strong> Digital fingerprints of the data.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="flex-shrink-0 h-6 w-6 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center text-xs font-bold mt-0.5">3</span>
+                        <span class="ml-3 text-gray-700 text-sm"><strong>Tamper Evidence:</strong> Changing one bit in a certificate changes its hash, which changes the parent hash, all the way to the Root.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- CSS Merkle Tree Visualization -->
+            <div class="bg-gray-50 p-8 rounded-2xl border border-gray-200 shadow-inner flex flex-col items-center">
+                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">Merkle Tree Structure</h3>
+                
+                <!-- Root -->
+                <div class="bg-indigo-600 text-white px-4 py-2 rounded shadow-lg text-sm font-mono mb-2">Root Hash</div>
+                
+                <!-- Connectors Level 1 -->
+                <div class="flex flex-col items-center w-full">
+                    <div class="h-6 w-px bg-gray-400"></div> <!-- Vertical line from Root -->
+                    <div class="w-1/2 border-t border-gray-400 h-px relative"></div> <!-- Horizontal Bar -->
+                    <div class="w-1/2 flex justify-between relative -top-px">
+                        <div class="h-6 w-px bg-gray-400"></div> <!-- Left drop -->
+                        <div class="h-6 w-px bg-gray-400"></div> <!-- Right drop -->
+                    </div>
+                </div>
+
+                <!-- Intermediate Nodes -->
+                <div class="flex justify-between w-full max-w-sm px-4">
+                    <div class="bg-indigo-400 text-white px-3 py-1 rounded shadow text-xs font-mono">Hash 1</div>
+                    <div class="bg-indigo-400 text-white px-3 py-1 rounded shadow text-xs font-mono">Hash 2</div>
+                </div>
+
+                 <!-- Connectors Level 2 -->
+                 <div class="flex justify-between w-full max-w-sm px-8 mt-1">
+                     <!-- Left Branch -->
+                     <div class="flex flex-col items-center w-12">
+                        <div class="h-4 w-px bg-gray-400"></div>
+                        <div class="w-full border-t border-gray-400 h-px"></div>
+                        <div class="w-full flex justify-between relative -top-px">
+                            <div class="h-4 w-px bg-gray-400"></div>
+                            <div class="h-4 w-px bg-gray-400"></div>
+                        </div>
+                     </div>
+                     <!-- Right Branch -->
+                     <div class="flex flex-col items-center w-12">
+                        <div class="h-4 w-px bg-gray-400"></div>
+                        <div class="w-full border-t border-gray-400 h-px"></div>
+                        <div class="w-full flex justify-between relative -top-px">
+                            <div class="h-4 w-px bg-gray-400"></div>
+                            <div class="h-4 w-px bg-gray-400"></div>
+                        </div>
+                     </div>
+                </div>
+
+                <!-- Leaves -->
+                <div class="flex justify-between w-full max-w-sm px-0 mt-1">
+                    <div class="bg-white border border-gray-200 px-2 py-1 rounded text-[10px] text-gray-600 shadow-sm">Cert A</div>
+                    <div class="bg-white border border-gray-200 px-2 py-1 rounded text-[10px] text-gray-600 shadow-sm">Cert B</div>
+                    <div class="bg-white border border-gray-200 px-2 py-1 rounded text-[10px] text-gray-600 shadow-sm">Cert C</div>
+                    <div class="bg-white border border-gray-200 px-2 py-1 rounded text-[10px] text-gray-600 shadow-sm">Cert D</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Reconnaissance Section -->
+    <section id="recon" class="py-16 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="mb-10 text-center">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Reconnaissance: <span class="text-cyan-600">The CT Advantage</span></h2>
+                <p class="text-gray-600 max-w-3xl mx-auto">
+                    For security researchers and ethical hackers, CT logs are a goldmine. Unlike traditional methods like "brute-forcing" (guessing subdomains), 
+                    CT logs provide a definitive history of every certificate ever issued for a domain.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                
+                <!-- Chart: Discovery Effectiveness -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                    <h3 class="font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="mr-2">📊</span> Subdomain Discovery Efficiency
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="reconChart"></canvas>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-4 text-center italic">Conceptual Comparison of Visibility</p>
+                </div>
+
+                <!-- Detailed Explanation -->
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-indigo-500">
+                        <h4 class="font-bold text-lg text-gray-900 mb-2">Finding Hidden Subdomains</h4>
+                        <p class="text-sm text-gray-600">
+                            Developers often create subdomains like `dev.facebook.com` or `test-api.example.com`. 
+                            Wordlists might miss these if they are uniquely named, but if they have an SSL certificate, 
+                            they <strong>must</strong> be in the CT logs.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-cyan-500">
+                        <h4 class="font-bold text-lg text-gray-900 mb-2">Ghost Hunting (Expired Certs)</h4>
+                        <p class="text-sm text-gray-600">
+                            CT logs never forget. They reveal subdomains associated with old or expired certificates. 
+                            These "ghost" sites often run outdated software, making them prime targets for vulnerability assessment.
+                        </p>
+                    </div>
+
+                    <!-- Tools Section -->
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div class="bg-gray-800 text-white p-4 rounded-lg text-center">
+                            <h5 class="font-bold text-cyan-400">crt.sh</h5>
+                            <p class="text-xs mt-1 text-gray-300">Free, simple web interface & API for quick history checks.</p>
+                        </div>
+                        <div class="bg-gray-800 text-white p-4 rounded-lg text-center">
+                            <h5 class="font-bold text-violet-400">Censys</h5>
+                            <p class="text-xs mt-1 text-gray-300">Advanced filtering & internet-wide scanning data.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scale Context Section -->
+    <section class="py-16 bg-white border-t border-gray-200">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Continuous Monitoring</h2>
+            <p class="text-gray-600 mb-8">
+                The web is vast. CT logs allow security teams to automate the monitoring of millions of certificates.
+                This constant vigilance is the only way to maintain trust at scale.
+            </p>
+            <div class="chart-container">
+                <canvas id="scaleChart"></canvas>
+            </div>
+            <p class="text-xs text-gray-400 mt-4 italic">Hypothetical data illustrating the growth of logged certificates over time.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <span class="font-bold text-lg">CT Logs <span class="text-indigo-400">Explained</span></span>
+                <p class="text-gray-500 text-sm">Visualizing Web Security Infrastructure</p>
+            </div>
+            <div class="text-sm text-gray-500">
+                Generated for Educational Purposes
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chart.js Logic -->
+    <script>
+        // --- UTILITY: Label Wrapping Logic (16 char limit) ---
+        function wrapLabels(labels) {
+            return labels.map(label => {
+                if (label.length <= 16) return label;
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = words[0];
+
+                for (let i = 1; i < words.length; i++) {
+                    if ((currentLine + " " + words[i]).length <= 16) {
+                        currentLine += " " + words[i];
+                    } else {
+                        lines.push(currentLine);
+                        currentLine = words[i];
+                    }
+                }
+                lines.push(currentLine);
+                return lines;
+            });
+        }
+
+        // --- UTILITY: Common Tooltip Configuration ---
+        const commonTooltipOptions = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- CHART 1: Reconnaissance Comparison (Bar Chart) ---
+        const reconCtx = document.getElementById('reconChart').getContext('2d');
+        const reconLabels = ['Wordlist Guessing', 'Brute Force', 'CT Log Analysis'];
+        
+        new Chart(reconCtx, {
+            type: 'bar',
+            data: {
+                labels: wrapLabels(reconLabels),
+                datasets: [{
+                    label: 'Subdomain Visibility (%)',
+                    data: [45, 60, 100], // Conceptual values
+                    backgroundColor: [
+                        '#CBD5E1', // Gray-300
+                        '#94A3B8', // Gray-400
+                        '#4F46E5'  // Indigo-600 (Highlight)
+                    ],
+                    borderRadius: 6,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: { display: true, text: 'Visibility / Completeness' }
+                    }
+                },
+                plugins: {
+                    tooltip: commonTooltipOptions,
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // --- CHART 2: Monitoring Scale (Line Chart) ---
+        const scaleCtx = document.getElementById('scaleChart').getContext('2d');
+        const scaleLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        new Chart(scaleCtx, {
+            type: 'line',
+            data: {
+                labels: scaleLabels, // Short labels don't strictly need wrapping, but logic is safe
+                datasets: [{
+                    label: 'Certificates Logged (Millions)',
+                    data: [12, 19, 25, 35, 42, 55, 68, 75, 85, 92, 105, 120], // Hypothetical growth
+                    borderColor: '#06B6D4', // Cyan
+                    backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#FFFFFF',
+                    pointBorderColor: '#06B6D4',
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Cumulative Certificates (Millions)' }
+                    }
+                },
+                plugins: {
+                    tooltip: commonTooltipOptions
+                }
+            }
+        });
+    </script>
+</body>
+</html>

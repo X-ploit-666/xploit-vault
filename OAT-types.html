@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OWASP Automated Threats (OAT) Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+    <!-- CONFIRMATION: NEITHER Mermaid JS NOR SVG were used anywhere in the output. -->
+    <!-- PALETTE: Vibrant Tech (#2563EB, #7C3AED, #F59E0B, #10B981, #EF4444) -->
+    <!-- PLAN: 1. Header with Big Numbers. 2. Data Overview (Donut Chart for Composition). 3. Threat Volume Comparison (Bar Chart). 4. In-Depth CSS Grid Analysis of Subsets. -->
+    <!-- CHOICES: 
+         Data Point: Threat Subsets -> Goal: Compare Composition -> Vis: Donut Chart -> Justification: Chart.js Canvas Donut easily shows the proportion of threat types in each subset. NO SVG.
+         Data Point: Threat Counts -> Goal: Compare Volumes -> Vis: Bar Chart -> Justification: Chart.js Canvas Bar clearly contrasts the raw number of threats across categories. NO SVG.
+    -->
+
+    <nav class="bg-indigo-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <span class="font-bold text-xl tracking-wider">🛡️ OAT DEFENSE MATRIX</span>
+                <span class="text-sm font-light hidden sm:block">Automated Threat Analysis Dashboard</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The Landscape of Automated Web Threats</h1>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto">
+                Modern cyber attacks aren't always about breaking code. The OWASP Automated Threat (OAT) handbook focuses on the <strong>abuse of functionality</strong>—where business logic is weaponized at scale by automated bots. Explore the 19 core threats below.
+            </p>
+        </header>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <div class="bg-white rounded-2xl shadow-lg p-8 border-t-4 border-blue-600 flex flex-col items-center justify-center text-center">
+                <div class="text-6xl mb-4">🤖</div>
+                <h2 class="text-7xl font-black text-blue-600 mb-2">19</h2>
+                <p class="text-xl font-semibold text-slate-700">Core Automated Threats</p>
+                <p class="text-sm text-slate-500 mt-2">Distinct attack patterns identified by OWASP that target valid application features.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-8 border-t-4 border-purple-600 flex flex-col items-center justify-center text-center">
+                <div class="text-6xl mb-4">📂</div>
+                <h2 class="text-7xl font-black text-purple-600 mb-2">5</h2>
+                <p class="text-xl font-semibold text-slate-700">Target Subsets</p>
+                <p class="text-sm text-slate-500 mt-2">Logical groupings based on the target asset, from credentials to physical inventory.</p>
+            </div>
+        </section>
+
+        <div class="mb-12">
+            <p class="text-lg text-slate-700 leading-relaxed bg-white p-6 rounded-xl shadow-sm border-l-4 border-amber-500">
+                <strong>Data Overview:</strong> To mount an effective defense, security teams must understand where bots focus their efforts. The charts below break down the distribution and volume of the 19 OAT classifications. Note how threats are widely distributed, requiring holistic rather than point-specific defensive strategies.
+            </p>
+        </div>
+
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+            <div class="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-amber-500">
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">Threat Composition</h3>
+                <p class="text-slate-600 mb-6 text-sm">Distribution of the 19 OATs across the 5 primary defense subsets.</p>
+                <div class="chart-container">
+                    <canvas id="donutChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-emerald-500">
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">Threat Volume by Category</h3>
+                <p class="text-slate-600 mb-6 text-sm">Comparing the raw number of distinct attack types targeting each logical domain.</p>
+                <div class="chart-container">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <div class="mb-8">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-4">In-Depth Analysis: The 5 OAT Subsets</h2>
+                <p class="text-lg text-slate-700">
+                    Below is a detailed breakdown of each automated threat subset. By mapping these threats, security analysts can better tune rate limiting, CAPTCHA challenges, and behavioral analytics.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <div class="bg-white rounded-2xl shadow-md p-6 border-l-4 border-blue-600 hover:shadow-xl transition-shadow">
+                    <div class="text-4xl mb-4">👤</div>
+                    <h4 class="text-xl font-bold text-blue-700 mb-2">Account & Identity</h4>
+                    <p class="text-sm text-slate-600 mb-4">Abuse of login, registration, and profile management systems.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-007</span>
+                            <span class="text-sm text-slate-600">Credential Cracking</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-008</span>
+                            <span class="text-sm text-slate-600">Credential Stuffing</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-019</span>
+                            <span class="text-sm text-slate-600">Account Creation</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-020</span>
+                            <span class="text-sm text-slate-600">Account Aggregation</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-md p-6 border-l-4 border-emerald-600 hover:shadow-xl transition-shadow">
+                    <div class="text-4xl mb-4">💳</div>
+                    <h4 class="text-xl font-bold text-emerald-700 mb-2">Payment & Carding</h4>
+                    <p class="text-sm text-slate-600 mb-4">Attacking the checkout, credit card forms, and financial data.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-001</span>
+                            <span class="text-sm text-slate-600">Carding</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-010</span>
+                            <span class="text-sm text-slate-600">Card Cracking</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-012</span>
+                            <span class="text-sm text-slate-600">Cashing Out</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-md p-6 border-l-4 border-purple-600 hover:shadow-xl transition-shadow">
+                    <div class="text-4xl mb-4">🔍</div>
+                    <h4 class="text-xl font-bold text-purple-700 mb-2">Discovery & Vulnerability</h4>
+                    <p class="text-sm text-slate-600 mb-4">Probing the application to see how it's built and where it's weak.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-004</span>
+                            <span class="text-sm text-slate-600">Fingerprinting</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-018</span>
+                            <span class="text-sm text-slate-600">Footprinting</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-014</span>
+                            <span class="text-sm text-slate-600">Vulnerability Scanning</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-md p-6 border-l-4 border-amber-600 hover:shadow-xl transition-shadow">
+                    <div class="text-4xl mb-4">📦</div>
+                    <h4 class="text-xl font-bold text-amber-700 mb-2">Inventory & Content Abuse</h4>
+                    <p class="text-sm text-slate-600 mb-4">Stealing data or manipulating the stuff the website sells or displays.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-005</span>
+                            <span class="text-sm text-slate-600">Scalping</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-011</span>
+                            <span class="text-sm text-slate-600">Scraping</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-013</span>
+                            <span class="text-sm text-slate-600">Sniping</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-017</span>
+                            <span class="text-sm text-slate-600">Spamming</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-md p-6 border-l-4 border-red-600 hover:shadow-xl transition-shadow md:col-span-2 lg:col-span-1">
+                    <div class="text-4xl mb-4">📈</div>
+                    <h4 class="text-xl font-bold text-red-700 mb-2">Metric & Process Manipulation</h4>
+                    <p class="text-sm text-slate-600 mb-4">Messing with the site's numbers or cheating the system logic.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-002</span>
+                            <span class="text-sm text-slate-600">Token Cracking</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-003</span>
+                            <span class="text-sm text-slate-600">Ad Fraud</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-006</span>
+                            <span class="text-sm text-slate-600">Expediting</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-015</span>
+                            <span class="text-sm text-slate-600">Denial of Service</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-slate-800 mr-2">OAT-016</span>
+                            <span class="text-sm text-slate-600">Skewing</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-indigo-900 text-white rounded-2xl shadow-xl p-8 text-center mt-12">
+            <h2 class="text-3xl font-bold mb-4">Future Outlook & Conclusion</h2>
+            <p class="text-indigo-200 max-w-4xl mx-auto leading-relaxed">
+                As defensive perimeters harden against traditional injection attacks, adversaries increasingly rely on automation to abuse intended functionality. Understanding the 19 OWASP Automated Threats ensures that your bug bounty hunting and security architecture are aligned with modern attack patterns. Stop looking just for bugs, and start looking for business logic flaws.
+            </p>
+        </section>
+
+    </main>
+
+    <script>
+        const wrapLabel = (label) => {
+            if (label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let cur = '';
+            words.forEach(w => {
+                if ((cur + w).length > 16) {
+                    if (cur) lines.push(cur.trim());
+                    cur = w + ' ';
+                } else {
+                    cur += w + ' ';
+                }
+            });
+            if (cur) lines.push(cur.trim());
+            return lines;
+        };
+
+        const rawCategories = [
+            "Account & Identity Threats",
+            "Payment & Carding Threats",
+            "Discovery & Vulnerability",
+            "Inventory & Content Abuse",
+            "Metric & Process Manipulation"
+        ];
+        
+        const chartLabels = rawCategories.map(wrapLabel);
+        const chartData = [4, 3, 3, 4, 5];
+        const chartColors = ['#2563EB', '#10B981', '#7C3AED', '#F59E0B', '#EF4444'];
+
+        const commonTooltipConfig = {
+            tooltip: {
+                callbacks: {
+                    title: function(items) {
+                        const item = items[0];
+                        let label = item.chart.data.labels[item.dataIndex];
+                        if (Array.isArray(label)) {
+                            return label.join(' ');
+                        } else {
+                            return label;
+                        }
+                    }
+                }
+            }
+        };
+
+        const donutCtx = document.getElementById('donutChart').getContext('2d');
+        new Chart(donutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    data: chartData,
+                    backgroundColor: chartColors,
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: { family: 'Inter', size: 11 }
+                        }
+                    },
+                    ...commonTooltipConfig
+                }
+            }
+        });
+
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Number of Specific Threats',
+                    data: chartData,
+                    backgroundColor: chartColors,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1, font: { family: 'Inter' } }
+                    },
+                    x: {
+                        ticks: { font: { family: 'Inter', size: 10 } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    ...commonTooltipConfig
+                }
+            }
+        });
+    </script>
+</body>
+</html>

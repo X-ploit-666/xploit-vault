@@ -1,0 +1,5 @@
+# This directory is a Syncthing folder marker.
+# Do not delete.
+
+folderID: Xploit-Vault
+created: 2026-03-09T00:20:18-04:00

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML System Decoded</title>
+    <style>
+        /* === CORE HACKER THEME === */
+        :root {
+            --bg-color: #050505;
+            --neon-green: #00ff33;
+            --neon-cyan: #00e5ff;
+            --neon-red: #ff003c;
+            --dim-green: rgba(0, 255, 51, 0.2);
+            --font-main: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--neon-green);
+            font-family: var(--font-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* === TYPOGRAPHY & GLITCH EFFECTS === */
+        h1, h2, h3 {
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--neon-cyan);
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+
+        .ascii-art {
+            white-space: pre;
+            color: var(--neon-green);
+            text-shadow: 0 0 5px var(--neon-green);
+            text-align: center;
+            font-size: clamp(10px, 1.5vw, 16px);
+            margin-bottom: 30px;
+        }
+
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--neon-red);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 var(--neon-cyan);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 44px, 0); }
+            20% { clip: rect(80px, 9999px, 90px, 0); }
+            40% { clip: rect(20px, 9999px, 30px, 0); }
+            60% { clip: rect(60px, 9999px, 70px, 0); }
+            80% { clip: rect(5px, 9999px, 15px, 0); }
+            100% { clip: rect(40px, 9999px, 50px, 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            20% { clip: rect(10px, 9999px, 30px, 0); }
+            40% { clip: rect(45px, 9999px, 60px, 0); }
+            60% { clip: rect(85px, 9999px, 95px, 0); }
+            80% { clip: rect(20px, 9999px, 40px, 0); }
+            100% { clip: rect(50px, 9999px, 70px, 0); }
+        }
+
+        /* === LAYOUT & CONTAINERS === */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 1px solid var(--neon-green);
+            padding: 30px;
+            box-shadow: 0 0 15px var(--dim-green) inset;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 255, 51, 0.03) 0px,
+                rgba(0, 255, 51, 0.03) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+        }
+
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px dashed var(--neon-green);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        .highlight-red { color: var(--neon-red); }
+        .highlight-cyan { color: var(--neon-cyan); font-weight: bold; }
+
+        /* === CONTENT SECTIONS === */
+        p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .box {
+            border: 1px solid var(--neon-cyan);
+            padding: 20px;
+            margin: 20px 0;
+            background: rgba(0, 229, 255, 0.05);
+            border-left: 5px solid var(--neon-cyan);
+        }
+
+        /* === CODE BLOCKS === */
+        pre {
+            background-color: #111;
+            color: #fff;
+            padding: 15px;
+            border: 1px solid #333;
+            overflow-x: auto;
+            border-left: 3px solid var(--neon-red);
+            font-size: 1em;
+        }
+
+        code {
+            color: var(--neon-red);
+            font-weight: bold;
+        }
+
+        /* === INFOGRAPHIC / DIAGRAMS === */
+        .diagram-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+            font-family: monospace;
+            white-space: pre;
+            background: #0a0a0a;
+            padding: 20px;
+            border: 1px dashed var(--neon-green);
+            color: var(--neon-cyan);
+        }
+
+        .table-container {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .table-container th, .table-container td {
+            border: 1px solid var(--neon-green);
+            padding: 10px;
+            text-align: left;
+        }
+
+        .table-container th {
+            color: var(--bg-color);
+            background-color: var(--neon-green);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="terminal-header">
+        <span>SYSTEM.STATUS: ONLINE</span>
+        <span class="glitch" data-text="DECRYPTION: COMPLETE">DECRYPTION: COMPLETE</span>
+    </div>
+
+    <div class="ascii-art">
+  _   _ _____ __  __ _       ____  _____ ____ ___  ____  _____ ____  
+ | | | |_   _|  \/  | |     |  _ \| ____/ ___/ _ \|  _ \| ____|  _ \ 
+ | |_| | | | | |\/| | |     | | | |  _|| |  | | | | | | |  _| | | | |
+ |  _  | | | | |  | | |___  | |_| | |__| |__| |_| | |_| | |___| |_| |
+ |_| |_| |_| |_|  |_|_____| |____/|_____\____\___/|____/|_____|____/ 
+    </div>
+
+    <!-- ==========================================
+         SECTION 1: PLAIN ENGLISH REWRITE
+         ========================================== -->
+    <h2 class="glitch" data-text="> 01_THE_BASICS">> 01_THE_BASICS</h2>
+    
+    <p>HTML (HyperText Markup Language) is the invisible building block of every website. Think of it as the skeleton of a web page. It holds the basic parts you see online, like titles, text boxes to type in, and pictures. Your web browser (like Chrome or Safari) acts as a translator. It reads this invisible skeleton and builds the visible page on your screen.</p>
+    
+    <p>HTML is built like a family tree. At the very top of this tree is the <span class="highlight-cyan">Document</span>. Inside the Document is the main <span class="highlight-cyan">HTML container</span>. This main container tells the computer, "This is a web page," which is different from other data formats (like XML, which is just another way computers organize data). Inside this main container, you can put smaller parts, and those smaller parts can hold even smaller parts.</p>
+
+    <p>Every part of the page is called an <span class="highlight-cyan">Element</span>. Elements are created using "tags." A tag is just a word wrapped in angle brackets, like <code>&lt;p&gt;</code> for a paragraph. Most elements have an opening tag to start it and a closing tag to end it. The actual text you want to show goes in the middle. Tags can also have special name badges called "id" or "class" (for example, <code>&lt;p id='red-paragraphs'&gt;</code>). These name badges help CSS (the code that adds colors and design) know exactly which part of the page to paint. An element is the whole package: the opening tag, the content, and the closing tag.</p>
+
+    <div class="box">
+        <h3 style="margin-top:0;">> URL_ENCODING_PROTOCOL</h3>
+        <p>A very important rule for web pages is called <span class="highlight-cyan">URL Encoding</span> (or percent-encoding). Web addresses (URLs) can only use a basic alphabet called ASCII (simple English letters, numbers, and a few symbols). If you need to use a special symbol in a web link, you must translate it into a secret code so the browser doesn't get confused.</p>
+        <p>This secret code always starts with a percent sign (<code>%</code>) followed by two letters or numbers. For example, a single quote (<code>'</code>) changes into <code>%27</code>. Also, web addresses are not allowed to have blank spaces! A space must be changed into a plus sign (<code>+</code>) or <code>%20</code>. Security testers use special tools, like a popular program called Burp Suite, to easily translate these codes back and forth.</p>
+    </div>
+
+    <p>A web page is split into two main sections. The <code>&lt;head&gt;</code> section holds hidden settings, like the title you see on your browser tab. The <code>&lt;body&gt;</code> section holds everything you can actually see on the screen. There are other hidden parts too, like <code>&lt;style&gt;</code> for adding colors (CSS) and <code>&lt;script&gt;</code> for adding interactive actions (JavaScript).</p>
+
+    <p>Each of these pieces on the page is part of a system called the <span class="highlight-cyan">DOM (Document Object Model)</span>. The DOM is basically a digital map created by the web standard group (W3C). It allows other programs to change the text, look, or structure of the page while you are looking at it. The DOM rulebook has three parts: Core DOM (for any data), XML DOM (for XML data), and HTML DOM (specifically for web pages).</p>
+    
+    <p>Because the DOM is a map (like <code>document.head</code>), it helps us find exactly where every piece of the page lives. We can search for these pieces using their special "id" or "class" names. Understanding this map is very important for cybersecurity. If a website is poorly built, a hacker can use a trick called XSS (Cross-Site Scripting) to sneak their own dangerous elements onto the page and change how it works.</p>
+
+    <!-- ==========================================
+         SECTION 2: CODE BREAKDOWN
+         ========================================== -->
+    <h2 class="glitch" data-text="> 02_CODE_ANALYSIS">> 02_CODE_ANALYSIS</h2>
+    <p>Here is a very basic example of HTML code. Below, we break down exactly what each line does.</p>
+
+    <pre>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Page Title&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;A Heading&lt;/h1&gt;
+        &lt;p&gt;A Paragraph&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</pre>
+
+    <table class="table-container">
+        <tr>
+            <th>Line of Code</th>
+            <th>What it does in simple terms</th>
+        </tr>
+        <tr>
+            <td><code>&lt;!DOCTYPE html&gt;</code></td>
+            <td>This is an instruction to the web browser. It says, "Hello, this file is written in modern HTML." It makes sure the page loads correctly.</td>
+        </tr>
+        <tr>
+            <td><code>&lt;html&gt;</code></td>
+            <td>This is the master wrapper. It opens the main HTML container. Everything else on the web page goes inside this wrapper.</td>
+        </tr>
+        <tr>
+            <td><code>&lt;head&gt;</code></td>
+            <td>This opens the hidden settings section. Information here is used by the browser but isn't directly shown on the main screen.</td>
+        </tr>
+        <tr>
+            <td><code>&lt;title&gt;Page Title&lt;/title&gt;</code></td>
+            <td>This sets the name of the webpage. The text "Page Title" is what you will see on the tab at the very top of your web browser.</td>
+        </tr>
+        <tr>
+            <td><code>&lt;/head&gt;</code></td>
+            <td>This closes the hidden settings section. (The slash <code>/</code> means "end here").</td>
+        </tr>
+        <tr>
+            <td><code>&lt;body&gt;</code></td>
+            <td>This opens the visible section. Everything you read, click on, or look at on the screen goes inside here.</td>
+        </tr>
+        <tr>
+            <td><code>&lt;h1&gt;A Heading&lt;/h1&gt;</code></td>
+            <td>This creates a large, bold title on the screen. The "h" stands for heading, and "1" means it is the biggest, most important size.</td>
+        </tr>
+        <tr>
+            <td><code>&lt;p&gt;A Paragraph&lt;/p&gt;</code></td>
+            <td>This creates a normal block of text. The "p" stands for paragraph.</td>
+        </tr>
+        <tr>
+            <td><code>&lt;/body&gt;</code></td>
+            <td>This closes the visible section of the webpage.</td>
+        </tr>
+        <tr>
+            <td><code>&lt;/html&gt;</code></td>
+            <td>This closes the master wrapper, marking the absolute end of the web page.</td>
+        </tr>
+    </table>
+
+
+    <!-- ==========================================
+         SECTION 3: VISUAL INFOGRAPHIC
+         ========================================== -->
+    <h2 class="glitch" data-text="> 03_VISUAL_MAPS">> 03_VISUAL_MAPS</h2>
+    
+    <p>Below is a visual representation of how the HTML "Family Tree" (The DOM) is structured inside the computer's memory.</p>
+
+    <div class="diagram-container">
+[ DOCUMENT ]
+     |
+     v
+  [ HTML ]  <-- The Master Wrapper
+   /    \
+  /      \
+ v        v
+[HEAD]   [BODY] <-- The Visible Page
+  |        |
+  v        |
+[TITLE]    +--> [H1] (Heading)
+           |
+           +--> [P]  (Paragraph)
+    </div>
+
+    <p>Below is a quick reference map for URL Encoding. It shows how unsafe symbols are translated into safe codes so browsers can read them.</p>
+
+    <div class="diagram-container" style="color: var(--neon-red);">
+[ UNSAFE CHARACTER ] ----> [ URL ENCODED SAFE CODE ]
+
+      (space)        ---->      %20  (or +)
+         !           ---->      %21
+         "           ---->      %22
+         #           ---->      %23
+         $           ---->      %24
+         %           ---->      %25
+         &           ---->      %26
+         '           ---->      %27
+         (           ---->      %28
+         )           ---->      %29
+    </div>
+
+    <div class="terminal-header" style="margin-top: 40px; border-top: 2px dashed var(--neon-green); border-bottom: none; padding-top: 10px;">
+        <span>END OF FILE</span>
+        <span>AWAITING NEXT COMMAND_</span>
+    </div>
+</div>
+
+</body>
+</html>

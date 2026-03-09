@@ -1,0 +1,237 @@
+{
+  "main": {
+    "id": "892ee4bb4f042bff",
+    "type": "split",
+    "children": [
+      {
+        "id": "4b067589542dd51f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d48d13ad433e2523",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "OWASP Automated Threat HandbookWeb Applications/3. The Ontology.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "3. The Ontology"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "27a26dad0f1693e4",
+    "type": "split",
+    "children": [
+      {
+        "id": "f06618a9904df4ba",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "678271ca79eb3c38",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "4261da8ed12ffb44",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "fec70ee813fb54b9",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "bb024e0742705420",
+    "type": "split",
+    "children": [
+      {
+        "id": "c76a43cc7a6ec7de",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "cdf44b1dfc1bd146",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "3a49d39452da1d3d",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "911fc7535296583f",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "dcc2671746c5a66b",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-ghost",
+              "title": "all-properties"
+            }
+          },
+          {
+            "id": "40cdfea038d2acf8",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
+      "obsidian-kanban:Create new board": false,
+      "pdf-plus:PDF++: Toggle auto-copy": false,
+      "pdf-plus:PDF++: Toggle auto-focus": false,
+      "pdf-plus:PDF++: Toggle auto-paste": false
+    }
+  },
+  "active": "d48d13ad433e2523",
+  "lastOpenFiles": [
+    "OWASP Automated Threat HandbookWeb Applications/2. Research.md",
+    "OWASP Automated Threat HandbookWeb Applications/3. The Ontology.md",
+    "OWASP Automated Threat HandbookWeb Applications/1. Introduction.md",
+    "Thredup/General Info.md",
+    "OWASP Automated Threat HandbookWeb Applications",
+    "What is CyberWarfare.sync-conflict-20260309-051625-T3HS46U.md",
+    "HTB Labs/Easy Labs/Nibbles.md",
+    "HTB Tracks/Hottest-CVEs/EvilCUPS.md",
+    "HTB Labs/Easy Labs/Shocker.md",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/GET.md",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/HTTP Requests and Responses.md",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/CRUD API.md",
+    "HTB Tracks/Hottest-CVEs/Strutted.md",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/HTTP Headers.md",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/HTTP Methods & Codes.md",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/HyperText Transfer Protocol (HTTP).md",
+    "HTB Tracks/Hottest-CVEs/UNRESTED.md",
+    "HTB Labs/Easy Labs/Jerry.md",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/Hypertext Transfer Protocol Secure (HTTPS).md",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests/POST.md",
+    "HTB Tracks/Hottest-CVEs",
+    "HTB Tracks",
+    "HTB Labs/Easy Labs",
+    "HTB Labs",
+    "HTB Job Role Path/Web Penetration Tester/Web Requests",
+    "HTB Job Role Path/Web Penetration Tester/Intro To Web App",
+    "HTB Job Role Path/Web Penetration Tester/4. Info Gathering - Web Edition/3. DNS & subdomains/6. Virtual Hosts.md",
+    "HTB Job Role Path/Web Penetration Tester/4. Info Gathering - Web Edition/3. DNS & subdomains/7. Certificate Transparency Logs.md",
+    "HTB Job Role Path/Web Penetration Tester/4. Info Gathering - Web Edition/3. DNS & subdomains/5. DNS Zone Transfers.md",
+    "HTB Job Role Path/Web Penetration Tester/4. Info Gathering - Web Edition/3. DNS & subdomains/4. SubDomain BruteForcing.md",
+    "HTB Job Role Path/Web Penetration Tester/4. Info Gathering - Web Edition/3. DNS & subdomains/3. SubDomains.md",
+    "HTB Job Role Path/Web Penetration Tester/4. Info Gathering - Web Edition/3. DNS & subdomains/2. Digging DNS.md",
+    "HTB Job Role Path/Web Penetration Tester/4. Info Gathering - Web Edition/3. DNS & subdomains/1. DNS.md",
+    "Thredup",
+    "The Web App Haker's HandBook",
+    "PDFs/Nibbles.pdf",
+    "Images/raw_response.png",
+    "Images/web-server-requests.jpg",
+    "Images/wayback.png",
+    "Images/ig_crawling_1.png",
+    "Images/raw_request.png",
+    "Images/raw_request 1.png",
+    "Images/https_google_enc.png",
+    "Images/https_clear.png",
+    "Images/backend-server.jpg",
+    "Images/backend-server 1.jpg"
+  ]
+}

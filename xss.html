@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS: The Final Threat Vector</title>
+    <style>
+        /* === CORE HACKER THEME === */
+        :root {
+            --bg-color: #050505;
+            --neon-green: #00ff33;
+            --neon-cyan: #00e5ff;
+            --neon-red: #ff003c;
+            --neon-alert: #ff00ff;
+            --font-main: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--neon-green);
+            font-family: var(--font-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* === TYPOGRAPHY & GLITCH EFFECTS === */
+        h1, h2, h3 {
+            color: var(--neon-alert);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--neon-alert);
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+
+        .ascii-art {
+            white-space: pre;
+            color: var(--neon-alert);
+            text-shadow: 0 0 5px var(--neon-alert);
+            text-align: center;
+            font-size: clamp(6px, 1vw, 14px);
+            margin-bottom: 30px;
+        }
+
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--neon-red);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 var(--neon-cyan);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 44px, 0); }
+            20% { clip: rect(80px, 9999px, 90px, 0); }
+            40% { clip: rect(20px, 9999px, 30px, 0); }
+            60% { clip: rect(60px, 9999px, 70px, 0); }
+            80% { clip: rect(5px, 9999px, 15px, 0); }
+            100% { clip: rect(40px, 9999px, 50px, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            20% { clip: rect(10px, 9999px, 30px, 0); }
+            40% { clip: rect(45px, 9999px, 60px, 0); }
+            60% { clip: rect(85px, 9999px, 95px, 0); }
+            80% { clip: rect(20px, 9999px, 40px, 0); }
+            100% { clip: rect(50px, 9999px, 70px, 0); }
+        }
+
+        /* === LAYOUT & CONTAINERS === */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 1px solid var(--neon-alert);
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.15) inset;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255, 0, 255, 0.02) 0px,
+                rgba(255, 0, 255, 0.02) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+        }
+
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px dashed var(--neon-alert);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: var(--neon-alert);
+        }
+
+        .highlight-alert { color: var(--neon-alert); font-weight: bold; }
+        .highlight-cyan { color: var(--neon-cyan); font-weight: bold; }
+        .highlight-red { color: var(--neon-red); font-weight: bold; }
+
+        .box {
+            border: 1px solid var(--neon-red);
+            padding: 20px;
+            margin: 20px 0;
+            background: rgba(255, 0, 60, 0.05);
+            border-left: 5px solid var(--neon-red);
+        }
+
+        pre {
+            background-color: #080808;
+            color: #fff;
+            padding: 15px;
+            border: 1px solid #333;
+            overflow-x: auto;
+            border-left: 3px solid var(--neon-alert);
+            font-size: 1em;
+        }
+
+        code {
+            color: var(--neon-cyan);
+            font-weight: bold;
+        }
+
+        .table-container {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .table-container th, .table-container td {
+            border: 1px solid var(--neon-alert);
+            padding: 12px;
+            text-align: left;
+        }
+
+        .table-container th {
+            color: var(--bg-color);
+            background-color: var(--neon-alert);
+            text-transform: uppercase;
+        }
+
+        .diagram-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+            font-family: monospace;
+            white-space: pre;
+            background: #0a0a0a;
+            padding: 20px;
+            border: 1px dashed var(--neon-alert);
+            color: var(--neon-green);
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="terminal-header">
+        <span>SECURITY.LOG: XSS_DETECTED</span>
+        <span class="glitch" data-text="THREAT_LEVEL: CRITICAL">THREAT_LEVEL: CRITICAL</span>
+    </div>
+
+    <div class="ascii-art">
+ __  ______ ____    ____  _____ _____ _____ ____ _____ _____ ____  
+ \ \/ / ___/ ___|  |  _ \| ____|_   _| ____/ ___|_   _| ____|  _ \ 
+  \  /\___ \___ \  | | | |  _|   | | |  _|| |     | | |  _| | | | |
+  /  \ ___) |__) | | |_| | |___  | | | |__| |___  | | | |___| |_| |
+ /_/\_\____/____/  |____/|_____| |_| |_____\____| |_| |_____|____/ 
+    </div>
+
+    <!-- ==========================================
+         SECTION 1: PLAIN ENGLISH REWRITE
+         ========================================== -->
+    <h2 class="glitch" data-text="> 01_BEYOND_INJECTION">> 01_BEYOND_INJECTION</h2>
+    
+    <p><span class="highlight-alert">Cross-Site Scripting (XSS)</span> is like the evolved, more dangerous version of HTML Injection. While HTML Injection lets a hacker change the look of a page, XSS lets them inject and execute <span class="highlight-cyan">JavaScript code</span>. Since JavaScript is the "brain" of the website, giving a hacker the power to run it means giving them control over what the website does for the victim.</p>
+
+    <p>Once a hacker can run code on your computer through a vulnerable website, they can steal your <span class="highlight-alert">Cookies</span> (the digital keys you use to stay logged in), hijack your account, or even try to take over your machine.</p>
+
+    <div class="box">
+        <h3 style="margin-top:0;">> THE_THREE_VARIANTS</h3>
+        <p>Security experts divide XSS into three main categories based on how the malicious code reaches the victim:</p>
+        
+        <table class="table-container">
+            <tr>
+                <th>Type</th>
+                <th>In Simple Terms</th>
+            </tr>
+            <tr>
+                <td><span class="highlight-cyan">Reflected XSS</span></td>
+                <td>The hacker sends a link with the code hidden inside. When the victim clicks it, the website "reflects" the code back and runs it immediately.</td>
+            </tr>
+            <tr>
+                <td><span class="highlight-cyan">Stored XSS</span></td>
+                <td>The hacker saves the code on the website (like in a comment). Anyone who visits that page later will automatically run the code.</td>
+            </tr>
+            <tr>
+                <td><span class="highlight-cyan">DOM XSS</span></td>
+                <td>The code is executed entirely inside the browser's own map of the page (the DOM), usually by manipulating the URL or a username field.</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ==========================================
+         SECTION 2: PAYLOAD ANALYSIS
+         ========================================== -->
+    <h2 class="glitch" data-text="> 02_THE_MALICIOUS_PAYLOAD">> 02_THE_MALICIOUS_PAYLOAD</h2>
+    <p>Using the same vulnerable name prompt from before, a hacker could enter this specialized script:</p>
+
+    <pre>#"><img src=/ onerror=alert(document.cookie)></pre>
+
+    <table class="table-container">
+        <tr>
+            <th>Snippet Part</th>
+            <th>The Hacker's Logic</th>
+        </tr>
+        <tr>
+            <td><code>#"></code></td>
+            <td>This "breaks" the current HTML tag so the hacker can start a new one.</td>
+        </tr>
+        <tr>
+            <td><code>&lt;img src=/ ...&gt;</code></td>
+            <td>This tries to load a fake image. Since the source <code>/</code> is not a real image, it will fail.</td>
+        </tr>
+        <tr>
+            <td><code>onerror=...</code></td>
+            <td>This is a backup command. It tells the browser: "If the image fails to load, run this JavaScript instead."</td>
+        </tr>
+        <tr>
+            <td><code>alert(document.cookie)</code></td>
+            <td>The final blow. This pops up a window showing the user's secret login cookies. In a real attack, the hacker would send these cookies to their own server instead of showing an alert.</td>
+        </tr>
+    </table>
+
+    <!-- ==========================================
+         SECTION 3: VISUAL ATTACK MAP
+         ========================================== -->
+    <h2 class="glitch" data-text="> 03_SESSION_HIJACK_FLOW">> 03_SESSION_HIJACK_FLOW</h2>
+    
+    <div class="diagram-container">
+[ 1. THE TRAP ]
+Hacker injects script into a vulnerable field.
+       |
+       v
+[ 2. THE EXECUTION ]
+Victim's browser reads the script and thinks it's a valid command.
+       |
+       v
+[ 3. THE THEFT ]
+Script grabs "document.cookie" (The Login Key).
+       |
+       v
+[ 4. THE EXFILTRATION ]
+Script sends the key to the Hacker's server.
+       |
+       v
+[ 5. THE HIJACK ]
+Hacker uses the key to log into the Victim's account without a password.
+    </div>
+
+    <div class="box" style="border-color: var(--neon-cyan); background: rgba(0, 229, 255, 0.05);">
+        <h3 style="margin-top:0; color: var(--neon-cyan);">> CONCLUSION</h3>
+        <p>XSS is a massive topic. It represents the ultimate failure of front-end input cleaning. By mastering how HTML, CSS, and JavaScript interact, you learn not just how to build the web, but how to protect the users who inhabit it.</p>
+    </div>
+
+    <div class="terminal-header" style="margin-top: 40px; border-top: 2px dashed var(--neon-alert); border-bottom: none; padding-top: 10px;">
+        <span>SYSTEM.SHUTDOWN: MODULES_COMPLETE</span>
+        <span>STAY_SECURE_BY_DESIGN_</span>
+    </div>
+</div>
+
+</body>
+</html>

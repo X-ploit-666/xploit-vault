@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Web Vulnerabilities & Scoring | Security Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #F3F4F6; /* Light gray background */
+            color: #1F2937;
+        }
+        /* Palette: Vibrant & Energetic based on "Brilliant Blues/Playful" inspiration */
+        /* Hex Codes: #4F46E5 (Indigo), #06B6D4 (Cyan), #F43F5E (Rose), #F59E0B (Amber) */
+        
+        .bg-primary { background-color: #4F46E5; }
+        .text-primary { color: #4F46E5; }
+        .bg-secondary { background-color: #06B6D4; }
+        .text-secondary { color: #06B6D4; }
+        .bg-accent { background-color: #F43F5E; }
+        .text-accent { color: #F43F5E; }
+        .bg-warning { background-color: #F59E0B; }
+
+        /* Chart Container Styling - Mandatory */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Flowchart Styling for HTML-based diagrams */
+        .flow-step {
+            position: relative;
+            z-index: 10;
+        }
+        .flow-line {
+            position: absolute;
+            width: 2px;
+            background-color: #E5E7EB;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 100%;
+            height: 2rem;
+            z-index: 0;
+        }
+        .last-line { display: none; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4F46E5; 
+            border-radius: 4px;
+        }
+    </style>
+    <!-- 
+    Palette Name: Electric Indigo & Cyan
+    PLAN SUMMARY:
+    1. Introduction: Define Public Vulnerabilities (Back-end focus).
+    2. Identification Process: "Path of a Security Search" using structured HTML Flowchart.
+    3. CVSS Scoring: Visualize the Score metrics (Pie) and Comparison of V2 vs V3 severity ranges (Grouped Bar).
+    4. Critical Threats: Highlight RCE and Internal Vulnerabilities using Cards.
+    5. Conclusion: Summary and Call to Action.
+    
+    VISUALIZATION CHOICES (NO SVG):
+    1. Metrics of CVSS (Base, Temporal, Environmental) -> Doughnut Chart (Chart.js) -> Goal: Inform/Composition.
+    2. V2 vs V3 Severity Ranges -> Grouped Bar Chart (Chart.js) -> Goal: Compare thresholds.
+    3. Security Search Path -> HTML/CSS Flowchart -> Goal: Process/Flow (Standard HTML used instead of Mermaid/SVG).
+    -->
+</head>
+<body class="bg-gray-50">
+
+    <!-- Hero Section -->
+    <header class="bg-primary text-white py-12 px-4 shadow-lg">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">Public Web Vulnerabilities</h1>
+            <p class="text-xl md:text-2xl font-light text-blue-100 max-w-3xl mx-auto">
+                Understanding the critical risks in the "Hidden Engine Room" of your web applications.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-12">
+
+        <!-- Section 1: The Threat Landscape -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div class="bg-white p-8 rounded-xl shadow-md border-l-8 border-accent">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">The Danger from Distance</h2>
+                <p class="text-gray-600 mb-4 leading-relaxed">
+                    The most critical vulnerabilities reside in the <strong>Back-end</strong> components. Unlike physical security breaches, these allow hackers to launch attacks from their own homes, targeting the server without ever stepping foot in the facility.
+                </p>
+                <p class="text-gray-600 leading-relaxed">
+                    These issues often stem from coding mistakes during development or misconfigurations in open-source software widely deployed across the internet.
+                </p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-md flex flex-col items-center justify-center text-center">
+                <div class="text-6xl mb-4">🔓</div>
+                <h3 class="text-2xl font-bold text-primary mb-2">Remote Access</h3>
+                <p class="text-sm text-gray-500 max-w-xs">Attackers leverage external access to control internal servers without local privileges.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: The Path of a Security Search -->
+        <section>
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">The Path of a Security Search</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Before executing an attack or a defense test, security experts follow a strict protocol to identify weaknesses. This process leverages the vast network of shared knowledge known as CVEs (Common Vulnerabilities and Exposures).
+                </p>
+            </div>
+
+            <!-- HTML/CSS Flowchart (Replacing Diagram/Mermaid) -->
+            <div class="relative max-w-3xl mx-auto p-4">
+                
+                <!-- Step 1 -->
+                <div class="flex flex-col items-center mb-8 relative">
+                    <div class="bg-secondary text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10 border-4 border-white">1</div>
+                    <div class="bg-white p-6 rounded-lg shadow-md mt-4 w-full md:w-2/3 border-t-4 border-secondary text-center relative z-10">
+                        <h4 class="font-bold text-lg">Identify Version</h4>
+                        <p class="text-sm text-gray-600">Check source code or <code>version.php</code> to find the specific software version.</p>
+                    </div>
+                    <!-- Connector Line -->
+                    <div class="absolute h-full w-1 bg-gray-200 top-8 left-1/2 -ml-0.5 z-0"></div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex flex-col items-center mb-8 relative">
+                    <div class="bg-secondary text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10 border-4 border-white">2</div>
+                    <div class="bg-white p-6 rounded-lg shadow-md mt-4 w-full md:w-2/3 border-t-4 border-secondary text-center relative z-10">
+                        <h4 class="font-bold text-lg">Search Databases</h4>
+                        <p class="text-sm text-gray-600">Query Exploit DB, Rapid7, or Vulnerability Lab for known CVEs.</p>
+                    </div>
+                    <!-- Connector Line -->
+                    <div class="absolute h-full w-1 bg-gray-200 top-8 left-1/2 -ml-0.5 z-0"></div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex flex-col items-center mb-8 relative">
+                    <div class="bg-warning text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10 border-4 border-white">3</div>
+                    <div class="bg-white p-6 rounded-lg shadow-md mt-4 w-full md:w-2/3 border-t-4 border-warning text-center relative z-10">
+                        <h4 class="font-bold text-lg">Check CVSS Score</h4>
+                        <p class="text-sm text-gray-600">Prioritize Critical (9.0-10.0) and High (7.0-8.9) scores first.</p>
+                    </div>
+                    <!-- Connector Line -->
+                    <div class="absolute h-full w-1 bg-gray-200 top-8 left-1/2 -ml-0.5 z-0"></div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="flex flex-col items-center mb-8 relative">
+                    <div class="bg-accent text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10 border-4 border-white">4</div>
+                    <div class="bg-white p-6 rounded-lg shadow-md mt-4 w-full md:w-2/3 border-t-4 border-accent text-center relative z-10">
+                        <h4 class="font-bold text-lg">Test the Exploit</h4>
+                        <p class="text-sm text-gray-600">Use "Proof of Concept" code to verify the vulnerability.</p>
+                    </div>
+                     <!-- Connector Line -->
+                     <div class="absolute h-full w-1 bg-gray-200 top-8 left-1/2 -ml-0.5 z-0"></div>
+                </div>
+
+                 <!-- Step 5 -->
+                 <div class="flex flex-col items-center relative">
+                    <div class="bg-gray-800 text-white w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold shadow-lg z-10 border-4 border-white">🎯</div>
+                    <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md mt-4 w-full md:w-2/3 text-center relative z-10">
+                        <h4 class="font-bold text-lg">GOAL: Remote Code Execution</h4>
+                        <p class="text-sm text-gray-300">Achieve full control of the backend server.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Section 3: Understanding CVSS Scores -->
+        <section class="bg-white p-8 rounded-xl shadow-lg">
+            <div class="mb-8 border-b pb-4">
+                <h2 class="text-3xl font-bold text-gray-800">Measuring the Danger: CVSS</h2>
+                <p class="text-gray-600 mt-2">
+                    The Common Vulnerability Scoring System (CVSS) standardizes how we rate risks. A score from 0 to 10 determines urgency. The calculation involves three key metrics.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                
+                <!-- Chart 1: The Three Metrics -->
+                <div class="flex flex-col">
+                    <h3 class="text-xl font-bold text-center mb-4 text-primary">The Scoring Ingredients</h3>
+                    <p class="text-sm text-gray-500 text-center mb-4">A final score is a composite of these three factors.</p>
+                    <div class="chart-container">
+                        <canvas id="cvssMetricsChart"></canvas>
+                    </div>
+                    <div class="mt-4 grid grid-cols-1 gap-2 text-sm">
+                        <div class="bg-blue-50 p-2 rounded flex items-center"><span class="w-3 h-3 bg-indigo-600 rounded-full mr-2"></span><strong>Base:</strong> Inherent severity (The main number).</div>
+                        <div class="bg-blue-50 p-2 rounded flex items-center"><span class="w-3 h-3 bg-cyan-500 rounded-full mr-2"></span><strong>Temporal:</strong> Changes over time (e.g., is a patch available?).</div>
+                        <div class="bg-blue-50 p-2 rounded flex items-center"><span class="w-3 h-3 bg-amber-500 rounded-full mr-2"></span><strong>Environmental:</strong> Specific impact on YOUR organization.</div>
+                    </div>
+                </div>
+
+                <!-- Chart 2: V2 vs V3 Comparison -->
+                <div class="flex flex-col">
+                    <h3 class="text-xl font-bold text-center mb-4 text-primary">Severity Thresholds: V2 vs V3</h3>
+                    <p class="text-sm text-gray-500 text-center mb-4">V3 introduced the "Critical" tier for extreme threats.</p>
+                    <div class="chart-container">
+                        <canvas id="cvssComparisonChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-500 text-center">
+                        Note: Chart shows the <em>maximum</em> score for each severity tier. V3 separates High (8.9) from Critical (10.0).
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Section 4: Critical Server Weaknesses -->
+        <section>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Major Back-end Threats</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Card 1: RCE -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <div class="bg-accent h-2 w-full"></div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <span class="text-3xl mr-3">👑</span>
+                            <h3 class="text-xl font-bold text-gray-800">Remote Code Execution (RCE)</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">
+                            Considered the "Holy Grail" for hackers. It allows an attacker to execute arbitrary commands on the server from anywhere in the world.
+                        </p>
+                        <div class="bg-red-50 p-3 rounded-lg border border-red-100">
+                            <strong class="text-accent text-sm uppercase tracking-wide">Famous Example:</strong>
+                            <p class="text-gray-700 text-sm mt-1"><strong>Shell-Shock:</strong> allowed server takeover via simple HTTP requests.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Internal Vulnerabilities -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <div class="bg-primary h-2 w-full"></div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <span class="text-3xl mr-3">🕷️</span>
+                            <h3 class="text-xl font-bold text-gray-800">Internal Vulnerabilities</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">
+                            Weaknesses hidden from the public internet. Hackers first breach the perimeter, then use these internal flaws to move laterally to databases or admin systems.
+                        </p>
+                        <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100">
+                            <strong class="text-primary text-sm uppercase tracking-wide">The Danger:</strong>
+                            <p class="text-gray-700 text-sm mt-1">Used to escalate privileges to "Super User" (Administrator) status.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-gray-400 py-8 text-center mt-12">
+            <p class="mb-2">Generated based on "Public Vulnerabilities Guide"</p>
+            <p class="text-sm">Always patch your systems and monitor CVE databases.</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- UTILITY: Label Wrapping Logic (16 char limit) ---
+        function wrapLabel(label) {
+            if (label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= 16) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- COMMON CHART CONFIGURATION ---
+        Chart.defaults.font.family = "'Roboto', sans-serif";
+        Chart.defaults.color = '#4B5563';
+        
+        // Tooltip Callback for Multiline Labels
+        const tooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- CHART 1: CVSS Metrics (Doughnut) ---
+        const ctxMetrics = document.getElementById('cvssMetricsChart').getContext('2d');
+        const labelsMetrics = ['Base Score (Inherent)', 'Temporal Score (Time-based)', 'Environmental Score (Context)'];
+        const processedLabelsMetrics = labelsMetrics.map(wrapLabel);
+
+        new Chart(ctxMetrics, {
+            type: 'doughnut',
+            data: {
+                labels: processedLabelsMetrics,
+                datasets: [{
+                    data: [60, 20, 20], // Conceptual weighting for visual representation
+                    backgroundColor: [
+                        '#4F46E5', // Indigo (Base - Main)
+                        '#06B6D4', // Cyan (Temporal)
+                        '#F59E0B'  // Amber (Environmental)
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 12, padding: 20 }
+                    },
+                    tooltip: tooltipConfig,
+                    title: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // --- CHART 2: V2 vs V3 Severity Ranges (Bar) ---
+        const ctxComparison = document.getElementById('cvssComparisonChart').getContext('2d');
+        const labelsComparison = ['Low', 'Medium', 'High', 'Critical'];
+        
+        // Data points represent the UPPER LIMIT of the score for that category
+        const dataV2 = [3.9, 6.9, 10.0, 0]; // V2 has no separate Critical category (High is 7.0-10.0)
+        const dataV3 = [3.9, 6.9, 8.9, 10.0]; // V3 introduces Critical (9.0-10.0)
+
+        new Chart(ctxComparison, {
+            type: 'bar',
+            data: {
+                labels: labelsComparison,
+                datasets: [
+                    {
+                        label: 'CVSS V2 Max Score',
+                        data: dataV2,
+                        backgroundColor: '#06B6D4', // Cyan
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'CVSS V3 Max Score',
+                        data: dataV3,
+                        backgroundColor: '#F43F5E', // Rose (Vibrant)
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        title: {
+                            display: true,
+                            text: 'CVSS Score Limit'
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    tooltip: tooltipConfig
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

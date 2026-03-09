@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Headers: The Metadata Command Center</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- THEME & UTILITIES --- */
+        :root {
+            --bg-dark: #0f172a; /* Slate 900 */
+            --bg-card: #1e293b; /* Slate 800 */
+            --accent-cyan: #06b6d4; /* Cyan 500 */
+            --accent-purple: #8b5cf6; /* Violet 500 */
+            --accent-green: #10b981; /* Emerald 500 */
+            --accent-pink: #ec4899; /* Pink 500 */
+            --text-main: #f8fafc;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* --- CHART CONTAINERS --- */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* --- DECORATIVE ELEMENTS (CSS ONLY - NO SVG) --- */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .neon-border-cyan {
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .neon-text-cyan {
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+
+        /* Flowchart Connectors */
+        .connector-vertical {
+            width: 2px;
+            background: linear-gradient(to bottom, #06b6d4, #8b5cf6);
+            height: 40px;
+            margin: 0 auto;
+        }
+
+        /* Terminal Cursor Blink */
+        .cursor::after {
+            content: '█';
+            animation: blink 1s step-end infinite;
+            color: #06b6d4;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-cyan);
+        }
+    </style>
+    <!-- Chosen Palette: Cyberpunk Slate (Dark Slate background with Cyan, Purple, and Green neons) -->
+    <!-- Application Structure Plan:
+         1. Hero Section: Defines Headers as "Metadata" (The Envelope).
+         2. Category Explorer: Interactive grid to explore General, Entity, Request, Response, Security.
+         3. Visual Anatomy: CSS-based diagram showing where headers sit in a request.
+         4. Tools Lab: Interactive cURL builder to demonstrate flags (-I, -H, -A).
+         5. Security Insight: Chart.js Radar chart visualizing protection levels of Security Headers.
+         Rationale: Moves from concept to structure, then to practical application and security implications.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="antialiased selection:bg-cyan-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">📨</span>
+                    <span class="text-xl font-bold tracking-wider text-white font-mono">HEADER<span class="text-cyan-400">_CTRL</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8 text-xs font-mono tracking-widest text-slate-400">
+                    <a href="#concept" class="hover:text-cyan-400 transition-colors">CONCEPT</a>
+                    <a href="#categories" class="hover:text-purple-400 transition-colors">CATEGORIES</a>
+                    <a href="#tools" class="hover:text-green-400 transition-colors">TOOLS</a>
+                    <a href="#security" class="hover:text-pink-400 transition-colors">SECURITY</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+        <!-- Hero Section -->
+        <header id="concept" class="text-center space-y-6 pt-10">
+            <div class="inline-block px-3 py-1 rounded bg-cyan-900/20 border border-cyan-500/30 text-cyan-400 text-xs font-mono mb-2">
+                HTTP PROTOCOL METADATA
+            </div>
+            <h1 class="text-5xl md:text-7xl font-black text-white tracking-tight">
+                THE DIGITAL <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 neon-text-cyan">ENVELOPE</span>
+            </h1>
+            <p class="text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed">
+                If the HTTP Body is the letter, the <strong>Headers</strong> are the envelope. They carry the instructions, timestamps, and authentication stamps that ensure the message arrives correctly, securely, and is understood by the receiver.
+            </p>
+        </header>
+
+        <!-- Section 1: The 5 Categories (Interactive) -->
+        <section id="categories" class="scroll-mt-24">
+            <div class="mb-12 text-center md:text-left">
+                <h2 class="text-3xl font-bold text-white border-l-4 border-purple-500 pl-6">Header Classifications</h2>
+                <p class="text-slate-400 mt-4 max-w-2xl">
+                    Headers are grouped based on their function and context. Explore the five primary categories that govern web traffic.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Interactive List -->
+                <div class="lg:col-span-1 space-y-3">
+                    <button onclick="showCategory('general')" class="w-full text-left p-4 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-cyan-500 transition-all group focus:ring-2 focus:ring-cyan-500">
+                        <span class="block text-xs text-slate-500 font-mono mb-1 group-hover:text-cyan-300">01</span>
+                        <h3 class="text-lg font-bold text-white">General Headers</h3>
+                    </button>
+                    <button onclick="showCategory('entity')" class="w-full text-left p-4 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-purple-500 transition-all group focus:ring-2 focus:ring-purple-500">
+                        <span class="block text-xs text-slate-500 font-mono mb-1 group-hover:text-purple-300">02</span>
+                        <h3 class="text-lg font-bold text-white">Entity Headers</h3>
+                    </button>
+                    <button onclick="showCategory('request')" class="w-full text-left p-4 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-green-500 transition-all group focus:ring-2 focus:ring-green-500">
+                        <span class="block text-xs text-slate-500 font-mono mb-1 group-hover:text-green-300">03</span>
+                        <h3 class="text-lg font-bold text-white">Request Headers</h3>
+                    </button>
+                    <button onclick="showCategory('response')" class="w-full text-left p-4 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-yellow-500 transition-all group focus:ring-2 focus:ring-yellow-500">
+                        <span class="block text-xs text-slate-500 font-mono mb-1 group-hover:text-yellow-300">04</span>
+                        <h3 class="text-lg font-bold text-white">Response Headers</h3>
+                    </button>
+                    <button onclick="showCategory('security')" class="w-full text-left p-4 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-pink-500 transition-all group focus:ring-2 focus:ring-pink-500">
+                        <span class="block text-xs text-slate-500 font-mono mb-1 group-hover:text-pink-300">05</span>
+                        <h3 class="text-lg font-bold text-white">Security Headers</h3>
+                    </button>
+                </div>
+
+                <!-- Display Area -->
+                <div class="lg:col-span-2 glass-panel rounded-2xl p-8 relative overflow-hidden neon-border-cyan min-h-[400px]">
+                    <div id="display-content" class="relative z-10">
+                        <!-- Dynamic Content Loaded Here via JS -->
+                        <div class="h-full flex flex-col justify-center items-center text-center">
+                            <span class="text-6xl mb-4">👆</span>
+                            <h3 class="text-2xl font-bold text-white">Select a Category</h3>
+                            <p class="text-slate-400">Click the buttons on the left to inspect header types.</p>
+                        </div>
+                    </div>
+                    <!-- Background Glow -->
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Header Frequency Analysis -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="order-2 md:order-1 glass-panel p-6 rounded-2xl">
+                <h3 class="text-center font-mono text-cyan-400 text-sm mb-6 uppercase">// Header Usage Frequency</h3>
+                <div class="chart-container">
+                    <canvas id="headerFrequencyChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="order-1 md:order-2 space-y-6">
+                <h2 class="text-3xl font-bold text-white">The Weight of Metadata</h2>
+                <p class="text-slate-400 leading-relaxed">
+                    Not all headers are created equal. While <strong>General</strong> headers appear in almost every message, <strong>Entity</strong> headers only appear when data (like a file or HTML body) is present. <strong>Security</strong> headers are crucial but often optional (unfortunately).
+                </p>
+                <div class="bg-slate-800 p-4 rounded-lg border-l-4 border-cyan-500">
+                    <h4 class="font-bold text-white mb-1">Key Insight</h4>
+                    <p class="text-sm text-slate-400">
+                        The <code class="text-cyan-300 bg-slate-900 px-1 rounded">Host</code> header is mandatory in HTTP/1.1 requests. Without it, the server doesn't know which website you want to visit on that IP address.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Tools of the Trade (cURL) -->
+        <section id="tools" class="scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-white">The Hacker's Toolkit: cURL</h2>
+                <p class="text-slate-400 mt-2">Interact with headers directly from the terminal.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Interactive Terminal -->
+                <div class="bg-slate-950 rounded-xl p-6 shadow-2xl font-mono text-sm border border-slate-800 flex flex-col h-full">
+                    <div class="flex gap-2 mb-4 border-b border-slate-800 pb-4">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="ml-auto text-slate-600 text-xs">root@kali:~</span>
+                    </div>
+                    
+                    <div class="flex-1 space-y-4">
+                        <div class="text-slate-300">
+                            <span class="text-green-400">➜</span> <span class="text-cyan-400">~</span> <span id="terminal-command">curl -I https://inlanefreight.com</span>
+                        </div>
+                        <div id="terminal-output" class="text-slate-400 space-y-1">
+                            <!-- Dynamic Output -->
+                            <p>HTTP/1.1 200 OK</p>
+                            <p>Date: <span class="text-yellow-400">Sun, 06 Aug 2023 08:49:37 GMT</span></p>
+                            <p>Server: <span class="text-purple-400">Apache/2.4.41 (Ubuntu)</span></p>
+                            <p>Content-Type: <span class="text-cyan-400">text/html; charset=UTF-8</span></p>
+                            <p class="text-slate-600">...</p>
+                        </div>
+                        <div class="pt-4">
+                            <span class="text-green-400">➜</span> <span class="text-cyan-400">~</span> <span class="cursor"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="bg-slate-800 rounded-xl p-8 border border-slate-700">
+                    <h3 class="font-bold text-white mb-6">Build Your Command</h3>
+                    
+                    <div class="space-y-4">
+                        <button onclick="updateTerminal('head')" class="w-full flex items-center justify-between p-4 rounded bg-slate-700 hover:bg-slate-600 transition-colors group">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-cyan-500/20 text-cyan-400 px-2 py-1 rounded text-xs font-mono font-bold">-I</span>
+                                <span class="text-white font-bold">HEAD Request</span>
+                            </div>
+                            <span class="text-xs text-slate-400">Fetch Headers Only</span>
+                        </button>
+
+                        <button onclick="updateTerminal('verbose')" class="w-full flex items-center justify-between p-4 rounded bg-slate-700 hover:bg-slate-600 transition-colors group">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs font-mono font-bold">-v</span>
+                                <span class="text-white font-bold">Verbose Mode</span>
+                            </div>
+                            <span class="text-xs text-slate-400">Debug Request & Response</span>
+                        </button>
+
+                        <button onclick="updateTerminal('agent')" class="w-full flex items-center justify-between p-4 rounded bg-slate-700 hover:bg-slate-600 transition-colors group">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-purple-500/20 text-purple-400 px-2 py-1 rounded text-xs font-mono font-bold">-A</span>
+                                <span class="text-white font-bold">Spoof User-Agent</span>
+                            </div>
+                            <span class="text-xs text-slate-400">Pretend to be a Browser</span>
+                        </button>
+
+                        <button onclick="updateTerminal('header')" class="w-full flex items-center justify-between p-4 rounded bg-slate-700 hover:bg-slate-600 transition-colors group">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-pink-500/20 text-pink-400 px-2 py-1 rounded text-xs font-mono font-bold">-H</span>
+                                <span class="text-white font-bold">Inject Header</span>
+                            </div>
+                            <span class="text-xs text-slate-400">Add Custom Headers</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Security Headers (Radar) -->
+        <section id="security" class="bg-slate-900 rounded-3xl p-8 border border-slate-800 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500"></div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <h2 class="text-3xl font-bold text-white">Security Headers: The Shield</h2>
+                    <p class="text-slate-400 leading-relaxed">
+                        Security headers instruct the browser to enforce safety measures. Without them, users are vulnerable to XSS, Clickjacking, and Protocol Downgrades.
+                    </p>
+                    
+                    <ul class="space-y-4">
+                        <li class="bg-slate-950 p-4 rounded border-l-4 border-green-500">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-green-400 font-bold font-mono">Strict-Transport-Security</span>
+                                <span class="text-xs text-slate-500">HSTS</span>
+                            </div>
+                            <p class="text-sm text-slate-300">Forces the browser to ONLY use HTTPS. Stops protocol downgrade attacks.</p>
+                        </li>
+                        <li class="bg-slate-950 p-4 rounded border-l-4 border-blue-500">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-blue-400 font-bold font-mono">Content-Security-Policy</span>
+                                <span class="text-xs text-slate-500">CSP</span>
+                            </div>
+                            <p class="text-sm text-slate-300">Restricts where scripts can be loaded from. The best defense against XSS.</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl neon-border-cyan">
+                    <h3 class="text-center font-mono text-cyan-400 text-sm mb-4 uppercase">// Security Impact Analysis</h3>
+                    <div class="chart-container">
+                        <canvas id="securityRadarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-800 py-10 text-center text-slate-500 font-mono text-xs">
+            <p>HTTP_HEADERS_MODULE // RENDERED: 2025 // ACCESS_LEVEL: ADMIN</p>
+        </footer>
+
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        // --- 1. Label Wrapping Helper (Mandatory) ---
+        function formatLabel(str, maxwidth) {
+            var sections = [];
+            var words = str.split(" ");
+            var temp = "";
+            words.forEach(function(item, index) {
+                if (temp.length > 0) {
+                    var concat = temp + ' ' + item;
+                    if (concat.length > maxwidth) {
+                        sections.push(temp);
+                        temp = "";
+                    } else {
+                        if (index == (words.length - 1)) {
+                            sections.push(concat);
+                            return;
+                        } else {
+                            temp = concat;
+                            return;
+                        }
+                    }
+                }
+                if (index == (words.length - 1)) {
+                    sections.push(item);
+                    return;
+                }
+                if (item.length < maxwidth) {
+                    temp = item;
+                } else {
+                    sections.push(item);
+                }
+            });
+            return sections;
+        }
+
+        // --- 2. Tooltip Config (Mandatory) ---
+        const commonTooltipOptions = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            },
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            titleColor: '#22d3ee',
+            bodyColor: '#f8fafc',
+            borderColor: '#0891b2',
+            borderWidth: 1,
+            titleFont: { family: "'JetBrains Mono', monospace" }
+        };
+
+        // --- Chart 1: Header Frequency (Bar) ---
+        const ctxFreq = document.getElementById('headerFrequencyChart').getContext('2d');
+        const freqLabels = ['General (Date/Conn)', 'Request (Host/User-Agent)', 'Entity (Type/Len)', 'Security (CSP/HSTS)'];
+        const processedFreqLabels = freqLabels.map(l => formatLabel(l, 16));
+
+        new Chart(ctxFreq, {
+            type: 'bar',
+            data: {
+                labels: processedFreqLabels,
+                datasets: [{
+                    label: 'Frequency in Traffic',
+                    data: [95, 90, 60, 20],
+                    backgroundColor: [
+                        '#06b6d4', // Cyan
+                        '#10b981', // Green
+                        '#8b5cf6', // Purple
+                        '#ec4899'  // Pink
+                    ],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#f8fafc', font: { family: "'Inter', sans-serif" } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: commonTooltipOptions
+                }
+            }
+        });
+
+        // --- Chart 2: Security Radar ---
+        const ctxRadar = document.getElementById('securityRadarChart').getContext('2d');
+        const radarLabels = ['XSS Protection', 'Privacy (HTTPS)', 'Data Integrity', 'Configuration Cost', 'Browser Support'];
+        const processedRadarLabels = radarLabels.map(l => formatLabel(l, 16));
+
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: processedRadarLabels,
+                datasets: [{
+                    label: 'With Security Headers',
+                    data: [100, 100, 90, 60, 95],
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                    pointBackgroundColor: '#10b981',
+                    pointBorderColor: '#fff'
+                }, {
+                    label: 'Default / Insecure',
+                    data: [20, 10, 20, 0, 100],
+                    borderColor: '#ec4899',
+                    backgroundColor: 'rgba(236, 72, 153, 0.2)',
+                    pointBackgroundColor: '#ec4899',
+                    pointBorderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        pointLabels: {
+                            color: '#94a3b8',
+                            font: { size: 11, family: "'JetBrains Mono', monospace" }
+                        },
+                        ticks: { display: false, backdropColor: 'transparent' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#f8fafc' }
+                    },
+                    tooltip: commonTooltipOptions
+                }
+            }
+        });
+
+        // --- INTERACTIVITY: Category Switcher ---
+        const contentData = {
+            general: {
+                title: "General Headers",
+                color: "text-cyan-400",
+                desc: "Describe the message itself, not the content. Contextual info.",
+                examples: [
+                    { k: "Date", v: "Wed, 16 Feb 2022...", d: "Timestamp of message." },
+                    { k: "Connection", v: "keep-alive", d: "Keep the TCP connection open?" }
+                ]
+            },
+            entity: {
+                title: "Entity Headers",
+                color: "text-purple-400",
+                desc: "Describe the payload (the body) being transferred.",
+                examples: [
+                    { k: "Content-Type", v: "text/html", d: "MIME type of resource." },
+                    { k: "Content-Length", v: "385", d: "Size in bytes." },
+                    { k: "Content-Encoding", v: "gzip", d: "Compression method." }
+                ]
+            },
+            request: {
+                title: "Request Headers",
+                color: "text-green-400",
+                desc: "Sent by the Client (You). Provides context about who is asking.",
+                examples: [
+                    { k: "Host", v: "www.google.com", d: "Domain being queried (Mandatory)." },
+                    { k: "User-Agent", v: "Mozilla/5.0...", d: "Browser/OS details." },
+                    { k: "Cookie", v: "session_id=123", d: "Authentication token." }
+                ]
+            },
+            response: {
+                title: "Response Headers",
+                color: "text-yellow-400",
+                desc: "Sent by the Server. Provides server details and cookies.",
+                examples: [
+                    { k: "Server", v: "Apache/2.4", d: "Server software version." },
+                    { k: "Set-Cookie", v: "id=xyz; Path=/", d: "Tells browser to save a cookie." }
+                ]
+            },
+            security: {
+                title: "Security Headers",
+                color: "text-pink-400",
+                desc: "Rules for the browser to enforce safety.",
+                examples: [
+                    { k: "Content-Security-Policy", v: "script-src 'self'", d: "Prevent XSS." },
+                    { k: "Strict-Transport-Security", v: "max-age=31536000", d: "Force HTTPS." }
+                ]
+            }
+        };
+
+        function showCategory(catKey) {
+            const data = contentData[catKey];
+            const container = document.getElementById('display-content');
+            
+            let html = `
+                <div class="animate-fade-in">
+                    <h3 class="text-3xl font-bold ${data.color} mb-2">${data.title}</h3>
+                    <p class="text-slate-300 mb-6 text-sm">${data.desc}</p>
+                    <div class="space-y-3 font-mono text-sm">
+            `;
+
+            data.examples.forEach(ex => {
+                html += `
+                    <div class="bg-slate-900/80 p-3 rounded border border-slate-700 flex flex-col md:flex-row gap-2 md:items-center">
+                        <span class="${data.color} font-bold min-w-[150px]">${ex.k}:</span>
+                        <span class="text-white break-all">${ex.v}</span>
+                        <span class="text-slate-500 text-xs md:ml-auto italic">// ${ex.d}</span>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+            container.innerHTML = html;
+        }
+
+        // --- INTERACTIVITY: Terminal Emulator ---
+        function updateTerminal(mode) {
+            const cmd = document.getElementById('terminal-command');
+            const out = document.getElementById('terminal-output');
+            
+            let commandText = "";
+            let outputText = "";
+
+            if (mode === 'head') {
+                commandText = "curl -I https://inlanefreight.com";
+                outputText = `
+                    <p>HTTP/1.1 200 OK</p>
+                    <p>Date: Sun, 06 Aug 2023...</p>
+                    <p>Connection: keep-alive</p>
+                    <p>Content-Length: 26012</p>
+                    <p>Content-Type: text/html</p>
+                `;
+            } else if (mode === 'verbose') {
+                commandText = "curl -v https://inlanefreight.com";
+                outputText = `
+                    <p class="text-slate-600">* Connected to inlanefreight.com port 443</p>
+                    <p class="text-purple-400">> GET / HTTP/1.1</p>
+                    <p class="text-purple-400">> Host: inlanefreight.com</p>
+                    <p class="text-purple-400">> User-Agent: curl/7.68.0</p>
+                    <p class="text-slate-600">< HTTP/1.1 200 OK</p>
+                    <p class="text-slate-600">< Server: Apache</p>
+                `;
+            } else if (mode === 'agent') {
+                commandText = "curl -A 'Mozilla/5.0' https://inlanefreight.com";
+                outputText = `
+                    <p>HTTP/1.1 200 OK</p>
+                    <p>...</p>
+                    <p class="text-green-400">// Server thinks we are a browser now.</p>
+                `;
+            } else if (mode === 'header') {
+                commandText = "curl -H 'X-Hacker: True' https://target.com";
+                outputText = `
+                    <p class="text-purple-400">> GET / HTTP/1.1</p>
+                    <p class="text-purple-400">> Host: target.com</p>
+                    <p class="text-pink-400">> X-Hacker: True</p>
+                    <p class="text-slate-600">< HTTP/1.1 200 OK</p>
+                `;
+            }
+
+            cmd.innerText = commandText;
+            out.innerHTML = outputText;
+        }
+
+        // Init
+        showCategory('general');
+
+    </script>
+</body>
+</html>

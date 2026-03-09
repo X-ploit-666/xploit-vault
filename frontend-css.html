@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS System Decoded</title>
+    <style>
+        /* === CORE HACKER THEME === */
+        :root {
+            --bg-color: #050505;
+            --neon-green: #00ff33;
+            --neon-cyan: #00e5ff;
+            --neon-red: #ff003c;
+            --neon-purple: #b700ff;
+            --dim-green: rgba(0, 255, 51, 0.2);
+            --font-main: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--neon-green);
+            font-family: var(--font-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* === TYPOGRAPHY & GLITCH EFFECTS === */
+        h1, h2, h3 {
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--neon-cyan);
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+
+        .ascii-art {
+            white-space: pre;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 5px var(--neon-cyan);
+            text-align: center;
+            font-size: clamp(8px, 1.2vw, 16px);
+            margin-bottom: 30px;
+        }
+
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--neon-red);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 var(--neon-purple);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 44px, 0); }
+            20% { clip: rect(80px, 9999px, 90px, 0); }
+            40% { clip: rect(20px, 9999px, 30px, 0); }
+            60% { clip: rect(60px, 9999px, 70px, 0); }
+            80% { clip: rect(5px, 9999px, 15px, 0); }
+            100% { clip: rect(40px, 9999px, 50px, 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            20% { clip: rect(10px, 9999px, 30px, 0); }
+            40% { clip: rect(45px, 9999px, 60px, 0); }
+            60% { clip: rect(85px, 9999px, 95px, 0); }
+            80% { clip: rect(20px, 9999px, 40px, 0); }
+            100% { clip: rect(50px, 9999px, 70px, 0); }
+        }
+
+        /* === LAYOUT & CONTAINERS === */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 1px solid var(--neon-cyan);
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.2) inset;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 229, 255, 0.03) 0px,
+                rgba(0, 229, 255, 0.03) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+        }
+
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px dashed var(--neon-cyan);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: var(--neon-cyan);
+        }
+
+        .highlight-red { color: var(--neon-red); }
+        .highlight-green { color: var(--neon-green); font-weight: bold; }
+        .highlight-purple { color: var(--neon-purple); font-weight: bold; }
+
+        /* === CONTENT SECTIONS === */
+        p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .box {
+            border: 1px solid var(--neon-purple);
+            padding: 20px;
+            margin: 20px 0;
+            background: rgba(183, 0, 255, 0.05);
+            border-left: 5px solid var(--neon-purple);
+        }
+
+        /* === CODE BLOCKS === */
+        pre {
+            background-color: #080808;
+            color: #fff;
+            padding: 15px;
+            border: 1px solid #333;
+            overflow-x: auto;
+            border-left: 3px solid var(--neon-cyan);
+            font-size: 1.1em;
+        }
+
+        code {
+            color: var(--neon-cyan);
+            font-weight: bold;
+        }
+
+        /* === INFOGRAPHIC / DIAGRAMS === */
+        .diagram-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+            font-family: monospace;
+            white-space: pre;
+            background: #0a0a0a;
+            padding: 20px;
+            border: 1px dashed var(--neon-cyan);
+            color: var(--neon-green);
+            overflow-x: auto;
+        }
+
+        .table-container {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .table-container th, .table-container td {
+            border: 1px solid var(--neon-cyan);
+            padding: 12px;
+            text-align: left;
+        }
+
+        .table-container th {
+            color: var(--bg-color);
+            background-color: var(--neon-cyan);
+            text-transform: uppercase;
+        }
+        
+        ul.framework-list {
+            list-style-type: square;
+            color: var(--neon-cyan);
+        }
+        ul.framework-list li span {
+            color: var(--neon-green);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="terminal-header">
+        <span>SYSTEM.STATUS: CSS_MODULE_ONLINE</span>
+        <span class="glitch" data-text="DECRYPTION: COMPLETE">DECRYPTION: COMPLETE</span>
+    </div>
+
+    <div class="ascii-art">
+  ____  ____  ____    ____ _____ __  __    _    _   _ _____ ___ ____ ____  
+ / ___|/ ___|/ ___|  / ___| ____|  \/  |  / \  | \ | |_   _|_ _/ ___/ ___| 
+| |    \___ \\___ \  \___ \  _| | |\/| | / _ \ |  \| | | |  | |\___ \___ \ 
+| |___  ___) |___) |  ___) | |__| |  | |/ ___ \| |\  | | |  | | ___) |__) |
+ \____||____/|____/  |____/|_____|_|  |_/_/   \_\_| \_| |_| |____|____/____/ 
+    </div>
+
+    <!-- ==========================================
+         SECTION 1: PLAIN ENGLISH REWRITE
+         ========================================== -->
+    <h2 class="glitch" data-text="> 01_THE_STYLING_ENGINE">> 01_THE_STYLING_ENGINE</h2>
+    
+    <p>If HTML is the bare skeleton of a webpage, <span class="highlight-green">CSS (Cascading Style Sheets)</span> is the skin, clothing, and makeup. It is a special coding language used to design and format everything on a web page. Just like apps on your phone get updates, CSS gets new versions over time. These updates bring cool new design tools, and web browsers automatically update so they can understand and display these new features.</p>
+
+    <p>At its core, CSS works by finding specific parts of your HTML—like the main background (<code>body</code>) or big titles (<code>h1</code>)—and giving them visual rules. You can change almost anything: the type of text, the size, the background color, and exactly where things sit on the screen. Remember those "class" and "id" name badges we put on HTML tags? CSS uses those exact badges to find specific parts of the page and paint them.</p>
+
+    <div class="box">
+        <h3 style="margin-top:0; color: var(--neon-purple);">> SYNTAX_AND_RULES</h3>
+        <p>CSS has a very simple rulebook. First, you type the name of the HTML part you want to change. Next, you open curly brackets <code>{ }</code>. Inside those brackets, you list your design choices. Every choice has two parts: a <span class="highlight-green">Property</span> (what you want to change, like "color") and a <span class="highlight-green">Value</span> (what you are changing it to, like "red").</p>
+        <p>There are hundreds of properties you can play with, such as height, borders, spacing (margin and padding), and text alignment. By mixing and matching these rules, you can make a webpage look amazing.</p>
+    </div>
+
+    <p>CSS is not just for still pictures. It is powerful enough to make things move! You can use special CSS commands (like <code>@keyframes</code>) to create smooth animations, moving items across the screen, or even building 3D effects.</p>
+
+    <p>CSS is a team player. It often works alongside <span class="highlight-green">JavaScript</span> (the code that handles actions). Together, they can make a website react dynamically. For example, a picture might tilt or change colors based on exactly where your mouse pointer is moving. CSS is also used outside of normal web pages—it helps design mobile phone apps and other data formats like XML and SVG graphics.</p>
+
+    <h2 class="glitch" data-text="> 02_CSS_FRAMEWORKS">> 02_CSS_FRAMEWORKS</h2>
+    <p>Writing every single design rule from scratch for hundreds of buttons and boxes can be exhausting and slow. To solve this, developers created <span class="highlight-green">CSS Frameworks</span>.</p>
+    <p>Think of a framework like a massive, pre-built toolbox full of beautiful, ready-to-use design templates. Instead of spending hours writing code to make a button look perfectly round and shiny, you simply borrow the code from the framework. These toolboxes are heavily optimized, work perfectly with JavaScript, and contain everything needed to build a modern app quickly. Some of the most famous toolboxes (frameworks) include:</p>
+    
+    <ul class="framework-list">
+        <li><span>Bootstrap</span></li>
+        <li><span>SASS</span></li>
+        <li><span>Foundation</span></li>
+        <li><span>Bulma</span></li>
+        <li><span>Pure</span></li>
+    </ul>
+
+    <!-- ==========================================
+         SECTION 3: CODE BREAKDOWN
+         ========================================== -->
+    <h2 class="glitch" data-text="> 03_CODE_ANALYSIS">> 03_CODE_ANALYSIS</h2>
+    <p>Here is a basic example of CSS code. Below, we break down exactly what each rule does to the HTML page.</p>
+
+    <pre>
+body {
+  background-color: black;
+}
+
+h1 {
+  color: white;
+  text-align: center;
+}
+
+p {
+  font-family: helvetica;
+  font-size: 10px;
+}</pre>
+
+    <table class="table-container">
+        <tr>
+            <th>Code Line / Block</th>
+            <th>What it does in simple terms</th>
+        </tr>
+        <tr>
+            <td><code>body { ... }</code></td>
+            <td>This targets the main visible background area of the entire webpage. Everything inside the curly brackets will happen to the background.</td>
+        </tr>
+        <tr>
+            <td><code>background-color: black;</code></td>
+            <td>This is the rule inside the body. It tells the browser: "Paint the entire background of the website solid black."</td>
+        </tr>
+        <tr>
+            <td><code>h1 { ... }</code></td>
+            <td>This targets all the large, main headings (Titles) on the webpage.</td>
+        </tr>
+        <tr>
+            <td><code>color: white;</code></td>
+            <td>This changes the color of the text for the headings to white (so they can be seen on the black background).</td>
+        </tr>
+        <tr>
+            <td><code>text-align: center;</code></td>
+            <td>This pushes the heading text to sit exactly in the middle of the screen, instead of staying on the left side.</td>
+        </tr>
+        <tr>
+            <td><code>p { ... }</code></td>
+            <td>This targets all the normal, regular text paragraphs on the webpage.</td>
+        </tr>
+        <tr>
+            <td><code>font-family: helvetica;</code></td>
+            <td>This changes the style (the font type) of the paragraph text to a clean font named "Helvetica".</td>
+        </tr>
+        <tr>
+            <td><code>font-size: 10px;</code></td>
+            <td>This sets the size of the paragraph text to 10 pixels, which will make the text look quite small.</td>
+        </tr>
+    </table>
+
+
+    <!-- ==========================================
+         SECTION 4: VISUAL INFOGRAPHIC
+         ========================================== -->
+    <h2 class="glitch" data-text="> 04_VISUAL_MAPS">> 04_VISUAL_MAPS</h2>
+    
+    <p>How the CSS Syntax Rulebook is built:</p>
+
+    <div class="diagram-container">
+<span class="highlight-purple">[ HTML TARGET ]</span>    <span class="highlight-green">[ PROPERTY ]</span>      <span class="highlight-red">[ VALUE ]</span>
+  (Selector)       (What to change)  (The new setting)
+
+     <span class="highlight-purple">h1</span>        {     <span class="highlight-green">color</span>       :     <span class="highlight-red">white</span>;     }
+
+     <span class="highlight-purple">body</span>      {     <span class="highlight-green">background</span>  :     <span class="highlight-red">black</span>;     }
+    </div>
+
+    <p>How HTML and CSS work together to build the final page:</p>
+
+    <div class="diagram-container" style="color: var(--neon-purple);">
+==================================================
+| 1. HTML FILE (The Skeleton)                    |
+|    Contains data: <p id="target">Hello</p>       |
+==================================================
+                        |
+                        | (Combines with)
+                        V
+==================================================
+| 2. CSS FILE (The Paint)                        |
+|    Contains rules: #target { color: green; }   |
+==================================================
+                        |
+                        | (Browser Translates)
+                        V
+==================================================
+| 3. FINAL WEBPAGE (The Result)                  |
+|    You see the word "Hello" painted Green.     |
+==================================================
+    </div>
+
+    <div class="terminal-header" style="margin-top: 40px; border-top: 2px dashed var(--neon-cyan); border-bottom: none; padding-top: 10px;">
+        <span>END OF FILE</span>
+        <span>AWAITING NEXT COMMAND_</span>
+    </div>
+</div>
+
+</body>
+</html>

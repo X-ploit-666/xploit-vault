@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Blueprint: Web Application Architecture</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- 
+        Palette Selection: "Cyber Future"
+        - Background: Slate-900 (#0f172a)
+        - Surface: Slate-800 (#1e293b)
+        - Primary: Cyan-400 (#22d3ee)
+        - Secondary: Indigo-500 (#6366f1)
+        - Alert: Rose-500 (#f43f5e)
+        - Text: Slate-200 (#e2e8f0)
+    -->
+
+    <style>
+        /* --- Chart Container Styling (Mandatory) --- */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* --- CSS-Only Diagrams (NO SVG) --- */
+        /* Server Shape */
+        .server-box {
+            width: 80px;
+            height: 100px;
+            background: #1e293b;
+            border: 2px solid #475569;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            padding: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        .server-slot {
+            height: 10px;
+            background: #334155;
+            border-radius: 2px;
+            position: relative;
+        }
+        .server-light {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #22c55e; /* Green light */
+            position: absolute;
+            right: 4px;
+            top: 3px;
+            box-shadow: 0 0 5px #22c55e;
+        }
+        
+        /* Database Shape */
+        .db-cylinder {
+            width: 70px;
+            height: 80px;
+            background: linear-gradient(180deg, #475569 0%, #1e293b 100%);
+            border-radius: 50% 50% 10% 10% / 15px 15px 5px 5px;
+            border: 2px solid #64748b;
+            position: relative;
+            margin-top: 10px;
+        }
+        .db-cylinder::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -2px;
+            width: calc(100% + 4px);
+            height: 15px;
+            background: #475569;
+            border: 2px solid #64748b;
+            border-radius: 50%;
+            z-index: 10;
+        }
+        
+        /* Connection Lines */
+        .connect-line-h {
+            height: 4px;
+            background: #64748b;
+            flex-grow: 1;
+            margin: 0 10px;
+            border-radius: 2px;
+            position: relative;
+        }
+        .connect-line-v {
+            width: 4px;
+            background: #64748b;
+            height: 40px;
+            margin: 0 auto;
+        }
+
+        /* Layer Cards */
+        .layer-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .layer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+    <!-- 
+    Narrative Plan:
+    1. Hero: Title and definition of the "Blueprint".
+    2. Infrastructure (Hosting Models):
+       - Explains One Server vs Multi-Server.
+       - Radar Chart comparing Risk, Redundancy, Complexity, and Cost.
+       - CSS Diagrams visualizing the "Eggs in one basket" vs "Professional" setup.
+    3. Architecture (Three Layers):
+       - Uses the "Restaurant" metaphor.
+       - Visual cards representing Presentation, Application, and Data layers.
+    4. Modern Tech (Microservices):
+       - Explains breaking down the monolith.
+       - Bar Chart comparing Monolithic vs Microservices benefits (Agility, Scaling).
+    5. Security (Design Errors):
+       - Focus on RBAC and Architecture flaws.
+       - CSS Diagram showing a "Locked" vs "Unlocked" Admin door concept.
+    -->
+</head>
+<body class="bg-slate-900 text-slate-200 font-sans antialiased selection:bg-cyan-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur border-b border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-cyan-500 rounded flex items-center justify-center font-bold text-slate-900">B</div>
+                    <span class="text-xl font-bold tracking-wider text-white">BLUE<span class="text-cyan-400">PRINT</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#infrastructure" class="hover:text-cyan-400 transition-colors text-sm font-medium">Infrastructure</a>
+                    <a href="#layers" class="hover:text-cyan-400 transition-colors text-sm font-medium">Layers</a>
+                    <a href="#modern" class="hover:text-cyan-400 transition-colors text-sm font-medium">Modern Tech</a>
+                    <a href="#security" class="hover:text-cyan-400 transition-colors text-sm font-medium">Security</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative py-20 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-indigo-900/20 to-slate-900"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight">
+                Web App <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500">Architecture</span>
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10">
+                Beyond the code lies the <strong>Structure</strong>. Explore the physical setup, logical components, and relationships that power modern web applications.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                    <strong class="text-cyan-400 block mb-1">Infrastructure</strong>
+                    <span class="text-sm text-slate-400">Where servers live</span>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                    <strong class="text-indigo-400 block mb-1">Components</strong>
+                    <span class="text-sm text-slate-400">The moving parts</span>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                    <strong class="text-rose-400 block mb-1">Architecture</strong>
+                    <span class="text-sm text-slate-400">How they talk</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-32">
+
+        <!-- SECTION 1: INFRASTRUCTURE (Hosting Models) -->
+        <section id="infrastructure" class="scroll-mt-24">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Text Content -->
+                <div>
+                    <h2 class="text-3xl font-bold text-white mb-4 border-l-4 border-cyan-500 pl-4">Hosting Models: Risk vs. Reward</h2>
+                    <p class="text-slate-300 mb-6 leading-relaxed">
+                        How you set up your servers determines your app's survival. The "One Server" model is risky (all eggs in one basket), while the "Many Servers - Many Databases" model offers professional redundancy.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <!-- Model 1 -->
+                        <div class="flex gap-4">
+                            <div class="server-box shrink-0 border-rose-500 scale-75 origin-top-left">
+                                <div class="server-slot"><div class="server-light bg-rose-500"></div></div>
+                                <div class="server-slot"><div class="server-light bg-rose-500"></div></div>
+                                <div class="text-[8px] text-center text-slate-400 mt-2">App+DB</div>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-rose-400">One Server (Risky)</h3>
+                                <p class="text-sm text-slate-400">If this server crashes, the entire business stops. High risk, low cost.</p>
+                            </div>
+                        </div>
+
+                        <!-- Model 3 -->
+                        <div class="flex gap-4">
+                            <div class="flex gap-2 shrink-0 scale-75 origin-top-left">
+                                <div class="server-box"><div class="server-slot"><div class="server-light"></div></div></div>
+                                <div class="db-cylinder mt-0 h-[100px] w-[60px]"></div>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-cyan-400">Many Servers - Many DBs (Pro)</h3>
+                                <p class="text-sm text-slate-400">Uses <strong>Redundancy</strong> (spare tires) and <strong>Segmentation</strong>. If one fails, another takes over.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Radar Chart -->
+                <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
+                    <h3 class="text-center text-slate-400 text-sm font-semibold uppercase tracking-wider mb-6">Model Comparison Analysis</h3>
+                    <div class="chart-container">
+                        <canvas id="hostingChart"></canvas>
+                    </div>
+                    <p class="text-center text-xs text-slate-500 mt-4 italic">
+                        Comparing typical characteristics of major hosting architectures.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: ARCHITECTURE LAYERS (Three Tier) -->
+        <section id="layers" class="scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-white mb-4">The Three-Tier Architecture</h2>
+                <p class="text-slate-300 max-w-2xl mx-auto">
+                    Just like a restaurant, a web app has distinct zones for different tasks. This separation ensures security and organization.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Tier 1: Presentation -->
+                <div class="layer-card bg-slate-800 p-8 rounded-xl border-t-4 border-indigo-500 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">🍽️</div>
+                    <h3 class="text-xl font-bold text-indigo-400 mb-2">1. Presentation Layer</h3>
+                    <p class="text-xs font-bold text-slate-500 uppercase mb-4">The Dining Room</p>
+                    <p class="text-slate-300 text-sm mb-4">
+                        What the user sees (HTML/CSS/JS). This is the interface where you browse the menu and place your order.
+                    </p>
+                    <div class="bg-slate-900 p-3 rounded text-xs font-mono text-indigo-300">
+                        Browser -> Display UI
+                    </div>
+                </div>
+
+                <!-- Tier 2: Application -->
+                <div class="layer-card bg-slate-800 p-8 rounded-xl border-t-4 border-cyan-500 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">👨‍🍳</div>
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2">2. Application Layer</h3>
+                    <p class="text-xs font-bold text-slate-500 uppercase mb-4">The Kitchen</p>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Where the logic happens. It checks if you are authorized (VIP list) and cooks the request (Logic).
+                    </p>
+                    <div class="bg-slate-900 p-3 rounded text-xs font-mono text-cyan-300">
+                        Server -> Process Logic
+                    </div>
+                </div>
+
+                <!-- Tier 3: Data -->
+                <div class="layer-card bg-slate-800 p-8 rounded-xl border-t-4 border-emerald-500 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">🥦</div>
+                    <h3 class="text-xl font-bold text-emerald-400 mb-2">3. Data Layer</h3>
+                    <p class="text-xs font-bold text-slate-500 uppercase mb-4">The Pantry</p>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Where the raw ingredients (Data) are stored. The kitchen retrieves items from here to fulfill orders.
+                    </p>
+                    <div class="bg-slate-900 p-3 rounded text-xs font-mono text-emerald-300">
+                        Database -> Store/Fetch
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: MODERN TECH (Microservices) -->
+        <section id="modern" class="scroll-mt-24">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Bar Chart -->
+                <div class="order-2 lg:order-1 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
+                    <h3 class="text-center text-slate-400 text-sm font-semibold uppercase tracking-wider mb-6">Monolith vs. Microservices</h3>
+                    <div class="chart-container">
+                        <canvas id="modernChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Text Content -->
+                <div class="order-1 lg:order-2">
+                    <h2 class="text-3xl font-bold text-white mb-4 border-l-4 border-purple-500 pl-4">Modern Evolution</h2>
+                    <p class="text-slate-300 mb-6 leading-relaxed">
+                        We are moving away from giant "Monolith" apps to <strong>Microservices</strong> and <strong>Serverless</strong> architectures.
+                    </p>
+                    
+                    <ul class="space-y-6">
+                        <li class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                            <h4 class="font-bold text-purple-400 text-lg mb-1">Microservices (Mini-Apps)</h4>
+                            <p class="text-sm text-slate-400">
+                                Instead of one giant app, we break it into "Login", "Search", and "Payments". If "Search" breaks, "Payments" still works.
+                            </p>
+                        </li>
+                        <li class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                            <h4 class="font-bold text-blue-400 text-lg mb-1">Serverless (Cloud Containers)</h4>
+                            <p class="text-sm text-slate-400">
+                                Using providers like AWS or Google. The company owns <strong>no servers</strong>. Code runs in containers (like Docker) only when needed.
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: SECURITY (Visual Layout) -->
+        <section id="security" class="scroll-mt-24 bg-rose-900/10 border border-rose-900/30 p-8 rounded-3xl">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-rose-500 mb-4">Security by Design</h2>
+                <p class="text-slate-300 max-w-2xl mx-auto">
+                    Security isn't just about code; it's about Architecture. A poorly designed building is easy to break into, even if the locks are strong.
+                </p>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-center gap-12 items-center">
+                <!-- Concept: RBAC -->
+                <div class="max-w-sm text-center">
+                    <div class="bg-slate-800 p-6 rounded-full w-32 h-32 mx-auto flex items-center justify-center border-4 border-rose-500 mb-4 shadow-lg shadow-rose-900/20">
+                        <span class="text-4xl">🛡️</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">RBAC</h3>
+                    <p class="text-xs font-bold text-rose-400 uppercase mb-2">Role-Based Access Control</p>
+                    <p class="text-sm text-slate-400">
+                        The "Doorman". Checks who you are. The flaw happens when the designer forgets to lock the "Admin" door.
+                    </p>
+                </div>
+
+                <!-- Concept: Segmentation -->
+                <div class="max-w-sm text-center">
+                    <div class="bg-slate-800 p-6 rounded-full w-32 h-32 mx-auto flex items-center justify-center border-4 border-cyan-500 mb-4 shadow-lg shadow-cyan-900/20">
+                        <span class="text-4xl">🚧</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Segmentation</h3>
+                    <p class="text-xs font-bold text-cyan-400 uppercase mb-2">Firewalls & Separation</p>
+                    <p class="text-sm text-slate-400">
+                        Keeping parts of the network separate. If a fire starts in the kitchen (App Layer), it shouldn't burn down the pantry (Database).
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-800 pt-12 pb-8 text-center mt-20">
+            <p class="text-slate-500 text-sm mb-2">Generated based on "Web App Architecture Simplified"</p>
+            <p class="text-slate-600 text-xs">No SVG or Mermaid JS used. Powered by Tailwind CSS & Chart.js</p>
+        </footer>
+
+    </main>
+
+    <!-- CHART.JS LOGIC -->
+    <script>
+        // --- Utility: Label Splitting for Wrapping ---
+        function splitLabel(label) {
+            if (label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= 16) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- Utility: Tooltip Callback ---
+        const tooltipPlugin = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    const label = item.chart.data.labels[item.dataIndex];
+                    return Array.isArray(label) ? label.join(' ') : label;
+                }
+            }
+        };
+
+        // --- Chart 1: Hosting Models (Radar) ---
+        const ctxHosting = document.getElementById('hostingChart').getContext('2d');
+        const hostingLabels = ["Security Risk", "Redundancy (Reliability)", "Complexity", "Setup Cost"];
+        
+        new Chart(ctxHosting, {
+            type: 'radar',
+            data: {
+                labels: hostingLabels.map(splitLabel),
+                datasets: [
+                    {
+                        label: 'One Server (Risky)',
+                        data: [90, 10, 20, 20], // High Risk, Low everything else
+                        backgroundColor: 'rgba(244, 63, 94, 0.2)', // Rose
+                        borderColor: '#f43f5e',
+                        pointBackgroundColor: '#f43f5e',
+                        pointBorderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Many Servers - Many DBs (Pro)',
+                        data: [10, 95, 80, 85], // Low Risk, High Reliability, High Cost
+                        backgroundColor: 'rgba(34, 211, 238, 0.2)', // Cyan
+                        borderColor: '#22d3ee',
+                        pointBackgroundColor: '#22d3ee',
+                        pointBorderColor: '#fff',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: '#334155' },
+                        grid: { color: '#334155' },
+                        pointLabels: {
+                            color: '#cbd5e1',
+                            font: { size: 12, family: 'sans-serif' }
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                        ticks: { display: false } // Hide numbers for cleaner look
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#e2e8f0' }
+                    },
+                    tooltip: tooltipPlugin
+                }
+            }
+        });
+
+        // --- Chart 2: Modern Tech (Bar) ---
+        const ctxModern = document.getElementById('modernChart').getContext('2d');
+        const modernLabels = ["Deployment Speed", "Scalability", "Fault Isolation", "Complexity"];
+
+        new Chart(ctxModern, {
+            type: 'bar',
+            data: {
+                labels: modernLabels.map(splitLabel),
+                datasets: [
+                    {
+                        label: 'Monolithic App',
+                        data: [30, 40, 20, 40], // Slow deploy, hard to isolate faults
+                        backgroundColor: '#64748b', // Slate
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Microservices',
+                        data: [90, 95, 90, 80], // Fast deploy, high scale, high complexity
+                        backgroundColor: '#6366f1', // Indigo
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#cbd5e1' }
+                    },
+                    y: {
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94a3b8' },
+                        beginAtZero: true,
+                        max: 100
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#e2e8f0' }
+                    },
+                    tooltip: tooltipPlugin
+                }
+            }
+        });
+    </script>
+</body>
+</html>

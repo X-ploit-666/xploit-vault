@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Protocol: Verbs & Vibrations</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Plotly.js (WebGL/Canvas support) -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Base Hacker Theme */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #e5e7eb;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Chart Container Strict Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constraint applied */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #22c55e; /* Green-500 */
+            border-radius: 4px;
+        }
+
+        /* Neon Glow Utility */
+        .neon-border-green {
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+            border: 1px solid #22c55e;
+        }
+        
+        .neon-text {
+            text-shadow: 0 0 5px rgba(34, 197, 94, 0.8);
+        }
+
+        /* No SVG Diagrams - CSS Shapes */
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        /* Grid Pattern Background */
+        .bg-grid {
+            background-image: linear-gradient(rgba(34, 197, 94, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(34, 197, 94, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+    <!-- 
+        Palette Selection: "Hacker / Terminal"
+        Primary: #22c55e (Green-500) - "System Green"
+        Secondary: #3b82f6 (Blue-500) - "Cyber Blue"
+        Background: #050505 (Black)
+        Card Bg: #0f172a (Slate-900)
+    -->
+    <!-- 
+        PLAN SUMMARY:
+        1. Intro: HTTP Verbs & Protocol context.
+        2. Methods (Radar Chart): Comparing GET, POST, PUT, DELETE attributes.
+        3. Status Codes (Doughnut Chart): Distribution of response classes.
+        4. Security/Idempotency (Plotly 3D): Visualizing traffic security and stability.
+        5. Handshake (CSS Flow): Visualizing the connection.
+        
+        NO SVG USED. NO MERMAID USED.
+    -->
+</head>
+<body class="bg-grid">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-black/90 backdrop-blur border-b border-green-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="text-xl font-bold tracking-wider text-green-500 mono">HTTP<span class="text-white">_PROTOCOL</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#verbs" class="text-gray-300 hover:text-green-400 text-sm font-medium mono">./VERBS</a>
+                    <a href="#codes" class="text-gray-300 hover:text-green-400 text-sm font-medium mono">./CODES</a>
+                    <a href="#security" class="text-gray-300 hover:text-green-400 text-sm font-medium mono">./SECURITY</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-20">
+
+        <!-- Header / Hook -->
+        <header class="text-center space-y-6 pt-10">
+            <h1 class="text-5xl md:text-7xl font-bold text-white tracking-tighter neon-text">
+                VERBS & <span class="text-green-500">VIBRATIONS</span>
+            </h1>
+            <p class="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed mono">
+                > INITIALIZING MODULE...<br>
+                > LOADING HTTP STANDARDS...<br>
+                Understanding the fundamental language of the web. From Request Methods to Response Codes, this is how clients and servers communicate in the cyber domain.
+            </p>
+        </header>
+
+        <!-- Section 1: The Verbs (Methods) -->
+        <section id="verbs" class="scroll-mt-24">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <!-- Text Content -->
+                <div class="space-y-6">
+                    <div class="border-l-4 border-green-500 pl-4">
+                        <h2 class="text-3xl font-bold text-white mb-2">1. THE ACTION: REQUEST METHODS</h2>
+                        <p class="text-green-400 mono text-sm">cyber_operation: EXECUTE</p>
+                    </div>
+                    <p class="text-gray-300 leading-relaxed">
+                        HTTP methods are the "verbs" of the web. They tell the server exactly what cyber operation to perform. In REST API architecture, selecting the correct verb is critical for system stability and semantic correctness.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 gap-4 mt-4">
+                        <!-- GET -->
+                        <div class="bg-slate-900 p-4 rounded border border-green-900/50 hover:border-green-500 transition-colors">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-green-400 font-bold mono">GET</span>
+                                <span class="text-xs bg-green-900 text-green-300 px-2 py-1 rounded">READ</span>
+                            </div>
+                            <p class="text-sm text-gray-400">Requests data. Parameters visible in URL. Safe & Idempotent.</p>
+                        </div>
+                        <!-- POST -->
+                        <div class="bg-slate-900 p-4 rounded border border-blue-900/50 hover:border-blue-500 transition-colors">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-blue-400 font-bold mono">POST</span>
+                                <span class="text-xs bg-blue-900 text-blue-300 px-2 py-1 rounded">CREATE</span>
+                            </div>
+                            <p class="text-sm text-gray-400">Sends data in body. Used for logins/uploads. NOT Idempotent.</p>
+                        </div>
+                         <!-- PUT/DELETE -->
+                         <div class="bg-slate-900 p-4 rounded border border-red-900/50 hover:border-red-500 transition-colors">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-red-400 font-bold mono">DELETE</span>
+                                <span class="text-xs bg-red-900 text-red-300 px-2 py-1 rounded">REVISE</span>
+                            </div>
+                            <p class="text-sm text-gray-400">Removes a resource. Danger zone operation.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visualization: Radar Chart -->
+                <div class="bg-slate-900/50 p-4 rounded-xl neon-border-green">
+                    <h3 class="text-center text-green-500 mono mb-4 text-sm">> METHOD_ATTRIBUTES_SCAN</h3>
+                    <div class="chart-container">
+                        <canvas id="methodsRadarChart"></canvas>
+                    </div>
+                    <p class="text-center text-xs text-gray-500 mt-4 mono">Comparison of Safety, Payload Capacity, and Idempotency</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: The Result (Status Codes) -->
+        <section id="codes" class="scroll-mt-24">
+            <div class="bg-slate-900 rounded-2xl p-8 border border-slate-800 relative overflow-hidden">
+                <!-- Introduction -->
+                <div class="mb-10 text-center">
+                    <h2 class="text-3xl font-bold text-white mb-4">2. THE RESULT: STATUS CODES</h2>
+                    <p class="text-gray-400 max-w-3xl mx-auto">
+                        The server responds with a 3-digit code to indicate the outcome. Understanding these classes is vital for debugging and user experience.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    <!-- Chart Container -->
+                    <div class="order-2 lg:order-1">
+                        <div class="chart-container">
+                            <canvas id="statusDoughnutChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Legend / Details -->
+                    <div class="order-1 lg:order-2 space-y-6">
+                        
+                        <!-- 2xx -->
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-2 h-20 bg-green-500 rounded-full"></div>
+                            <div>
+                                <h3 class="text-green-400 font-bold text-xl mono">[2xx] SUCCESS</h3>
+                                <p class="text-gray-300 text-sm mt-1">"System Green. Request Executed."</p>
+                                <ul class="text-xs text-gray-500 mt-2 space-y-1 font-mono">
+                                    <li>> 200 OK</li>
+                                    <li>> 201 Created</li>
+                                    <li>> 204 No Content</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 3xx -->
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-2 h-20 bg-blue-500 rounded-full"></div>
+                            <div>
+                                <h3 class="text-blue-400 font-bold text-xl mono">[3xx] REDIRECTION</h3>
+                                <p class="text-gray-300 text-sm mt-1">"The file is in another castle."</p>
+                                <ul class="text-xs text-gray-500 mt-2 space-y-1 font-mono">
+                                    <li>> 301 Moved Permanently</li>
+                                    <li>> 302 Found (Temporary)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 4xx -->
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-2 h-20 bg-yellow-500 rounded-full"></div>
+                            <div>
+                                <h3 class="text-yellow-400 font-bold text-xl mono">[4xx] CLIENT ERROR</h3>
+                                <p class="text-gray-300 text-sm mt-1">"YOU messed up. Check request."</p>
+                                <ul class="text-xs text-gray-500 mt-2 space-y-1 font-mono">
+                                    <li>> 401 Unauthorized</li>
+                                    <li>> 403 Forbidden</li>
+                                    <li>> 404 Not Found</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                         <!-- 5xx -->
+                         <div class="flex items-start gap-4">
+                            <div class="mt-1 w-2 h-20 bg-red-600 rounded-full"></div>
+                            <div>
+                                <h3 class="text-red-500 font-bold text-xl mono">[5xx] SERVER ERROR</h3>
+                                <p class="text-gray-300 text-sm mt-1">"I messed up. Circuits fried."</p>
+                                <ul class="text-xs text-gray-500 mt-2 space-y-1 font-mono">
+                                    <li>> 500 Internal Error</li>
+                                    <li>> 503 Service Unavailable</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Idempotency & cURL -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Idempotency Card -->
+            <div class="bg-slate-900 p-6 rounded-xl border border-gray-800">
+                <h3 class="text-white font-bold text-xl mb-4 border-b border-gray-700 pb-2">🧠 PRO TIP: IDEMPOTENCY</h3>
+                <p class="text-gray-400 text-sm mb-4">
+                    An operation is <strong>Idempotent</strong> if performing it multiple times has the same effect as doing it once.
+                </p>
+                <div class="space-y-3">
+                    <div class="bg-black p-3 rounded flex items-center justify-between">
+                        <span class="mono text-green-400">GET / PUT / DELETE</span>
+                        <span class="text-xs bg-green-900 text-white px-2 py-1 rounded">SAFE TO REPEAT</span>
+                    </div>
+                    <div class="bg-black p-3 rounded flex items-center justify-between">
+                        <span class="mono text-red-400">POST</span>
+                        <span class="text-xs bg-red-900 text-white px-2 py-1 rounded">NOT IDEMPOTENT</span>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-600 mt-4 italic">Example: Posting a comment twice creates two duplicates. Deleting a file twice just ensures it's gone.</p>
+            </div>
+
+            <!-- cURL Tools Card -->
+            <div class="bg-slate-900 p-6 rounded-xl border border-gray-800">
+                <h3 class="text-white font-bold text-xl mb-4 border-b border-gray-700 pb-2">💻 FIELD COMMANDS: cURL</h3>
+                <p class="text-gray-400 text-sm mb-4">
+                    Override default methods using the <code class="bg-gray-700 px-1 rounded">-X</code> flag.
+                </p>
+                
+                <div class="space-y-4 font-mono text-sm">
+                    <!-- Cmd 1 -->
+                    <div>
+                        <p class="text-gray-500 text-xs mb-1"># Delete a resource</p>
+                        <div class="bg-black p-3 rounded border-l-2 border-red-500 text-green-400 overflow-x-auto whitespace-nowrap">
+                            curl -X DELETE https://api.site.com/user/1
+                        </div>
+                    </div>
+                    <!-- Cmd 2 -->
+                    <div>
+                        <p class="text-gray-500 text-xs mb-1"># Check allowed methods</p>
+                        <div class="bg-black p-3 rounded border-l-2 border-blue-500 text-green-400 overflow-x-auto whitespace-nowrap">
+                            curl -X OPTIONS https://api.site.com/ -v
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Security (HTTPS) -->
+        <section id="security" class="scroll-mt-24 pb-20">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-white mb-2">3. SECURITY & ENCRYPTION</h2>
+                <p class="text-gray-400">Visualizing the shift from Cleartext (HTTP) to Encrypted (HTTPS).</p>
+            </div>
+
+            <!-- Plotly 3D Chart Container -->
+            <div class="bg-slate-900 p-4 rounded-xl border border-green-900 shadow-2xl">
+                <div id="security3dChart" style="width:100%; height:500px;"></div>
+                <div class="text-center text-xs text-gray-500 mt-2 mono">
+                    > FIG 3.0: 3D Visualization of Request Volume vs. Security Protocol
+                </div>
+            </div>
+
+            <!-- Handshake Flow (CSS Only) -->
+            <div class="mt-12 max-w-3xl mx-auto">
+                <h3 class="text-center text-white font-bold mb-8">THE SECURE HANDSHAKE</h3>
+                
+                <!-- Step 1 -->
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-24 text-right mono text-xs text-gray-500">CLIENT</div>
+                    <div class="flex-1 bg-gray-800 p-3 rounded border border-gray-700 text-center text-sm text-gray-300">
+                        1. Client Hello (Supported Ciphers)
+                    </div>
+                    <div class="w-24 mono text-xs text-gray-500">SERVER</div>
+                </div>
+                <!-- Connector -->
+                <div class="flex justify-center mb-2"><div class="w-0.5 h-6 bg-green-500/50"></div></div>
+
+                <!-- Step 2 -->
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-24 text-right mono text-xs text-gray-500"></div>
+                    <div class="flex-1 bg-green-900/20 p-3 rounded border border-green-500/50 text-center text-sm text-green-300">
+                        2. Server Hello + Certificate (Public Key)
+                    </div>
+                    <div class="w-24 mono text-xs text-gray-500"></div>
+                </div>
+                 <!-- Connector -->
+                 <div class="flex justify-center mb-2"><div class="w-0.5 h-6 bg-green-500/50"></div></div>
+
+                <!-- Step 3 -->
+                <div class="flex items-center gap-4">
+                    <div class="w-24 text-right mono text-xs text-gray-500"></div>
+                    <div class="flex-1 bg-blue-900/20 p-3 rounded border border-blue-500/50 text-center text-sm text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+                        3. Encrypted Data Transfer (Session Key)
+                    </div>
+                    <div class="w-24 mono text-xs text-gray-500"></div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-gray-800 pt-10 text-center text-gray-600 pb-10">
+            <p class="mono text-xs">SYSTEM_STATUS: ONLINE // ENCRYPTION: TLS 1.3 // RENDER: CANVAS_ONLY</p>
+        </footer>
+
+    </main>
+
+    <!-- Script Block -->
+    <script>
+        // --- 1. Mandatory Label Wrapping Helper ---
+        function formatLabel(str, maxwidth) {
+            var sections = [];
+            var words = str.split(" ");
+            var temp = "";
+            words.forEach(function(item, index) {
+                if (temp.length > 0) {
+                    var concat = temp + ' ' + item;
+                    if (concat.length > maxwidth) {
+                        sections.push(temp);
+                        temp = "";
+                    } else {
+                        if (index == (words.length - 1)) {
+                            sections.push(concat);
+                            return;
+                        } else {
+                            temp = concat;
+                            return;
+                        }
+                    }
+                }
+                if (index == (words.length - 1)) {
+                    sections.push(item);
+                    return;
+                }
+                if (item.length < maxwidth) {
+                    temp = item;
+                } else {
+                    sections.push(item);
+                }
+            });
+            return sections;
+        }
+
+        // --- 2. Mandatory Tooltip Config ---
+        const commonTooltipOptions = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            },
+            backgroundColor: 'rgba(0,0,0,0.9)',
+            titleColor: '#22c55e',
+            bodyColor: '#fff',
+            borderColor: '#22c55e',
+            borderWidth: 1,
+            titleFont: { family: "'JetBrains Mono', monospace" }
+        };
+
+        // --- 3. Chart 1: Radar Chart (Methods) ---
+        const ctxRadar = document.getElementById('methodsRadarChart').getContext('2d');
+        const radarLabels = ["GET (Read)", "POST (Create)", "PUT (Replace)", "DELETE (Revise)"];
+        const processedRadarLabels = radarLabels.map(l => formatLabel(l, 16));
+
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: processedRadarLabels,
+                datasets: [{
+                    label: 'Safety (Risk of Data Loss)',
+                    data: [100, 20, 40, 0], // GET is safest, DELETE is risky
+                    backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                    borderColor: '#22c55e',
+                    pointBackgroundColor: '#22c55e',
+                    pointBorderColor: '#fff'
+                },
+                {
+                    label: 'Payload Capacity',
+                    data: [20, 100, 100, 20], // POST/PUT handle bodies well
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderColor: '#3b82f6',
+                    pointBackgroundColor: '#3b82f6',
+                    pointBorderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        pointLabels: {
+                            color: '#9ca3af',
+                            font: { family: "'JetBrains Mono', monospace", size: 10 }
+                        },
+                        ticks: { display: false, backdropColor: 'transparent' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#e5e7eb', font: { family: "'Inter', sans-serif" } }
+                    },
+                    tooltip: commonTooltipOptions
+                }
+            }
+        });
+
+        // --- 4. Chart 2: Doughnut (Status Codes) ---
+        const ctxDoughnut = document.getElementById('statusDoughnutChart').getContext('2d');
+        const statusLabels = ["2xx Success", "3xx Redirection", "4xx Client Error", "5xx Server Error"];
+        const processedStatusLabels = statusLabels.map(l => formatLabel(l, 16));
+
+        new Chart(ctxDoughnut, {
+            type: 'doughnut',
+            data: {
+                labels: processedStatusLabels,
+                datasets: [{
+                    data: [55, 10, 25, 10], // Conceptual distribution
+                    backgroundColor: [
+                        '#22c55e', // Green
+                        '#3b82f6', // Blue
+                        '#eab308', // Yellow
+                        '#dc2626'  // Red
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#e5e7eb', padding: 20 }
+                    },
+                    tooltip: commonTooltipOptions
+                },
+                cutout: '70%'
+            }
+        });
+
+        // --- 5. Chart 3: Plotly 3D (Security) ---
+        // Using scatter3d to satisfy WebGL/Canvas requirement (NO SVG)
+        const trace1 = {
+            x: [1, 2, 3, 4, 5, 6, 7, 8], // Time
+            y: [80, 70, 60, 40, 30, 20, 10, 5], // HTTP Traffic Volume
+            z: [0, 0, 0, 0, 0, 0, 0, 0], // Plaintext Plane
+            mode: 'markers',
+            marker: {
+                size: 12,
+                color: '#dc2626', // Red for HTTP
+                opacity: 0.8
+            },
+            type: 'scatter3d',
+            name: 'HTTP (Cleartext)'
+        };
+
+        const trace2 = {
+            x: [1, 2, 3, 4, 5, 6, 7, 8],
+            y: [10, 20, 35, 60, 80, 90, 95, 100], // HTTPS Traffic Volume
+            z: [10, 10, 10, 10, 10, 10, 10, 10], // Encrypted Plane
+            mode: 'markers',
+            marker: {
+                size: 12,
+                color: '#22c55e', // Green for HTTPS
+                opacity: 0.8
+            },
+            type: 'scatter3d',
+            name: 'HTTPS (Encrypted)'
+        };
+
+        // Lines to connect dots for visual flow
+        const traceLine1 = {
+             x: [1, 2, 3, 4, 5, 6, 7, 8], y: [80, 70, 60, 40, 30, 20, 10, 5], z: [0,0,0,0,0,0,0,0],
+             mode: 'lines', type: 'scatter3d', line: { color: '#dc2626', width: 5 }
+        };
+        const traceLine2 = {
+             x: [1, 2, 3, 4, 5, 6, 7, 8], y: [10, 20, 35, 60, 80, 90, 95, 100], z: [10,10,10,10,10,10,10,10],
+             mode: 'lines', type: 'scatter3d', line: { color: '#22c55e', width: 5 }
+        };
+
+        const layout = {
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: { color: '#e5e7eb', family: 'JetBrains Mono' },
+            margin: { l: 0, r: 0, b: 0, t: 0 },
+            scene: {
+                xaxis: { title: 'Timeline', gridcolor: '#333' },
+                yaxis: { title: 'Traffic Vol', gridcolor: '#333' },
+                zaxis: { title: 'Security Lvl', gridcolor: '#333' },
+                bgcolor: 'rgba(0,0,0,0)'
+            },
+            showlegend: true,
+            legend: { x: 0, y: 1 }
+        };
+
+        Plotly.newPlot('security3dChart', [trace1, trace2, traceLine1, traceLine2], layout, {displayModeBar: false});
+
+    </script>
+</body>
+</html>

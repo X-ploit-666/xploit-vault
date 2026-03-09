@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Digital Time Machine: Web Archives & Reconnaissance</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles & Chart Container Constraints -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #0F172A; /* Slate 900 */
+            color: #F8FAFC; /* Slate 50 */
+        }
+
+        /* Chart Container Styling 
+           - Occupy full parent width
+           - Max width constraint
+           - Centered
+           - Controlled height
+           - Relative positioning
+        */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Custom Scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1E293B; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8B5CF6; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7C3AED; 
+        }
+
+        /* Gradient Text Utility */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #22D3EE, #A855F7); /* Cyan to Purple */
+        }
+        
+        /* Card Hover Effect */
+        .hover-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.3); /* Purple shadow */
+        }
+    </style>
+
+    <!-- 
+    PALETTE SELECTION: "Cyber/Neon Tech" 
+    Background: #0F172A (Deep Slate)
+    Card Bg: #1E293B (Slate 800)
+    Primary Accent: #8B5CF6 (Violet)
+    Secondary Accent: #22D3EE (Cyan)
+    Highlight: #F472B6 (Pink)
+    Text: #F8FAFC (White/Off-white)
+    
+    Source Material Analysis & Narrative Plan:
+    1. Introduction: Define Wayback Machine & Internet Archive (1996).
+    2. The Mechanism: Visualize the 3-step process (Crawl, Archive, Access) and data types.
+    3. Operation Dynamics: Visualize Archiving Frequency factors.
+    4. Reconnaissance Utility: 4-part grid explaining security/OSINT benefits.
+    5. Case Study: HackTheBox example.
+    
+    Chart Selection Justification (NO SVG):
+    1. Anatomy of a Snapshot (Goal: Compare/Composition) -> Doughnut Chart (Chart.js). Shows parts of a page (HTML, CSS, IMG).
+    2. Archiving Frequency (Goal: Compare) -> Bar Chart (Chart.js). Visualizes 'Popular' vs 'Niche' frequency.
+    3. Process Flow (Goal: Organize/Process) -> HTML/CSS Diagram. Arrows and Boxes (No Mermaid/SVG).
+    -->
+</head>
+<body class="antialiased selection:bg-cyan-500 selection:text-white">
+
+    <!-- Header Section -->
+    <header class="w-full py-12 px-4 text-center bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-lg backdrop-blur-sm bg-opacity-90">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-black tracking-tight mb-2">
+                <span class="text-gradient">WAYBACK MACHINE</span>
+            </h1>
+            <p class="text-slate-400 text-lg md:text-xl font-light tracking-wide">
+                Unveiling Digital Footprints & Web Reconnaissance
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-20">
+
+        <!-- SECTION 1: INTRODUCTION -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="flex items-baseline space-x-4 mb-4">
+                    <span class="text-6xl font-black text-cyan-400">1996</span>
+                    <span class="text-xl text-slate-400 font-medium">ESTABLISHED</span>
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-6 border-l-4 border-purple-500 pl-4">
+                    The Internet Archive
+                </h2>
+                <p class="text-slate-300 leading-relaxed text-lg mb-6">
+                    In a digital world where websites vanish in an instant, the <strong class="text-white">Wayback Machine</strong> serves as the internet's memory. Operated by the non-profit Internet Archive, it allows us to travel back in time to view "snapshots" of the World Wide Web as it once existed.
+                </p>
+                <div class="p-4 bg-slate-800 rounded-lg border border-slate-700 shadow-lg">
+                    <p class="text-sm text-cyan-300 font-mono">
+                        > MISSION: Preserve the digital history of the web for researchers, historians, and security analysts.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Visualizing "What is stored" -->
+            <div class="bg-slate-800 p-6 rounded-xl shadow-xl border border-slate-700 hover-card">
+                <h3 class="text-xl font-bold text-white mb-4 text-center">Anatomy of a Snapshot</h3>
+                <p class="text-slate-400 text-sm text-center mb-4">
+                    The Wayback Machine doesn't just index text; it downloads the entire rendering package.
+                </p>
+                <!-- Chart Container -->
+                <div class="chart-container">
+                    <canvas id="snapshotContentChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 2: HOW IT WORKS (Process Flow) -->
+        <section>
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">How It Works</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">
+                    The operation can be visualized as a three-step autonomous cycle involving web crawlers, massive storage, and user access.
+                </p>
+            </div>
+
+            <!-- HTML/CSS Flowchart (Replacing Mermaid/SVG) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+                <!-- Connector Line for Desktop -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-cyan-500 to-purple-500 transform -translate-y-1/2 -z-10 rounded"></div>
+
+                <!-- Step 1 -->
+                <div class="bg-slate-800 p-8 rounded-2xl border-2 border-purple-500 shadow-[0_0_20px_rgba(139,92,246,0.2)] text-center relative z-10 hover-card">
+                    <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-lg border-4 border-slate-900">
+                        🕷️
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">1. Crawling</h3>
+                    <p class="text-slate-300 text-sm">
+                        Automated bots navigate the web, following hyperlinks systematically like a human user, but at massive scale.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-slate-800 p-8 rounded-2xl border-2 border-cyan-500 shadow-[0_0_20px_rgba(34,211,238,0.2)] text-center relative z-10 hover-card">
+                    <div class="w-16 h-16 bg-cyan-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-lg border-4 border-slate-900">
+                        💾
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">2. Archiving</h3>
+                    <p class="text-slate-300 text-sm">
+                        Pages, images, and scripts are downloaded and tagged with a timestamp. Popular sites are archived daily; others less often.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-slate-800 p-8 rounded-2xl border-2 border-pink-500 shadow-[0_0_20px_rgba(236,72,153,0.2)] text-center relative z-10 hover-card">
+                    <div class="w-16 h-16 bg-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-lg border-4 border-slate-900">
+                        👀
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">3. Accessing</h3>
+                    <p class="text-slate-300 text-sm">
+                        Users interface with the database via URL search, browsing history through a calendar-based timeline.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: FREQUENCY & VARIABLES -->
+        <section class="bg-slate-800 rounded-3xl p-8 md:p-12 shadow-2xl border border-slate-700">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <!-- Text Content -->
+                <div class="order-2 md:order-1">
+                    <h3 class="text-2xl font-bold text-white mb-4">Not All Pages Are Equal</h3>
+                    <p class="text-slate-300 mb-6">
+                        The frequency of archiving varies drastically. The Wayback Machine algorithms prioritize content based on specific criteria. It does <span class="text-pink-400 font-bold">not</span> capture every single page on the internet.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-center space-x-3">
+                            <span class="text-cyan-400 text-xl">⚡</span>
+                            <span class="text-slate-200"><strong>Popularity:</strong> High traffic sites are crawled daily.</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <span class="text-purple-400 text-xl">🔄</span>
+                            <span class="text-slate-200"><strong>Rate of Change:</strong> Frequently updated news sites trigger more snapshots.</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <span class="text-pink-400 text-xl">🎓</span>
+                            <span class="text-slate-200"><strong>Value:</strong> Cultural or research significance increases priority.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Chart: Archiving Frequency Comparison -->
+                <div class="order-1 md:order-2">
+                    <div class="chart-container">
+                        <canvas id="frequencyChart"></canvas>
+                    </div>
+                    <p class="text-center text-xs text-slate-500 mt-2 italic">Conceptual visualization of snapshot density over time</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: WEB RECONNAISSANCE -->
+        <section>
+            <div class="text-center mb-12">
+                <span class="inline-block px-4 py-1 rounded-full bg-purple-900 text-purple-200 text-sm font-bold mb-4 border border-purple-700">CYBERSECURITY UTILITY</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Web Reconnaissance</h2>
+                <p class="text-slate-400 max-w-3xl mx-auto">
+                    For security professionals and OSINT (Open Source Intelligence) gatherers, the Wayback Machine is a treasure trove. It allows for passive reconnaissance—gathering intel without touching the target's current infrastructure.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-slate-800 p-6 rounded-xl border-t-4 border-cyan-500 hover-card shadow-lg">
+                    <div class="text-4xl mb-4">📂</div>
+                    <h3 class="text-lg font-bold text-white mb-2">Hidden Assets</h3>
+                    <p class="text-slate-400 text-sm">
+                        Discover old files, directories, or subdomains that were "deleted" but contain sensitive info or forgotten backup files.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-slate-800 p-6 rounded-xl border-t-4 border-purple-500 hover-card shadow-lg">
+                    <div class="text-4xl mb-4">🔓</div>
+                    <h3 class="text-lg font-bold text-white mb-2">Vulnerabilities</h3>
+                    <p class="text-slate-400 text-sm">
+                        Identify legacy code or old versions of plugins that might still be accessible and possess known security flaws.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-slate-800 p-6 rounded-xl border-t-4 border-pink-500 hover-card shadow-lg">
+                    <div class="text-4xl mb-4">🕵️</div>
+                    <h3 class="text-lg font-bold text-white mb-2">Gathering Intel</h3>
+                    <p class="text-slate-400 text-sm">
+                        Reveal past marketing strategies, former employee names, and technology stacks used previously (OSINT).
+                    </p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-slate-800 p-6 rounded-xl border-t-4 border-indigo-500 hover-card shadow-lg">
+                    <div class="text-4xl mb-4">👻</div>
+                    <h3 class="text-lg font-bold text-white mb-2">Stealth Mode</h3>
+                    <p class="text-slate-400 text-sm">
+                        Conduct analysis completely passively. Since you are viewing an archive, your traffic never hits the target's live server.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: CASE STUDY -->
+        <section class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-1 border border-slate-700 shadow-2xl">
+            <div class="bg-slate-900 rounded-[22px] p-8 md:p-12 relative overflow-hidden">
+                <!-- Decorative background element -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-green-500 opacity-5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+
+                <div class="relative z-10">
+                    <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                        <span class="mr-3 text-green-500">🟩</span> CASE STUDY: HackTheBox (HTB)
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <p class="text-slate-300 mb-4">
+                                By using the Wayback Machine to analyze the history of the popular penetration testing platform <strong>HackTheBox</strong>, we can pinpoint its digital inception.
+                            </p>
+                            <p class="text-slate-300">
+                                Entering the URL and searching for the earliest capture reveals the exact moment the platform's presence was first recorded by the archive.
+                            </p>
+                        </div>
+                        
+                        <div class="flex flex-col justify-center">
+                            <div class="bg-black bg-opacity-50 p-6 rounded-xl border border-green-500/30 font-mono text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.1)]">
+                                <div class="text-xs text-slate-500 mb-2">EARLIEST CAPTURE DATA</div>
+                                <div class="flex justify-between items-end border-b border-slate-700 pb-2 mb-2">
+                                    <span>TARGET:</span>
+                                    <span class="text-white">hackthebox.com</span>
+                                </div>
+                                <div class="flex justify-between items-end border-b border-slate-700 pb-2 mb-2">
+                                    <span>DATE:</span>
+                                    <span class="text-white">2017-06-10</span>
+                                </div>
+                                <div class="flex justify-between items-end">
+                                    <span>TIME:</span>
+                                    <span class="text-white">04h 23m 01s</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center pt-12 pb-8 border-t border-slate-800 text-slate-500 text-sm">
+            <p>Generated for Educational Purposes &bull; Based on Web Archives Source Material</p>
+            <p class="mt-2 text-xs">NO SVG USED &bull; NO MERMAID JS &bull; CANVAS VISUALIZATION</p>
+        </footer>
+
+    </main>
+
+    <!-- JavaScript for Charts -->
+    <script>
+        // --- Utility: Label Wrapping Logic (16 chars) ---
+        function wrapLabel(str, maxLen = 16) {
+            if (str.length <= maxLen) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= maxLen) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- Utility: Common Tooltip Configuration ---
+        const commonTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- Chart 1: Anatomy of a Snapshot (Doughnut) ---
+        const ctxSnapshot = document.getElementById('snapshotContentChart').getContext('2d');
+        const labelsSnapshot = ["HTML Structure", "CSS Stylesheets", "JavaScript Code", "Images & Media", "Metadata"];
+        const wrappedLabelsSnapshot = labelsSnapshot.map(l => wrapLabel(l));
+
+        new Chart(ctxSnapshot, {
+            type: 'doughnut',
+            data: {
+                labels: wrappedLabelsSnapshot,
+                datasets: [{
+                    label: 'Snapshot Composition',
+                    data: [15, 20, 20, 40, 5], // Estimated composition for visual representation
+                    backgroundColor: [
+                        '#8B5CF6', // Purple
+                        '#22D3EE', // Cyan
+                        '#F472B6', // Pink
+                        '#A78BFA', // Light Purple
+                        '#64748B'  // Slate
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: '#CBD5E1', // Slate 300
+                            font: { size: 12 }
+                        }
+                    },
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+
+        // --- Chart 2: Archiving Frequency (Bar) ---
+        const ctxFrequency = document.getElementById('frequencyChart').getContext('2d');
+        const labelsFrequency = ["Global News Site", "Popular Tech Blog", "Niche Personal Portfolio", "Abandoned Page"];
+        const wrappedLabelsFrequency = labelsFrequency.map(l => wrapLabel(l));
+
+        new Chart(ctxFrequency, {
+            type: 'bar',
+            data: {
+                labels: wrappedLabelsFrequency,
+                datasets: [{
+                    label: 'Snapshots Per Year (Est.)',
+                    data: [365, 52, 4, 0], // Data representing Daily, Weekly, Quarterly, Never
+                    backgroundColor: [
+                        '#22D3EE', // Cyan (High)
+                        '#8B5CF6', // Purple (Med)
+                        '#F472B6', // Pink (Low)
+                        '#475569'  // Slate (None)
+                    ],
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94A3B8' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#94A3B8', autoSkip: false, maxRotation: 0 }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+    </script>
+</body>
+</html>

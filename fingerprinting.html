@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital DNA: Website Fingerprinting</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Configuration & Styling -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#0f172a',    // Slate 900
+                            card: '#1e293b',    // Slate 800
+                            text: '#f1f5f9',    // Slate 100
+                            muted: '#94a3b8',   // Slate 400
+                            cyan: '#06b6d4',    // Cyan 500
+                            violet: '#8b5cf6',  // Violet 500
+                            rose: '#f43f5e',    // Rose 500
+                            green: '#10b981'    // Emerald 500
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom Chart Container Styles */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Max width constraint */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Timeline vertical line */
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background-color: #334155;
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+
+        /* Hide scrollbar for clean look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
+        }
+    </style>
+    
+    <!-- 
+    Palette: Neon Cyber
+    Background: #0f172a (Dark Slate)
+    Accents: #06b6d4 (Cyan), #8b5cf6 (Violet), #f43f5e (Rose)
+    -->
+
+    <!-- HTML Comment Confirmation: 
+    Plan Summary: 
+    1. Header: Intro to Fingerprinting ("Digital DNA").
+    2. The Why: Polar Area Chart showing 4 key reasons.
+    3. Techniques: Doughnut Chart explaining methods.
+    4. Tools: Radar Chart comparing tool attributes + List.
+    5. Case Study: Vertical Flow of inlanefreight.com scan + Bar Chart of findings.
+    
+    Visualization Choices:
+    1. The Why -> Goal: Organize/Relationship -> Polar Area Chart -> chosen to show 4 distinct but equal pillars of reconnaissance.
+    2. Techniques -> Goal: Part-to-whole -> Doughnut Chart -> shows composition of a strategy.
+    3. Tool Comparison -> Goal: Compare -> Radar Chart -> compares multi-variable attributes (Stealth, Depth, etc.).
+    4. Scan Findings -> Goal: Compare/Count -> Bar Chart -> quantifies specific risks found.
+    
+    CONFIRMATION: NEITHER Mermaid JS NOR SVG were used anywhere in the output.
+    -->
+</head>
+<body class="bg-cyber-dark text-cyber-text font-sans antialiased selection:bg-cyber-cyan selection:text-cyber-dark">
+
+    <!-- Header / Hero Section -->
+    <header class="w-full py-12 px-4 md:px-8 bg-gradient-to-b from-slate-900 to-slate-800 border-b border-slate-700">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan via-white to-cyber-violet">
+                DIGITAL DNA
+            </h1>
+            <h2 class="text-2xl md:text-3xl font-light text-cyber-cyan mb-6">
+                A Guide to Website Fingerprinting
+            </h2>
+            <p class="max-w-2xl mx-auto text-lg text-cyber-muted leading-relaxed">
+                Just as a fingerprint uniquely identifies a person, <strong>digital fingerprints</strong> reveal the specific servers, operating systems, and software powering a website. Uncovering this DNA is the first step in reconnaissance.
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 py-12 space-y-24">
+
+        <!-- SECTION 1: THE PURPOSE (Why Fingerprint?) -->
+        <section id="purpose">
+            <div class="text-center mb-10">
+                <h3 class="text-3xl font-bold text-white mb-4 border-b-2 border-cyber-cyan inline-block pb-2">Why Do We Fingerprint?</h3>
+                <p class="text-cyber-muted max-w-3xl mx-auto">
+                    Fingerprinting is the cornerstone of web reconnaissance. It transforms a generic target into a specific profile, allowing attackers (and defenders) to prioritize and plan.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <!-- Content Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-cyber-card p-6 rounded-xl border border-slate-700 shadow-lg hover:border-cyber-cyan transition-colors duration-300">
+                        <div class="text-4xl mb-3">🎯</div>
+                        <h4 class="text-xl font-bold text-cyber-cyan mb-2">Targeted Attacks</h4>
+                        <p class="text-sm text-cyber-muted">Knowing the specific tech stack allows for precise exploits rather than guessing.</p>
+                    </div>
+                    <div class="bg-cyber-card p-6 rounded-xl border border-slate-700 shadow-lg hover:border-cyber-violet transition-colors duration-300">
+                        <div class="text-4xl mb-3">🛠️</div>
+                        <h4 class="text-xl font-bold text-cyber-violet mb-2">Find Mistakes</h4>
+                        <p class="text-sm text-cyber-muted">Exposes misconfigured defaults or outdated software versions.</p>
+                    </div>
+                    <div class="bg-cyber-card p-6 rounded-xl border border-slate-700 shadow-lg hover:border-cyber-rose transition-colors duration-300">
+                        <div class="text-4xl mb-3">📋</div>
+                        <h4 class="text-xl font-bold text-cyber-rose mb-2">Prioritise</h4>
+                        <p class="text-sm text-cyber-muted">Helps identify the weakest link among multiple potential targets.</p>
+                    </div>
+                    <div class="bg-cyber-card p-6 rounded-xl border border-slate-700 shadow-lg hover:border-cyber-green transition-colors duration-300">
+                        <div class="text-4xl mb-3">🗺️</div>
+                        <h4 class="text-xl font-bold text-cyber-green mb-2">Build Profile</h4>
+                        <p class="text-sm text-cyber-muted">Creates a holistic view of the infrastructure and security posture.</p>
+                    </div>
+                </div>
+
+                <!-- Visualization: Polar Area Chart -->
+                <div class="bg-cyber-card rounded-xl p-4 border border-slate-700 shadow-2xl flex flex-col items-center justify-center">
+                    <div class="w-full text-center mb-2">
+                        <span class="text-xs font-mono text-cyber-muted uppercase tracking-widest">Reconnaissance Pillars</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="whyChart"></canvas>
+                    </div>
+                    <p class="mt-4 text-xs text-center text-cyber-muted italic">
+                        The four pillars of fingerprinting utility.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: TECHNIQUES & TOOLS -->
+        <section id="techniques">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                
+                <!-- Techniques Column -->
+                <div>
+                    <h3 class="text-3xl font-bold text-white mb-6 border-l-4 border-cyber-violet pl-4">Fingerprinting Techniques</h3>
+                    <p class="text-cyber-muted mb-6">
+                        There isn't just one way to ID a server. Investigators use a blend of four primary techniques to extract information from banners, headers, and content.
+                    </p>
+                    
+                    <div class="bg-cyber-card rounded-xl p-6 border border-slate-700 shadow-lg">
+                        <div class="chart-container">
+                            <canvas id="techniquesChart"></canvas>
+                        </div>
+                        <div class="mt-6 space-y-2">
+                            <div class="flex items-start">
+                                <span class="text-cyber-cyan font-bold mr-2">1. Banner Grabbing:</span>
+                                <span class="text-sm text-cyber-muted">Analyzing the "Welcome" message from servers.</span>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="text-cyber-violet font-bold mr-2">2. HTTP Headers:</span>
+                                <span class="text-sm text-cyber-muted">Reading the `Server` or `X-Powered-By` fields.</span>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="text-cyber-rose font-bold mr-2">3. Probing:</span>
+                                <span class="text-sm text-cyber-muted">Sending specific requests to trigger unique errors.</span>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="text-cyber-green font-bold mr-2">4. Page Content:</span>
+                                <span class="text-sm text-cyber-muted">Finding copyright notices or structure clues.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tools Column -->
+                <div>
+                    <h3 class="text-3xl font-bold text-white mb-6 border-l-4 border-cyber-rose pl-4">The Toolkit</h3>
+                    <p class="text-cyber-muted mb-6">
+                        Different tools serve different phases of reconnaissance. Passive tools are stealthy, while active scanners dig deeper but make noise.
+                    </p>
+
+                    <!-- Radar Chart Container -->
+                    <div class="bg-cyber-card rounded-xl p-6 border border-slate-700 shadow-lg mb-6">
+                        <div class="chart-container">
+                            <canvas id="toolsRadarChart"></canvas>
+                        </div>
+                        <p class="mt-2 text-xs text-center text-cyber-muted">
+                            Comparison of tool characteristics based on capability descriptions.
+                        </p>
+                    </div>
+
+                    <!-- Tool List -->
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                            <strong class="text-cyber-cyan block">Wappalyzer</strong>
+                            <span class="text-slate-400 text-xs">Browser Extension</span>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                            <strong class="text-cyber-violet block">Nmap</strong>
+                            <span class="text-slate-400 text-xs">Network Scanner</span>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                            <strong class="text-cyber-rose block">wafw00f</strong>
+                            <span class="text-slate-400 text-xs">WAF Detector</span>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                            <strong class="text-cyber-green block">Nikto</strong>
+                            <span class="text-slate-400 text-xs">Vuln Scanner</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: CASE STUDY (Inlanefreight.com) -->
+        <section id="casestudy" class="bg-slate-900/50 p-8 rounded-3xl border border-slate-800">
+            <div class="text-center mb-12">
+                <span class="bg-cyber-cyan text-slate-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Live Simulation</span>
+                <h3 class="text-4xl font-bold text-white mt-4">Target: inlanefreight.com</h3>
+                <p class="text-cyber-muted mt-4 max-w-2xl mx-auto">
+                    A walkthrough of applying manual and automated techniques to uncover the "Digital DNA" of a specific host.
+                </p>
+            </div>
+
+            <div class="relative timeline-line max-w-4xl mx-auto">
+                
+                <!-- Step 1: Banner Grabbing -->
+                <div class="relative z-10 mb-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="md:text-right order-1 md:order-1">
+                        <div class="bg-cyber-card p-6 rounded-xl border-l-4 border-cyber-cyan shadow-lg">
+                            <h4 class="text-xl font-bold text-white mb-2">Step 1: Banner Grabbing</h4>
+                            <p class="text-sm text-cyber-muted mb-3">
+                                Using <code class="bg-slate-900 px-1 rounded text-cyber-cyan">curl -I</code> to fetch HTTP headers.
+                            </p>
+                            <div class="bg-slate-950 p-3 rounded text-left font-mono text-xs text-green-400 overflow-x-auto border border-slate-800">
+                                $ curl -I inlanefreight.com<br>
+                                Server: Apache/2.4.41 (Ubuntu)<br>
+                                X-Redirect-By: WordPress
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-center order-2 md:order-2">
+                        <div class="bg-cyber-cyan text-slate-900 font-bold rounded-full w-12 h-12 flex items-center justify-center border-4 border-slate-900 shadow-xl">1</div>
+                    </div>
+                </div>
+
+                <!-- Step 2: WAF Detection -->
+                <div class="relative z-10 mb-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="flex justify-center order-2 md:order-1">
+                        <div class="bg-cyber-rose text-white font-bold rounded-full w-12 h-12 flex items-center justify-center border-4 border-slate-900 shadow-xl">2</div>
+                    </div>
+                    <div class="order-1 md:order-2">
+                        <div class="bg-cyber-card p-6 rounded-xl border-r-4 border-cyber-rose shadow-lg">
+                            <h4 class="text-xl font-bold text-white mb-2">Step 2: WAF Detection</h4>
+                            <p class="text-sm text-cyber-muted mb-3">
+                                Checking for firewalls with <code class="bg-slate-900 px-1 rounded text-cyber-rose">wafw00f</code>.
+                            </p>
+                            <div class="bg-slate-950 p-3 rounded text-left font-mono text-xs text-green-400 overflow-x-auto border border-slate-800">
+                                $ wafw00f inlanefreight.com<br>
+                                [+] The site is behind Wordfence (Defiant) WAF.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Deep Scan Findings -->
+                <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="md:text-right order-1 md:order-1">
+                        <div class="bg-cyber-card p-6 rounded-xl border-l-4 border-cyber-violet shadow-lg">
+                            <h4 class="text-xl font-bold text-white mb-2">Step 3: Deep Scan (Nikto)</h4>
+                            <p class="text-sm text-cyber-muted mb-3">
+                                A comprehensive scan reveals specific vulnerabilities.
+                            </p>
+                            <ul class="text-left text-sm space-y-2 list-disc list-inside text-cyber-muted">
+                                <li>Apache 2.4.41 (Outdated)</li>
+                                <li>Missing Security Headers</li>
+                                <li>Public 'license.txt' file</li>
+                                <li>WordPress Login Exposed</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="flex justify-center order-2 md:order-2">
+                        <div class="bg-cyber-violet text-white font-bold rounded-full w-12 h-12 flex items-center justify-center border-4 border-slate-900 shadow-xl">3</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Case Study Results Chart -->
+            <div class="mt-16 bg-cyber-card rounded-2xl p-8 border border-slate-700 shadow-2xl">
+                <h4 class="text-2xl font-bold text-center text-white mb-2">The Final Profile</h4>
+                <p class="text-center text-cyber-muted mb-8 text-sm">Key Risk Factors Identified on inlanefreight.com</p>
+                
+                <!-- Chart Container for Findings -->
+                <div class="chart-container" style="max-height: 300px;">
+                    <canvas id="findingsChart"></canvas>
+                </div>
+                
+                <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div class="p-4 bg-slate-900 rounded-lg border border-red-900/50">
+                        <div class="text-cyber-rose font-bold text-lg">High Risk</div>
+                        <div class="text-xs text-cyber-muted">Outdated Apache</div>
+                    </div>
+                    <div class="p-4 bg-slate-900 rounded-lg border border-yellow-900/50">
+                        <div class="text-yellow-500 font-bold text-lg">Medium Risk</div>
+                        <div class="text-xs text-cyber-muted">Exposed Login</div>
+                    </div>
+                    <div class="p-4 bg-slate-900 rounded-lg border border-blue-900/50">
+                        <div class="text-blue-400 font-bold text-lg">Info Leak</div>
+                        <div class="text-xs text-cyber-muted">License File</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 py-12 border-t border-slate-800 text-center">
+        <p class="text-cyber-muted text-sm">
+            Generated by Canvas Infographics &bull; Source: Digital DNA Fingerprinting Guide
+        </p>
+    </footer>
+
+    <!-- Script for Charts -->
+    <script>
+        // --- UTILITY FUNCTIONS ---
+
+        /**
+         * Splits a long string into an array of shorter strings (approx 16 chars).
+         * Used for Chart.js labels.
+         */
+        function wrapLabel(str, maxChars = 16) {
+            if (str.length <= maxChars) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= maxChars) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // Common Tooltip Config
+        const tooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            },
+            backgroundColor: 'rgba(15, 23, 42, 0.9)', // Slate 900
+            titleColor: '#06b6d4', // Cyan
+            bodyColor: '#f1f5f9', // Slate 100
+            borderColor: '#334155', // Slate 700
+            borderWidth: 1,
+            padding: 12,
+            displayColors: true
+        };
+
+        // --- CHART GENERATION ---
+
+        // 1. WHY CHART (Polar Area)
+        const ctxWhy = document.getElementById('whyChart').getContext('2d');
+        new Chart(ctxWhy, {
+            type: 'polarArea',
+            data: {
+                labels: [
+                    wrapLabel("Targeted Attacks"), 
+                    wrapLabel("Identify Misconfigurations"), 
+                    wrapLabel("Prioritise Targets"), 
+                    wrapLabel("Build Profile")
+                ],
+                datasets: [{
+                    label: 'Importance',
+                    data: [25, 25, 25, 25], // Equal weight concept
+                    backgroundColor: [
+                        'rgba(6, 182, 212, 0.7)',  // Cyan
+                        'rgba(139, 92, 246, 0.7)', // Violet
+                        'rgba(244, 63, 94, 0.7)',  // Rose
+                        'rgba(16, 185, 129, 0.7)'  // Green
+                    ],
+                    borderWidth: 1,
+                    borderColor: '#1e293b'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        ticks: { display: false },
+                        grid: { color: '#334155' },
+                        angleLines: { color: '#334155' },
+                        suggestedMax: 30
+                    }
+                },
+                plugins: {
+                    legend: { 
+                        display: true,
+                        position: 'bottom',
+                        labels: { color: '#94a3b8', font: { family: 'Roboto' } }
+                    },
+                    tooltip: tooltipConfig
+                }
+            }
+        });
+
+        // 2. TECHNIQUES CHART (Doughnut)
+        const ctxTech = document.getElementById('techniquesChart').getContext('2d');
+        new Chart(ctxTech, {
+            type: 'doughnut',
+            data: {
+                labels: [
+                    wrapLabel("Banner Grabbing"), 
+                    wrapLabel("HTTP Headers"), 
+                    wrapLabel("Probing Responses"), 
+                    wrapLabel("Page Content")
+                ],
+                datasets: [{
+                    data: [25, 25, 25, 25],
+                    backgroundColor: [
+                        '#06b6d4', // Cyan
+                        '#8b5cf6', // Violet
+                        '#f43f5e', // Rose
+                        '#10b981'  // Green
+                    ],
+                    borderColor: '#1e293b',
+                    borderWidth: 2,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { color: '#f1f5f9' }
+                    },
+                    tooltip: tooltipConfig
+                },
+                cutout: '60%'
+            }
+        });
+
+        // 3. TOOLS RADAR CHART (Comparison)
+        const ctxTools = document.getElementById('toolsRadarChart').getContext('2d');
+        new Chart(ctxTools, {
+            type: 'radar',
+            data: {
+                labels: [
+                    wrapLabel("Ease of Use"), 
+                    wrapLabel("Information Depth"), 
+                    wrapLabel("Stealthiness"), 
+                    wrapLabel("Automation Level")
+                ],
+                datasets: [
+                    {
+                        label: 'Wappalyzer (Browser Ext)',
+                        data: [90, 40, 90, 80],
+                        fill: true,
+                        backgroundColor: 'rgba(6, 182, 212, 0.2)',
+                        borderColor: '#06b6d4',
+                        pointBackgroundColor: '#06b6d4'
+                    },
+                    {
+                        label: 'Nmap (Network Scanner)',
+                        data: [30, 95, 20, 70],
+                        fill: true,
+                        backgroundColor: 'rgba(244, 63, 94, 0.2)',
+                        borderColor: '#f43f5e',
+                        pointBackgroundColor: '#f43f5e'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: '#334155' },
+                        grid: { color: '#334155' },
+                        pointLabels: { color: '#f1f5f9', font: { size: 12 } },
+                        ticks: { display: false, backdropColor: 'transparent' }
+                    }
+                },
+                plugins: {
+                    legend: { labels: { color: '#94a3b8' } },
+                    tooltip: tooltipConfig
+                }
+            }
+        });
+
+        // 4. FINDINGS BAR CHART (Case Study)
+        const ctxFindings = document.getElementById('findingsChart').getContext('2d');
+        new Chart(ctxFindings, {
+            type: 'bar',
+            data: {
+                labels: [
+                    wrapLabel("Server Outdated"), 
+                    wrapLabel("Security Headers Missing"), 
+                    wrapLabel("WAF Present"), 
+                    wrapLabel("Info Disclosure")
+                ],
+                datasets: [{
+                    label: 'Risk Severity Score',
+                    data: [9, 5, 2, 7], // Simulated severity 1-10
+                    backgroundColor: [
+                        '#f43f5e', // Red (Outdated - High Risk)
+                        '#fbbf24', // Amber (Headers - Med Risk)
+                        '#10b981', // Green (WAF - Info only)
+                        '#60a5fa'  // Blue (Info Disclosure)
+                    ],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y', // Horizontal Bar
+                scales: {
+                    x: {
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#f1f5f9' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: tooltipConfig
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

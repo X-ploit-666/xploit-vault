@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNS Zone Transfers: The Silent Data Leak</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 
+    NARRATIVE PLAN:
+    1. Hero/Intro: Define the concept (Wholesale Copy vs Brute Force).
+    2. The Mechanism: 5-Step Interaction (Timeline).
+    3. The Payload: What's inside? (Donut Chart composition).
+    4. The Attack: The 'dig' command breakdown (Code/Terminal).
+    5. The Risk: Sensitivity of exposed data (Bar Chart).
+    6. Remediation: How to secure it.
+
+    CHART SELECTION (NO SVG/MERMAID):
+    1. Zone Composition -> Goal: Composition -> Chart.js Doughnut.
+    2. Mechanism Steps -> Goal: Process -> HTML/CSS Vertical Timeline (No SVG).
+    3. Data Sensitivity -> Goal: Rank/Compare -> Chart.js Bar Chart.
+    
+    PALETTE: Cyber Neon (High Contrast)
+    Background: #0f172a (Slate 900)
+    Text: #f8fafc (Slate 50)
+    Accents: #06b6d4 (Cyan 500), #d946ef (Fuchsia 500), #facc15 (Yellow 400)
+    
+    NO SVG CONFIRMATION:
+    - All icons are CSS shapes or Unicode characters.
+    - No <svg> tags used.
+    - No Mermaid JS used.
+    -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Chart Container Styling - Mandatory Requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constraint */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height */
+            max-height: 400px; /* Constraint */
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #06b6d4;
+            border-radius: 4px;
+        }
+
+        /* Neon Effects */
+        .neon-cyan {
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+        .neon-fuchsia {
+            box-shadow: 0 0 10px rgba(217, 70, 239, 0.5);
+        }
+        
+        /* Timeline styling without SVG */
+        .timeline-line {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #334155;
+            z-index: 0;
+        }
+        @media (min-width: 768px) {
+            .timeline-line {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-cyan-500 rounded-full animate-pulse"></div>
+                    <span class="text-xl font-bold tracking-tighter">DNS_ZONE_<span class="text-cyan-400">TRANSFER</span></span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="flex items-baseline space-x-8 text-sm font-medium">
+                        <a href="#concept" class="hover:text-cyan-400 transition-colors">Concept</a>
+                        <a href="#mechanism" class="hover:text-cyan-400 transition-colors">Mechanism</a>
+                        <a href="#data" class="hover:text-cyan-400 transition-colors">Data</a>
+                        <a href="#attack" class="hover:text-cyan-400 transition-colors">Attack</a>
+                        <a href="#fix" class="hover:text-cyan-400 transition-colors">Remediation</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="concept" class="pt-32 pb-20 px-4 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-1/3 h-full bg-cyan-500/5 blur-3xl rounded-full pointer-events-none"></div>
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-cyan-400 uppercase bg-cyan-500/10 rounded-full border border-cyan-500/20">
+                    Network Reconnaissance
+                </div>
+                <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                    The <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-fuchsia-500">Silent</span> Data Leak
+                </h1>
+                <p class="text-lg text-slate-400 mb-8 leading-relaxed">
+                    Brute-forcing subdomains is noisy and slow. A <strong>DNS Zone Transfer</strong> is the wholesale copy of a network's address book. When misconfigured, it turns a maintenance feature into a hacker's goldmine.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <div class="bg-slate-800 p-4 rounded-lg border-l-4 border-cyan-500 shadow-lg">
+                        <span class="block text-2xl font-bold text-white">AXFR</span>
+                        <span class="text-sm text-slate-400">The Request Protocol</span>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-lg border-l-4 border-fuchsia-500 shadow-lg">
+                        <span class="block text-2xl font-bold text-white">100%</span>
+                        <span class="text-sm text-slate-400">Visibility Gained</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Terminal Visual -->
+            <div class="relative group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-cyan-600 to-fuchsia-600 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                <div class="relative bg-slate-950 rounded-lg shadow-2xl border border-slate-800 overflow-hidden font-mono text-sm">
+                    <div class="bg-slate-900 px-4 py-2 flex gap-2 border-b border-slate-800">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="ml-2 text-slate-500 text-xs">root@kali: ~</span>
+                    </div>
+                    <div class="p-6 space-y-2 text-slate-300">
+                        <p><span class="text-green-400">root@kali:~$</span> brute-force subdomains.txt</p>
+                        <p class="text-slate-500">... scanning ... 2 hours remaining ...</p>
+                        <p class="mt-4"><span class="text-green-400">root@kali:~$</span> <span class="text-cyan-400">dig axfr @ns1.target.com</span></p>
+                        <p class="text-slate-500">; Transfer failed. Access denied.</p>
+                        <p class="mt-4"><span class="text-green-400">root@kali:~$</span> <span class="text-cyan-400">dig axfr @ns1.vulnerable.com</span></p>
+                        <p class="text-yellow-400">; Transfer successful.</p>
+                        <p>vulnerable.com. IN SOA ...</p>
+                        <p>admin.vulnerable.com. IN A 192.168.1.50</p>
+                        <p class="animate-pulse">_secret.vulnerable.com. IN TXT "API_KEY=..."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Section: The Mechanism -->
+    <section id="mechanism" class="py-20 bg-slate-900/50">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4 text-cyan-400">The 5-Step Handshake</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">
+                    A zone transfer is a conversation between servers. It was designed for redundancy, but without authentication, it becomes a vulnerability. Here is how the <span class="text-cyan-400 bg-cyan-900/20 px-1 rounded">AXFR</span> process works.
+                </p>
+            </div>
+
+            <div class="relative">
+                <div class="timeline-line"></div>
+                
+                <!-- Step 1 -->
+                <div class="relative flex items-center justify-between mb-12 flex-col md:flex-row">
+                    <div class="order-2 md:order-1 md:w-5/12 text-left md:text-right pl-12 md:pl-0 md:pr-8">
+                        <h3 class="text-xl font-bold text-white">1. The AXFR Request</h3>
+                        <p class="text-slate-400 text-sm mt-2">The secondary server (or attacker) asks the primary server for a "Full Zone Transfer" (AXFR) to copy all records.</p>
+                    </div>
+                    <div class="absolute left-[10px] md:left-1/2 transform -translate-x-1/2 order-1 md:order-2 z-10 w-6 h-6 bg-slate-900 border-2 border-cyan-500 rounded-full flex items-center justify-center">
+                        <div class="w-2 h-2 bg-cyan-500 rounded-full"></div>
+                    </div>
+                    <div class="order-3 md:w-5/12 hidden md:block"></div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative flex items-center justify-between mb-12 flex-col md:flex-row">
+                    <div class="order-3 md:w-5/12 hidden md:block"></div>
+                    <div class="absolute left-[10px] md:left-1/2 transform -translate-x-1/2 order-1 md:order-2 z-10 w-6 h-6 bg-slate-900 border-2 border-slate-600 rounded-full flex items-center justify-center">
+                         <div class="w-2 h-2 bg-slate-600 rounded-full"></div>
+                    </div>
+                    <div class="order-2 md:order-3 md:w-5/12 pl-12 md:pl-8 text-left">
+                        <h3 class="text-xl font-bold text-white">2. SOA Greeting</h3>
+                        <p class="text-slate-400 text-sm mt-2">The primary server responds with the <strong>Start of Authority (SOA)</strong> record, containing the zone's serial number (version).</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative flex items-center justify-between mb-12 flex-col md:flex-row">
+                    <div class="order-2 md:order-1 md:w-5/12 text-left md:text-right pl-12 md:pl-0 md:pr-8">
+                        <h3 class="text-xl font-bold text-fuchsia-400">3. The Data Dump</h3>
+                        <p class="text-slate-400 text-sm mt-2">The "Goldmine". The server sends every single record: Subdomains, IP addresses, Mail servers, and Text records.</p>
+                    </div>
+                    <div class="absolute left-[10px] md:left-1/2 transform -translate-x-1/2 order-1 md:order-2 z-10 w-8 h-8 bg-slate-900 border-2 border-fuchsia-500 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(217,70,239,0.5)]">
+                        <span class="text-fuchsia-500 font-bold text-xs">!</span>
+                    </div>
+                    <div class="order-3 md:w-5/12 hidden md:block"></div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="relative flex items-center justify-between mb-12 flex-col md:flex-row">
+                    <div class="order-3 md:w-5/12 hidden md:block"></div>
+                    <div class="absolute left-[10px] md:left-1/2 transform -translate-x-1/2 order-1 md:order-2 z-10 w-6 h-6 bg-slate-900 border-2 border-slate-600 rounded-full flex items-center justify-center">
+                        <div class="w-2 h-2 bg-slate-600 rounded-full"></div>
+                    </div>
+                    <div class="order-2 md:order-3 md:w-5/12 pl-12 md:pl-8 text-left">
+                        <h3 class="text-xl font-bold text-white">4. Transfer Complete</h3>
+                        <p class="text-slate-400 text-sm mt-2">The primary server sends a signal indicating all records have been transmitted successfully.</p>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="relative flex items-center justify-between flex-col md:flex-row">
+                    <div class="order-2 md:order-1 md:w-5/12 text-left md:text-right pl-12 md:pl-0 md:pr-8">
+                        <h3 class="text-xl font-bold text-white">5. Acknowledgement</h3>
+                        <p class="text-slate-400 text-sm mt-2">The receiver sends an ACK message to confirm receipt. The connection closes, and the attacker now has the map.</p>
+                    </div>
+                    <div class="absolute left-[10px] md:left-1/2 transform -translate-x-1/2 order-1 md:order-2 z-10 w-6 h-6 bg-slate-900 border-2 border-green-500 rounded-full flex items-center justify-center">
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                    </div>
+                    <div class="order-3 md:w-5/12 hidden md:block"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Data Composition -->
+    <section id="data" class="py-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 shadow-xl">
+                    <h3 class="text-xl font-bold mb-6 text-center text-slate-200">Zone File Anatomy</h3>
+                    <div class="chart-container">
+                        <canvas id="compositionChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold mb-6 text-fuchsia-400">What's Inside?</h2>
+                    <p class="text-slate-400 mb-6">
+                        A Zone File is not just a list of public websites. It contains the DNA of the network infrastructure. Attackers analyze the composition to prioritize targets.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold shrink-0">A</div>
+                            <div class="ml-4">
+                                <h4 class="font-bold text-white">Direct IP Mapping</h4>
+                                <p class="text-sm text-slate-400">Resolves hostnames to IPv4 addresses. This gives attackers the exact location of servers.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 rounded-lg bg-fuchsia-500/10 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400 font-bold shrink-0">TX</div>
+                            <div class="ml-4">
+                                <h4 class="font-bold text-white">Configuration & Secrets</h4>
+                                <p class="text-sm text-slate-400">TXT records often contain SPF data, domain verification tokens, or misconfigured API keys.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 rounded-lg bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-yellow-400 font-bold shrink-0">CN</div>
+                            <div class="ml-4">
+                                <h4 class="font-bold text-white">Internal Nicknames</h4>
+                                <p class="text-sm text-slate-400">CNAME records reveal internal naming structures (e.g., pointing 'portal' to 'internal-auth-v2').</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: The Attack (Code) & Risk Analysis -->
+    <section id="attack" class="py-20 bg-slate-900/50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4 text-white">Execution & Impact</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">
+                    Executing the attack is trivial with standard tools like <code>dig</code>. The real danger lies in the sensitivity of the data returned.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Attack Code Block -->
+                <div class="bg-black rounded-xl overflow-hidden border border-slate-700 font-mono text-sm shadow-2xl">
+                    <div class="bg-slate-800 px-4 py-2 border-b border-slate-700 text-slate-400">bash</div>
+                    <div class="p-6 text-slate-300">
+                        <div class="mb-4">
+                            <span class="text-green-500">user@attacker:~$</span> dig axfr @ns1.target.com target.com
+                        </div>
+                        <div class="text-slate-500 mb-2">; &lt;&lt;&gt;&gt; DiG 9.18.1 &lt;&lt;&gt;&gt; axfr @ns1.target.com target.com</div>
+                        <div class="text-slate-500 mb-2">; (1 server found)</div>
+                        <div class="mb-1">target.com. 7200 IN SOA ns1.target.com. admin.target.com. ...</div>
+                        <div class="mb-1">target.com. 7200 IN NS ns1.target.com.</div>
+                        <div class="mb-1">target.com. 7200 IN MX 10 mail.target.com.</div>
+                        <div class="mb-1 text-red-400">dev.target.com. 7200 IN A 192.168.10.5</div>
+                        <div class="mb-1 text-red-400">staging-db.target.com. 7200 IN A 192.168.10.6</div>
+                        <div class="mb-1 text-red-400">admin-panel.target.com. 7200 IN CNAME internal-lb.aws.com</div>
+                        <div class="mt-4 text-green-500">;; XFR size: 45 records (messages 1, bytes 1800)</div>
+                    </div>
+                </div>
+
+                <!-- Risk/Impact Chart -->
+                <div class="flex flex-col h-full">
+                    <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 shadow-xl flex-grow">
+                        <h3 class="text-xl font-bold mb-2 text-white">Data Sensitivity Index</h3>
+                        <p class="text-sm text-slate-400 mb-4">Relative security risk of exposed record types.</p>
+                        <div class="chart-container">
+                            <canvas id="riskChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Remediation -->
+    <section id="fix" class="py-20 px-4">
+        <div class="max-w-5xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-8 text-white">Remediation: Access Controls</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Bad Config -->
+                <div class="bg-red-500/5 border border-red-500/20 p-8 rounded-2xl">
+                    <div class="text-4xl mb-4">🔓</div>
+                    <h3 class="text-xl font-bold text-red-400 mb-2">The Vulnerability</h3>
+                    <p class="text-slate-300">
+                        Allowing transfer requests from <strong>ANY</strong> IP address. This was common in the early internet for simplicity but is now a critical flaw.
+                    </p>
+                </div>
+                
+                <!-- Good Config -->
+                <div class="bg-green-500/5 border border-green-500/20 p-8 rounded-2xl">
+                    <div class="text-4xl mb-4">🛡️</div>
+                    <h3 class="text-xl font-bold text-green-400 mb-2">The Fix (ACLs)</h3>
+                    <p class="text-slate-300">
+                        Configure the nameserver to <strong>only accept AXFR requests</strong> from trusted IP addresses (e.g., known secondary name servers).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-8 text-center text-slate-500 text-sm">
+        <p>Generated based on "DNS Zone Transfer Breakdown" source material.</p>
+        <p class="mt-2">Educational Purposes Only. Unauthorized scanning is illegal.</p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- 1. Label Wrapping Utility ---
+        function wrapLabel(str, maxChars) {
+            if (str.length <= maxChars) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= maxChars) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- 2. Chart.js Global Config ---
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.borderColor = '#1e293b';
+
+        // --- 3. Chart: Composition (Donut) ---
+        const compositionCtx = document.getElementById('compositionChart').getContext('2d');
+        const rawCompLabels = ['A/AAAA (IP Addresses)', 'CNAME (Aliases)', 'MX (Mail Servers)', 'TXT (Config/Keys)', 'NS (Name Servers)'];
+        const wrappedCompLabels = rawCompLabels.map(l => wrapLabel(l, 16));
+
+        new Chart(compositionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: wrappedCompLabels,
+                datasets: [{
+                    data: [45, 25, 15, 10, 5],
+                    backgroundColor: [
+                        '#06b6d4', // Cyan
+                        '#22d3ee',
+                        '#d946ef', // Fuchsia
+                        '#e879f9',
+                        '#facc15'  // Yellow
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: '#cbd5e1',
+                            font: { size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                    return label.join(' ');
+                                } else {
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- 4. Chart: Risk Level (Bar) ---
+        const riskCtx = document.getElementById('riskChart').getContext('2d');
+        const rawRiskLabels = ['Public Website', 'Mail Server IP', 'Internal Dev Subdomain', 'Admin Panel URL', 'Auth Keys (TXT)'];
+        const wrappedRiskLabels = rawRiskLabels.map(l => wrapLabel(l, 16));
+
+        new Chart(riskCtx, {
+            type: 'bar',
+            data: {
+                labels: wrappedRiskLabels,
+                datasets: [{
+                    label: 'Risk Score (0-100)',
+                    data: [10, 30, 85, 95, 90],
+                    backgroundColor: [
+                        '#94a3b8',
+                        '#94a3b8',
+                        '#f87171', // Red-ish for high risk
+                        '#ef4444', 
+                        '#facc15'
+                    ],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: '#334155' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                    return label.join(' ');
+                                } else {
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

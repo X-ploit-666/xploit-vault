@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The .well-known Standard: Web's Front Desk</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Custom Palette and Chart Container Styles -->
+    <style>
+        /* Palette: "Cyber Vibrant" based on energetic options
+           Primary: #4F46E5 (Indigo)
+           Secondary: #EC4899 (Pink)
+           Accent: #10B981 (Emerald)
+           Background: #F3F4F6 (Cool Gray)
+        */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #F3F4F6;
+            color: #1F2937;
+        }
+
+        /* CRITICAL: Chart Container Styling 
+           Enforces responsiveness, max-width, centering, and overflow protection.
+        */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constraint for large screens */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px;
+            overflow: hidden; /* Prevent canvas spill */
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Utility for Diagram Lines */
+        .connector-line {
+            width: 2px;
+            background-color: #CBD5E1;
+            margin: 0 auto;
+        }
+    </style>
+    <!-- 
+        NO SVG USED.
+        NO MERMAID JS USED.
+        ALL DIAGRAMS ARE HTML/CSS.
+        ALL CHARTS ARE CANVAS.
+    -->
+    <!--
+        NARRATIVE PLAN:
+        1. Intro: The Building Analogy (What is .well-known?)
+        2. The Registry: Visualizing the examples (Chart: Status Distribution)
+        3. Web Recon: How it works (HTML Diagram)
+        4. Deep Dive: OpenID Config (Chart: JSON Structure Analysis)
+        5. Conclusion
+    -->
+</head>
+<body class="antialiased">
+
+    <!-- HERO SECTION -->
+    <header class="bg-indigo-700 text-white pt-16 pb-24 px-4 shadow-lg">
+        <div class="max-w-5xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-black tracking-tight mb-4">
+                The ".well-known" Standard
+            </h1>
+            <p class="text-xl md:text-2xl font-light text-indigo-100 max-w-3xl mx-auto">
+                Unlocking the "Front Desk" of the Internet. A guide to RFC 8615 and centralized web metadata.
+            </p>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT GRID -->
+    <main class="max-w-6xl mx-auto -mt-16 px-4 pb-20 space-y-12">
+
+        <!-- SECTION 1: THE CONCEPT -->
+        <section class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-8">
+                <div class="border-l-4 border-indigo-500 pl-4 mb-6">
+                    <h2 class="text-3xl font-bold text-gray-800">1. The Building Analogy</h2>
+                    <p class="text-gray-500 mt-1">Understanding the basic concept</p>
+                </div>
+                
+                <p class="text-lg text-gray-700 mb-8 leading-relaxed">
+                    Imagine a website is a massive building. Without a guide, finding the security office or the manager is difficult. <strong>RFC 8615</strong> solves this by mandating a specific "Front Desk" area located at <code class="bg-gray-100 text-indigo-600 px-2 py-1 rounded">/.well-known/</code>. This simplifies discovery for browsers and bots.
+                </p>
+
+                <!-- HTML/CSS DIAGRAM (NO SVG) -->
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <h3 class="text-center text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">Visual Concept Flow</h3>
+                    
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+                        <!-- Step 1: User -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-16 h-16 bg-pink-500 rounded-full flex items-center justify-center text-white text-3xl shadow-lg">
+                                👤
+                            </div>
+                            <span class="mt-2 font-bold text-gray-700">Visitor</span>
+                        </div>
+
+                        <!-- Arrow -->
+                        <div class="hidden md:block text-gray-400 text-2xl">➔</div>
+                        <div class="block md:hidden text-gray-400 text-2xl">⬇</div>
+
+                        <!-- Step 2: The Address -->
+                        <div class="bg-white p-4 rounded-lg shadow border-l-4 border-amber-500 text-center w-full md:w-auto">
+                            <p class="text-sm text-gray-500">Looking for info?</p>
+                            <p class="font-mono font-bold text-indigo-600">example.com/.well-known/</p>
+                        </div>
+
+                        <!-- Arrow -->
+                        <div class="hidden md:block text-gray-400 text-2xl">➔</div>
+                        <div class="block md:hidden text-gray-400 text-2xl">⬇</div>
+
+                        <!-- Step 3: The Result -->
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="bg-emerald-100 text-emerald-800 px-3 py-2 rounded text-sm font-semibold text-center">
+                                🔒 Security
+                            </div>
+                            <div class="bg-blue-100 text-blue-800 px-3 py-2 rounded text-sm font-semibold text-center">
+                                🔑 Login
+                            </div>
+                            <div class="bg-purple-100 text-purple-800 px-3 py-2 rounded text-sm font-semibold text-center">
+                                📧 Email
+                            </div>
+                            <div class="bg-orange-100 text-orange-800 px-3 py-2 rounded text-sm font-semibold text-center">
+                                📱 Apps
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: THE REGISTRY & DATA -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- LEFT COL: CHART -->
+            <div class="bg-white rounded-xl shadow-md p-8">
+                <div class="border-l-4 border-pink-500 pl-4 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">2. The IANA Registry</h2>
+                    <p class="text-gray-500 mt-1">Standardized File Types</p>
+                </div>
+                <p class="text-gray-700 mb-6">
+                    The Internet Assigned Numbers Authority (IANA) maintains a strict list of allowed files. Most are "Permanent," meaning they are well-established standards, while some are "Provisional."
+                </p>
+                
+                <!-- CHART CONTAINER -->
+                <div class="chart-container">
+                    <canvas id="registryStatusChart"></canvas>
+                </div>
+                <p class="text-center text-xs text-gray-400 mt-4">
+                    Figure 1: Distribution of status types among the 5 key examples provided in the source text.
+                </p>
+            </div>
+
+            <!-- RIGHT COL: EXAMPLES LIST -->
+            <div class="space-y-4">
+                <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-emerald-500">
+                    <h3 class="font-bold text-lg text-gray-800 flex justify-between">
+                        <span>security.txt</span>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded uppercase">Permanent</span>
+                    </h3>
+                    <p class="text-gray-600 mt-2 text-sm">
+                        Like a digital "suggestion box" for hackers. Tells security researchers exactly who to contact if they find a vulnerability.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-amber-500">
+                    <h3 class="font-bold text-lg text-gray-800 flex justify-between">
+                        <span>change-password</span>
+                        <span class="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded uppercase">Provisional</span>
+                    </h3>
+                    <p class="text-gray-600 mt-2 text-sm">
+                        A clever redirect. Standardizes the URL to change your password, allowing password managers to take you there automatically.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-indigo-500">
+                    <h3 class="font-bold text-lg text-gray-800 flex justify-between">
+                        <span>openid-configuration</span>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded uppercase">Permanent</span>
+                    </h3>
+                    <p class="text-gray-600 mt-2 text-sm">
+                        The blueprint for identity. Used by "Log in with Google" style systems to discover endpoints and keys.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: WEB RECON & OPENID -->
+        <section class="bg-white rounded-xl shadow-md overflow-hidden p-8">
+             <div class="border-l-4 border-amber-500 pl-4 mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">3. Web Reconnaissance</h2>
+                <p class="text-gray-500 mt-1">Mapping the Security Landscape</p>
+            </div>
+            
+            <p class="text-lg text-gray-700 mb-8">
+                Security professionals use these files to "map out" a website. The most information-dense file is often <code class="text-pink-600 bg-pink-50 px-1 rounded">openid-configuration</code>. It returns a JSON object containing critical metadata.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <!-- CHART: JSON COMPOSITION -->
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Inside the Configuration</h3>
+                    <p class="text-sm text-gray-600 mb-6">
+                        This chart breaks down the types of information found in the OpenID JSON file. It contains Service Endpoints (URLs), Capabilities (what it supports), and Security Keys.
+                    </p>
+                    
+                    <!-- CHART CONTAINER -->
+                    <div class="chart-container">
+                        <canvas id="openidConfigChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- VISUAL: JSON EXPLORATION -->
+                <div class="bg-gray-900 rounded-lg p-6 text-gray-300 font-mono text-xs md:text-sm shadow-inner relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-gray-800 px-3 py-1 text-xs font-bold text-gray-500 rounded-bl">JSON PREVIEW</div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex">
+                            <span class="text-pink-400">"issuer"</span>: <span class="text-emerald-400">"https://example.com"</span>,
+                        </div>
+                        <div class="border-l-2 border-indigo-500 pl-3">
+                            <span class="text-gray-500 block mb-1">// 📍 ENDPOINTS</span>
+                            <div class="flex"><span class="text-pink-400">"authorization_endpoint"</span>: <span class="text-blue-400">".../auth"</span>,</div>
+                            <div class="flex"><span class="text-pink-400">"token_endpoint"</span>: <span class="text-blue-400">".../token"</span>,</div>
+                        </div>
+                         <div class="border-l-2 border-amber-500 pl-3">
+                            <span class="text-gray-500 block mb-1">// 🔑 SECURITY</span>
+                            <div class="flex"><span class="text-pink-400">"jwks_uri"</span>: <span class="text-blue-400">".../jwks"</span>,</div>
+                            <div class="flex"><span class="text-pink-400">"id_token_signing_alg"</span>: <span class="text-amber-400">["RS256"]</span>,</div>
+                        </div>
+                        <div class="border-l-2 border-purple-500 pl-3">
+                            <span class="text-gray-500 block mb-1">// ⚡ CAPABILITIES</span>
+                            <div class="flex"><span class="text-pink-400">"scopes_supported"</span>: <span class="text-purple-400">["openid", "email"]</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONCLUSION -->
+        <footer class="bg-gray-800 text-gray-400 text-center py-12 rounded-xl">
+            <h3 class="text-white text-xl font-bold mb-4">Summary</h3>
+            <p class="max-w-2xl mx-auto px-4">
+                The <span class="text-indigo-400 font-mono">.well-known</span> directory is more than just a folder; it is the standardized gateway for automation, discovery, and security on the modern web. By centralizing metadata, it allows tools to seamlessly interact with websites.
+            </p>
+        </footer>
+
+    </main>
+
+    <!-- SCRIPTS FOR CHARTS -->
+    <script>
+        // --- UTILITY: Label Wrapping for Chart.js (>16 chars) ---
+        function wrapLabels(labels) {
+            return labels.map(label => {
+                if (label.length <= 16) return label;
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = words[0];
+
+                for (let i = 1; i < words.length; i++) {
+                    if ((currentLine + " " + words[i]).length <= 16) {
+                        currentLine += " " + words[i];
+                    } else {
+                        lines.push(currentLine);
+                        currentLine = words[i];
+                    }
+                }
+                lines.push(currentLine);
+                return lines;
+            });
+        }
+
+        // --- UTILITY: Standard Tooltip Config ---
+        const commonTooltipOptions = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- CHART 1: Registry Status Distribution (Doughnut) ---
+        const ctxRegistry = document.getElementById('registryStatusChart').getContext('2d');
+        const labelsRegistry = ['Permanent Standard', 'Provisional']; // Short enough, but good practice to wrap if dynamic
+        
+        new Chart(ctxRegistry, {
+            type: 'doughnut',
+            data: {
+                labels: wrapLabels(labelsRegistry),
+                datasets: [{
+                    data: [4, 1], // Based on the 5 examples: 4 Permanent, 1 Provisional
+                    backgroundColor: [
+                        '#10B981', // Emerald for Permanent (Stable)
+                        '#F59E0B'  // Amber for Provisional (Temporary)
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { size: 14 }
+                        }
+                    },
+                    tooltip: commonTooltipOptions
+                }
+            }
+        });
+
+        // --- CHART 2: OpenID Config Breakdown (Horizontal Bar) ---
+        // Data derived from the JSON example in text
+        // Endpoints: Auth, Token, Userinfo (3)
+        // Security Params: JWKS, Signing Alg (2)
+        // Capabilities: Scopes, Response Types, Subject Types (3)
+        
+        const ctxOpenID = document.getElementById('openidConfigChart').getContext('2d');
+        const rawLabelsOpenID = ['Service Endpoints', 'Security Capabilities', 'Key Metadata'];
+        
+        new Chart(ctxOpenID, {
+            type: 'bar',
+            data: {
+                labels: wrapLabels(rawLabelsOpenID),
+                datasets: [{
+                    label: 'Number of Fields in JSON',
+                    data: [3, 3, 2],
+                    backgroundColor: [
+                        '#4F46E5', // Indigo
+                        '#EC4899', // Pink
+                        '#F59E0B'  // Amber
+                    ],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Horizontal Bar
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: { display: false }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { font: { weight: 'bold' } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: commonTooltipOptions
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
