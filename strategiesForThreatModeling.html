@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Threat Modeling Strategies</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+.font-sans { font-family: 'Inter', sans-serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+body { background-color: #0f172a; color: #f8fafc; }
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 350px;
+    max-height: 400px;
+}
+@media (min-width: 768px) {
+    .chart-container { height: 400px; }
+}
+.glass-card {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+}
+.gradient-text {
+    background: linear-gradient(to right, #22d3ee, #a855f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+</style>
+</head>
+<body class="font-sans antialiased pb-20 selection:bg-cyan-500 selection:text-white">
+<!-- PALETTE: Vibrant Cyber (Cyan #22d3ee, Purple #a855f7, Green #4ade80, Dark Slate #0f172a, Slate Surface #1e293b) -->
+<!-- PLAN: Intro (Concept) -> Start Methods (Scatter Chart) -> Core Strategies (Radar Chart & Cards) -> Tracking Loop (HTML Flow) -> Glossary (Grid) -->
+<!-- VISUALIZATIONS: Ways to Start -> Compare -> Scatter Plot (Chart.js, NO SVG). Strategies -> Compare -> Radar Chart (Chart.js, NO SVG). Feedback Loop -> Organize -> HTML/CSS Flowchart (NO SVG). -->
+<!-- CONFIRMATION: NEITHER Mermaid JS NOR SVG were used anywhere in this output. -->
+
+<header class="pt-20 pb-16 px-6 text-center border-b border-slate-800">
+    <div class="max-w-4xl mx-auto">
+        <div class="text-6xl mb-4">🛡️</div>
+        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 gradient-text">Threat Modeling Strategies</h1>
+        <p class="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            Finding security problems <span class="text-cyan-400 font-semibold">before</span> they happen. Discovering bugs during design makes fixing them exponentially easier than waiting for the final build.
+        </p>
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-6 space-y-24 mt-16">
+
+    <section>
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb-4">The Approaches to Building</h2>
+            <p class="text-slate-400 max-w-2xl mx-auto">
+                Methods vary from rigid "model kits" meant for one specific outcome, to versatile "building blocks" that can construct anything. Finding the right fit is crucial.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="glass-card rounded-2xl p-8 shadow-2xl shadow-cyan-900/20">
+                <h3 class="text-2xl font-semibold mb-6 text-cyan-400">Ways to Start</h3>
+                <div class="space-y-6">
+                    <div class="border-l-4 border-purple-500 pl-4">
+                        <h4 class="text-lg font-bold text-slate-200 mb-1">1. Simple Questions & Brainstorming</h4>
+                        <p class="text-slate-400 text-sm">Asking "What is your threat model?" works rapidly for security experts, but leaves beginners without a structural net.</p>
+                    </div>
+                    <div class="border-l-4 border-cyan-400 pl-4">
+                        <h4 class="text-lg font-bold text-slate-200 mb-1">2. Structured Brainstorming</h4>
+                        <p class="text-slate-400 text-sm">Using techniques like "movie plotting" or "pre-mortems" (imagining failure). Better, but still not universally effective.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-card rounded-2xl p-6">
+                <h3 class="text-center text-sm text-slate-400 font-mono mb-4 uppercase tracking-wider">Structure vs. Required Expertise</h3>
+                <div class="chart-container">
+                    <canvas id="brainstormChart"></canvas>
+                </div>
+                <p class="text-center text-xs text-slate-500 mt-4">Higher structure requires less innate expertise.</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">The Three Main Strategies</h2>
+            <p class="text-slate-400 max-w-2xl mx-auto">
+                Evaluating the focal points of your security analysis. While it is tempting to focus on assets or attackers, analyzing the software itself yields the most actionable results.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <div class="glass-card rounded-2xl p-8 border-t-4 border-t-red-500 hover:-translate-y-2 transition-transform">
+                <div class="text-4xl mb-4">💎</div>
+                <h3 class="text-xl font-bold mb-3 text-slate-100">Asset-Centered</h3>
+                <p class="text-slate-400 text-sm mb-4">Focuses on valuable data, money, or hardware.</p>
+                <div class="bg-slate-800/50 rounded p-4">
+                    <span class="text-xs font-bold text-red-400 uppercase tracking-wider block mb-1">The Flaw</span>
+                    <span class="text-sm text-slate-300">"Asset" has confusing definitions (targets vs. stepping stones). It fails to explain <em>how</em> things will break.</span>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-8 border-t-4 border-t-orange-400 hover:-translate-y-2 transition-transform">
+                <div class="text-4xl mb-4">🦹</div>
+                <h3 class="text-xl font-bold mb-3 text-slate-100">Attacker-Centered</h3>
+                <p class="text-slate-400 text-sm mb-4">Focuses on the psychology and goals of the hacker.</p>
+                <div class="bg-slate-800/50 rounded p-4">
+                    <span class="text-xs font-bold text-orange-400 uppercase tracking-wider block mb-1">The Flaw</span>
+                    <span class="text-sm text-slate-300">Humans are unpredictable. It leads to unresolvable arguments ("no one would do that") and unfixable human-centric threats.</span>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-8 border-t-4 border-t-green-400 bg-slate-800 shadow-xl shadow-green-900/20 hover:-translate-y-2 transition-transform">
+                <div class="text-4xl mb-4">💻</div>
+                <h3 class="text-xl font-bold mb-3 text-green-400">Software-Centered</h3>
+                <p class="text-slate-400 text-sm mb-4">Focuses strictly on the code and system architecture.</p>
+                <div class="bg-green-900/20 rounded p-4 border border-green-500/30">
+                    <span class="text-xs font-bold text-green-400 uppercase tracking-wider block mb-1">The Verdict</span>
+                    <span class="text-sm text-slate-200">The most effective strategy for the vast majority of teams, providing actionable, fixable engineering tasks.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-8 max-w-3xl mx-auto">
+            <h3 class="text-center text-lg font-semibold text-slate-200 mb-6">Strategy Effectiveness Comparison</h3>
+            <div class="chart-container">
+                <canvas id="strategyRadarChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-20">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb-4">Keeping Track: The Feedback Loop</h2>
+            <p class="text-slate-400 max-w-2xl mx-auto">
+                Finding a threat is meaningless without tracking. You must use a tracking item to "gate" your releases, ensuring software doesn't launch until the check is verified.
+            </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-8 overflow-x-auto">
+            <div class="flex flex-col md:flex-row items-center justify-between min-w-[700px] gap-4">
+                <div class="bg-slate-800 border-2 border-slate-600 rounded-lg p-6 text-center w-48 relative">
+                    <div class="text-3xl mb-2">📊</div>
+                    <div class="font-bold text-slate-200">Diagram Created</div>
+                    <div class="text-xs text-slate-400 mt-2">Identify System Flow</div>
+                </div>
+                
+                <div class="text-cyan-400 text-3xl font-bold">➔</div>
+
+                <div class="bg-cyan-900/30 border-2 border-cyan-500 rounded-lg p-6 text-center w-48 shadow-lg shadow-cyan-500/20 relative">
+                    <div class="text-3xl mb-2">📝</div>
+                    <div class="font-bold text-cyan-400">Tracking Item</div>
+                    <div class="text-xs text-slate-400 mt-2">Bug report / Task list</div>
+                </div>
+
+                <div class="text-cyan-400 text-3xl font-bold">➔</div>
+
+                <div class="bg-purple-900/30 border-2 border-purple-500 rounded-lg p-6 text-center w-48 shadow-lg shadow-purple-500/20 relative">
+                    <div class="text-3xl mb-2">🔍</div>
+                    <div class="font-bold text-purple-400">Re-Check</div>
+                    <div class="text-xs text-slate-400 mt-2">Validate fixes</div>
+                </div>
+
+                <div class="text-green-400 text-3xl font-bold">➔</div>
+
+                <div class="bg-green-900/30 border-2 border-green-500 rounded-lg p-6 text-center w-48 shadow-lg shadow-green-500/20 relative">
+                    <div class="text-3xl mb-2">🚀</div>
+                    <div class="font-bold text-green-400">Gate Release</div>
+                    <div class="text-xs text-slate-400 mt-2">Launch System</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="text-2xl font-bold mb-8 text-center uppercase tracking-widest text-slate-500">Key Terms Glossary</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-slate-800 rounded-xl p-6 border-l-4 border-cyan-500">
+                <h4 class="font-bold text-lg mb-2 text-cyan-400">Threat Modeling</h4>
+                <p class="text-sm text-slate-400">The process of looking at a system to find possible security holes or "threats" before they manifest.</p>
+            </div>
+            <div class="bg-slate-800 rounded-xl p-6 border-l-4 border-purple-500">
+                <h4 class="font-bold text-lg mb-2 text-purple-400">Assets</h4>
+                <p class="text-sm text-slate-400">The valuable parts of your system, like customer credit card numbers, intellectual property, or the servers themselves.</p>
+            </div>
+            <div class="bg-slate-800 rounded-xl p-6 border-l-4 border-orange-500">
+                <h4 class="font-bold text-lg mb-2 text-orange-400">Stepping Stones</h4>
+                <p class="text-sm text-slate-400">Less important parts of a system that a hacker breaks into first, used as leverage to reach the high-value assets.</p>
+            </div>
+            <div class="bg-slate-800 rounded-xl p-6 border-l-4 border-green-500">
+                <h4 class="font-bold text-lg mb-2 text-green-400">Gate Releases</h4>
+                <p class="text-sm text-slate-400">A strict rule ensuring "We cannot launch this software until it passes this specific security tracking check."</p>
+            </div>
+            <div class="bg-slate-800 rounded-xl p-6 border-l-4 border-slate-500">
+                <h4 class="font-bold text-lg mb-2 text-slate-300">Scope</h4>
+                <p class="text-sm text-slate-400">The boundaries of what a project covers. Focusing strictly on what needs to be modeled versus operational processes.</p>
+            </div>
+            <div class="bg-slate-800 rounded-xl p-6 border-l-4 border-pink-500">
+                <h4 class="font-bold text-lg mb-2 text-pink-400">Tracking Item</h4>
+                <p class="text-sm text-slate-400">A tool (digital to-do list, bug report, checklist) used to guarantee diagrams and threats are re-checked.</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<script>
+    const wrapLabel = (label) => {
+        if (label.length <= 16) return label;
+        const words = label.split(' ');
+        const lines = [];
+        let currentLine = '';
+        words.forEach(word => {
+            if ((currentLine + word).length > 16) {
+                if (currentLine) lines.push(currentLine.trim());
+                currentLine = word + ' ';
+            } else {
+                currentLine += word + ' ';
+            }
+        });
+        if (currentLine) lines.push(currentLine.trim());
+        return lines;
+    };
+
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.font.family = "'Inter', sans-serif";
+
+    const scatterCtx = document.getElementById('brainstormChart').getContext('2d');
+    new Chart(scatterCtx, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Free Brainstorming',
+                data: [{ x: 9, y: 3 }],
+                backgroundColor: '#ef4444',
+                pointRadius: 15,
+                pointHoverRadius: 20
+            }, {
+                label: 'Structured (Movie Plotting)',
+                data: [{ x: 5, y: 6 }],
+                backgroundColor: '#a855f7',
+                pointRadius: 15,
+                pointHoverRadius: 20
+            }, {
+                label: 'Software-Centered Modeling',
+                data: [{ x: 3, y: 9 }],
+                backgroundColor: '#4ade80',
+                pointRadius: 15,
+                pointHoverRadius: 20
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    title: { display: true, text: 'Required Security Expertise', color: '#cbd5e1' },
+                    min: 0, max: 10,
+                    grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                },
+                y: {
+                    title: { display: true, text: 'Method Structure & Clarity', color: '#cbd5e1' },
+                    min: 0, max: 10,
+                    grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                }
+            },
+            plugins: {
+                legend: { position: 'bottom', labels: { color: '#e2e8f0', usePointStyle: true, padding: 20 } },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels ? item.chart.data.labels[item.dataIndex] : item.dataset.label;
+                            if (Array.isArray(label)) {
+                              return label.join(' ');
+                            } else {
+                              return label;
+                            }
+                        },
+                        label: function(context) {
+                            return 'Structure: ' + context.parsed.y + '/10, Req. Expertise: ' + context.parsed.x + '/10';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const radarLabelsRaw = ["Actionability of Output", "Ease of Use for Beginners", "Clarity of Definitions", "Predictability of Threats", "Systematic Coverage"];
+    const formattedRadarLabels = radarLabelsRaw.map(wrapLabel);
+
+    const radarCtx = document.getElementById('strategyRadarChart').getContext('2d');
+    new Chart(radarCtx, {
+        type: 'radar',
+        data: {
+            labels: formattedRadarLabels,
+            datasets: [
+                {
+                    label: 'Asset-Centered',
+                    data: [4, 5, 2, 4, 5],
+                    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                    borderColor: '#ef4444',
+                    pointBackgroundColor: '#ef4444',
+                    borderWidth: 2
+                },
+                {
+                    label: 'Attacker-Centered',
+                    data: [3, 4, 6, 2, 4],
+                    backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                    borderColor: '#f97316',
+                    pointBackgroundColor: '#f97316',
+                    borderWidth: 2
+                },
+                {
+                    label: 'Software-Centered',
+                    data: [9, 8, 8, 8, 9],
+                    backgroundColor: 'rgba(74, 222, 128, 0.3)',
+                    borderColor: '#4ade80',
+                    pointBackgroundColor: '#4ade80',
+                    borderWidth: 3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: { color: 'rgba(148, 163, 184, 0.2)' },
+                    grid: { color: 'rgba(148, 163, 184, 0.2)' },
+                    pointLabels: { color: '#e2e8f0', font: { size: 12 } },
+                    ticks: { display: false, min: 0, max: 10 }
+                }
+            },
+            plugins: {
+                legend: { position: 'bottom', labels: { color: '#e2e8f0', padding: 20 } },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                              return label.join(' ');
+                            } else {
+                              return label;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>
