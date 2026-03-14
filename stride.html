@@ -1,0 +1,414 @@
+<!-- CONFIRMATION: NEITHER Mermaid JS NOR SVG were used anywhere in this output. -->
+<!-- PALETTE: Vibrant Energetic (Red 500, Orange 500, Yellow 500, Blue 500, Violet 500, Pink 500) -->
+<!-- PLAN: 1. Introduction and Framework Overview -> 2. The 6 Pillars of STRIDE (Polar Area Chart) -> 3. Threat Structure Flow (HTML/CSS Diagram) -> 4. Threat Breakdown & Security Goals (Tailwind Cards) -> 5. Deep Dive: Denial of Service "Fork Bomb" (HTML/CSS Step Visuals). -->
+<!-- CHOICES:
+1. The 6 STRIDE Pillars -> Goal: Organize/Compare -> Chart.js Polar Area Chart -> Provides a striking, balanced visual representation of the 6 components using vibrant palette. (NO SVG)
+2. Threat Structure Flow -> Goal: Relationships/Process -> Structured HTML/CSS with Tailwind -> Clearly illustrates the attacker -> method -> victim pathway. (NO SVG)
+3. Threat Breakdown -> Goal: Organize -> Material Design Cards with Unicode Icons -> Best for pairing explanatory text with key security goals. (NO SVG)
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decoding STRIDE: Threat Modeling</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased pb-20">
+
+    <nav class="sticky top-0 z-50 bg-white shadow-md py-4 px-6 mb-8 border-b-4 border-blue-500">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-black tracking-tight text-slate-800">🛡️ STRIDE <span class="text-blue-600">Framework</span></h1>
+            <div class="hidden md:flex space-x-6 font-semibold text-sm text-slate-600">
+                <a href="#overview" class="hover:text-blue-500 transition-colors">Overview</a>
+                <a href="#breakdown" class="hover:text-blue-500 transition-colors">Threat Breakdown</a>
+                <a href="#anatomy" class="hover:text-blue-500 transition-colors">Threat Anatomy</a>
+                <a href="#casestudy" class="hover:text-blue-500 transition-colors">Case Study</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 space-y-16">
+
+        <section id="overview" class="text-center max-w-3xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">Identifying Software Threats Before They Happen</h2>
+            <p class="text-lg md:text-xl text-slate-600 mb-8 leading-relaxed">
+                STRIDE is a powerful mnemonic created by Loren Kohnfelder and Praerit Garg to help developers perform <strong>threat analysis</strong>. By understanding the six specific ways software can be attacked, you can build stronger, more resilient systems.
+            </p>
+            
+            <div class="bg-white rounded-2xl shadow-xl p-8 mt-10">
+                <h3 class="text-2xl font-bold mb-6 text-slate-800 border-b pb-4">The 6 Pillars of Vulnerability</h3>
+                <p class="text-slate-500 mb-6">A balanced view of the core threat categories that put systems at risk.</p>
+                <div class="chart-container">
+                    <canvas id="stridePolarChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="breakdown" class="pt-8">
+            <div class="mb-10 text-center">
+                <h2 class="text-3xl font-bold text-slate-800">Detailed Threat Breakdown</h2>
+                <p class="text-slate-500 mt-2">Every threat type violates a specific security goal. Explore the definitions and examples below.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <div class="bg-white rounded-xl shadow-lg border-t-8 border-red-500 p-6 flex flex-col h-full transform transition-transform hover:-translate-y-1">
+                    <div class="text-4xl mb-4">🎭</div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Spoofing</h3>
+                    <div class="bg-red-50 text-red-700 font-semibold px-3 py-1 rounded-full w-max text-sm mb-4">Breaks: Authentication</div>
+                    <p class="text-slate-600 flex-grow mb-4">Pretending to be someone or something else, like a famous person, a specific website, or a system file.</p>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-sm">
+                        <strong class="text-slate-800 block mb-1">Example:</strong>
+                        Sending an email that looks like it is from your bank.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg border-t-8 border-orange-500 p-6 flex flex-col h-full transform transition-transform hover:-translate-y-1">
+                    <div class="text-4xl mb-4">✏️</div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Tampering</h3>
+                    <div class="bg-orange-50 text-orange-700 font-semibold px-3 py-1 rounded-full w-max text-sm mb-4">Breaks: Integrity</div>
+                    <p class="text-slate-600 flex-grow mb-4">Changing information on a disk, a network, or inside a computer's memory without permission.</p>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-sm">
+                        <strong class="text-slate-800 block mb-1">Example:</strong>
+                        Changing the numbers in a spreadsheet or database.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg border-t-8 border-yellow-500 p-6 flex flex-col h-full transform transition-transform hover:-translate-y-1">
+                    <div class="text-4xl mb-4">🤷</div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Repudiation</h3>
+                    <div class="bg-yellow-50 text-yellow-700 font-semibold px-3 py-1 rounded-full w-max text-sm mb-4">Breaks: Non-repudiation</div>
+                    <p class="text-slate-600 flex-grow mb-4">Claiming you didn't perform an action after doing it, effectively denying responsibility.</p>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-sm">
+                        <strong class="text-slate-800 block mb-1">Example:</strong>
+                        A user claiming they never ordered an expensive item.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg border-t-8 border-blue-500 p-6 flex flex-col h-full transform transition-transform hover:-translate-y-1">
+                    <div class="text-4xl mb-4">🔓</div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Info Disclosure</h3>
+                    <div class="bg-blue-50 text-blue-700 font-semibold px-3 py-1 rounded-full w-max text-sm mb-4">Breaks: Confidentiality</div>
+                    <p class="text-slate-600 flex-grow mb-4">Leaking secrets or showing information to people who aren't allowed to see it.</p>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-sm">
+                        <strong class="text-slate-800 block mb-1">Example:</strong>
+                        A computer showing your password in an error message.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg border-t-8 border-violet-500 p-6 flex flex-col h-full transform transition-transform hover:-translate-y-1">
+                    <div class="text-4xl mb-4">💥</div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Denial of Service</h3>
+                    <div class="bg-violet-50 text-violet-700 font-semibold px-3 py-1 rounded-full w-max text-sm mb-4">Breaks: Availability</div>
+                    <p class="text-slate-600 flex-grow mb-4">Using up a computer's resources so the system stops working for everyone else.</p>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-sm">
+                        <strong class="text-slate-800 block mb-1">Example:</strong>
+                        Flooding a website with fake traffic so real users can't get in.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg border-t-8 border-pink-500 p-6 flex flex-col h-full transform transition-transform hover:-translate-y-1">
+                    <div class="text-4xl mb-4">👑</div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Elevation of Privilege</h3>
+                    <div class="bg-pink-50 text-pink-700 font-semibold px-3 py-1 rounded-full w-max text-sm mb-4">Breaks: Authorization</div>
+                    <p class="text-slate-600 flex-grow mb-4">A regular user finding a way to get the powers of an administrator or "boss" user.</p>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-sm">
+                        <strong class="text-slate-800 block mb-1">Example:</strong>
+                        Exploiting a bug to delete other people's files.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="anatomy" class="pt-8">
+            <div class="bg-slate-800 rounded-2xl shadow-xl p-8 md:p-12 text-white">
+                <div class="mb-10 text-center">
+                    <h2 class="text-3xl font-bold mb-4">The Structure of a Threat</h2>
+                    <p class="text-slate-400">How external actors interact with victims and systems.</p>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-6 md:space-y-0 md:space-x-8">
+                    
+                    <div class="bg-slate-700 p-6 rounded-xl w-full md:w-1/3 text-center border-2 border-slate-600">
+                        <div class="text-4xl mb-3">🥷</div>
+                        <h4 class="text-xl font-bold mb-2">Attacker</h4>
+                        <p class="text-sm text-slate-400">Initiates the malicious action or exploits the vulnerability.</p>
+                    </div>
+
+                    <div class="flex flex-col items-center justify-center w-full md:w-1/4">
+                        <div class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full mb-2 z-10 shadow-lg">
+                            Attack Method
+                        </div>
+                        <div class="h-10 md:h-2 w-2 md:w-full bg-blue-500"></div>
+                        <div class="text-xs text-slate-400 mt-4 text-center">
+                            Fake IDs (Spoofing)<br>
+                            Data Edit (Tampering)<br>
+                            Crashing (DoS)
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-700 p-6 rounded-xl w-full md:w-1/3 text-center border-2 border-slate-600">
+                        <div class="text-4xl mb-3">🎯</div>
+                        <h4 class="text-xl font-bold mb-2">Victim / System</h4>
+                        <p class="text-sm text-slate-400">The target that suffers the security goal violation.</p>
+                        <div class="mt-4 pt-4 border-t border-slate-600 text-xs text-slate-400">
+                            People / Users<br>
+                            Databases<br>
+                            Network Cables
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="casestudy" class="pt-8 mb-12">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="bg-violet-600 p-8 text-white">
+                    <h2 class="text-3xl font-bold mb-2">Case Study: Denial of Service</h2>
+                    <p class="text-violet-200">Analyzing a classic "Fork Bomb" attack.</p>
+                </div>
+                
+                <div class="p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">The Logic of Exhaustion</h3>
+                        <p class="text-slate-600 mb-6 leading-relaxed">
+                            A Denial of Service (DoS) attack doesn't always require massive external networks. Sometimes, a single line of malicious code is enough to cripple a system by forcing it to consume all its own resources.
+                        </p>
+                        
+                        <div class="bg-slate-900 rounded-lg p-6 font-mono text-green-400 text-lg shadow-inner mb-6">
+                            while(1){<br>
+                            &nbsp;&nbsp;fork();<br>
+                            }
+                        </div>
+                        
+                        <div class="flex items-start space-x-4 mb-4">
+                            <div class="bg-violet-100 text-violet-700 font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0">1</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">The Infinite Loop</h4>
+                                <p class="text-sm text-slate-600"><code>while(1)</code> forces the computer to execute the enclosed command forever, without a stop condition.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-violet-100 text-violet-700 font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0">2</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">The Clone Command</h4>
+                                <p class="text-sm text-slate-600"><code>fork()</code> tells the system to duplicate the current process. One becomes two, two become four, scaling exponentially until the CPU and memory freeze.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 h-full flex flex-col justify-center">
+                        <div class="text-center mb-6">
+                            <h4 class="font-bold text-slate-800 text-lg">System Resource Depletion</h4>
+                        </div>
+                        <div class="chart-container" style="height: 250px;">
+                            <canvas id="dosChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center text-sm">
+        <p>STRIDE Framework Visualization based on Kohnfelder and Garg's Threat Modeling Concepts.</p>
+    </footer>
+
+    <script>
+        function wrapLabel(label, maxChars = 16) {
+            if (label.length <= maxChars) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + word).length > maxChars) {
+                    if (currentLine) lines.push(currentLine.trim());
+                    currentLine = word + ' ';
+                } else {
+                    currentLine += word + ' ';
+                }
+            }
+            if (currentLine) lines.push(currentLine.trim());
+            return lines;
+        }
+
+        const rawPolarLabels = [
+            'Spoofing (Pretending to be someone else)',
+            'Tampering (Changing things without permission)',
+            'Repudiation (Claiming you didn\'t do it)',
+            'Information Disclosure (Leaking secrets)',
+            'Denial of Service (Breaking the service)',
+            'Elevation of Privilege (Gaining extra power)'
+        ];
+
+        const processedPolarLabels = rawPolarLabels.map(label => wrapLabel(label));
+
+        const polarCtx = document.getElementById('stridePolarChart').getContext('2d');
+        new Chart(polarCtx, {
+            type: 'polarArea',
+            data: {
+                labels: processedPolarLabels,
+                datasets: [{
+                    label: 'Threat Severity Potential',
+                    data: [100, 100, 100, 100, 100, 100],
+                    backgroundColor: [
+                        'rgba(239, 68, 68, 0.7)',
+                        'rgba(249, 115, 22, 0.7)',
+                        'rgba(234, 179, 8, 0.7)',
+                        'rgba(59, 130, 246, 0.7)',
+                        'rgba(139, 92, 246, 0.7)',
+                        'rgba(236, 72, 153, 0.7)'
+                    ],
+                    borderColor: [
+                        '#ef4444',
+                        '#f97316',
+                        '#eab308',
+                        '#3b82f6',
+                        '#8b5cf6',
+                        '#ec4899'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: {
+                                size: 12,
+                                family: "'Segoe UI', sans-serif"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                    return label.join(' ');
+                                } else {
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const rawDosLabels = [
+            'Initial Call',
+            'Loop 1',
+            'Loop 2',
+            'Loop 3',
+            'Loop 4',
+            'System Crash'
+        ];
+        
+        const processedDosLabels = rawDosLabels.map(label => wrapLabel(label));
+
+        const dosCtx = document.getElementById('dosChart').getContext('2d');
+        new Chart(dosCtx, {
+            type: 'line',
+            data: {
+                labels: processedDosLabels,
+                datasets: [{
+                    label: 'Active Processes',
+                    data: [1, 2, 4, 16, 256, 10000],
+                    borderColor: '#8b5cf6',
+                    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#8b5cf6',
+                    pointRadius: 5,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        type: 'logarithmic',
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Resource Usage (Log Scale)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                    return label.join(' ');
+                                } else {
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

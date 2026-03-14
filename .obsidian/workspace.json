@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Threat Modeling Security Design/2. Getting Started/2. Strategies For Threat Modeling.md",
+                "file": "Threat Modeling Security Design/3. Finding Threats/1. STRIDE.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2. Strategies For Threat Modeling"
+              "title": "1. STRIDE"
             }
           }
         ]
@@ -188,8 +188,11 @@
   },
   "active": "d48d13ad433e2523",
   "lastOpenFiles": [
-    "Threat Modeling Security Design/2. Getting Started/1. Dive In & Threat Model.md",
+    "stride.html",
     "Threat Modeling Security Design/2. Getting Started/2. Strategies For Threat Modeling.md",
+    "Threat Modeling Security Design/3. Finding Threats/1. STRIDE.md",
+    "Threat Modeling Security Design/3. Finding Threats",
+    "Threat Modeling Security Design/2. Getting Started/1. Dive In & Threat Model.md",
     "strategiesForThreatModeling.html",
     "Threat Modeling Security Design/1. Introduction.md",
     "diveInAndThreatModel.html",
@@ -223,13 +226,11 @@
     "HTB Job Role Path/Web Penetration Tester/4. Info Gathering - Web Edition/3. DNS & subdomains/3. SubDomains.md",
     "HTB Job Role Path/Web Penetration Tester/4. Info Gathering - Web Edition/3. DNS & subdomains/2. Digging DNS.md",
     "HTB Job Role Path/Web Penetration Tester/4. Info Gathering - Web Edition/3. DNS & subdomains/1. DNS.md",
-    "HTB Job Role Path/Web Penetration Tester/4. Info Gathering - Web Edition/2. Whois/Utilizing Whois.md",
     "Bild Porgram",
     "PDFs/OAT-002.png",
     "PDFs/Gemini_Generated_Image_uggu9huggu9huggu.png",
     "PDFs/OAT-001.png",
     "PDFs/Gemini_Generated_Image_gxthrkgxthrkgxth.png",
-    "OWASP Automated Threat HandbookWeb Applications/4. Threat Modeling/2. OAT's",
     "PDFs/diagram-example.png",
     "PDFs/system-components.png",
     "PDFs/actions.png"
