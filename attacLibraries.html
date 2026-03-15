@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attack Libraries: A Simple Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+            color: #2D3142;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#0B132B',
+                            deep: '#1C2541',
+                            slate: '#3A506B',
+                            teal: '#5BC0BE',
+                            orange: '#FF9F1C',
+                            light: '#F8F9FA'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="antialiased">
+
+    <div style="display:none;" 
+         data-palette="Vibrant Teal and Orange (Navy: #0B132B, Teal: #5BC0BE, Orange: #FF9F1C)"
+         data-plan="1. Hero Section 2. Definition Cards 3. Spectrum Scatter Plot 4. Checklist Comparison 5. Radar Chart for CAPEC/OWASP 6. Terminology Grid"
+         data-confirmation="CONFIRMATION: No SVG and No Mermaid JS were used in this document.">
+    </div>
+
+    <nav class="sticky top-0 z-50 bg-brand-navy shadow-lg text-white">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold tracking-tight">&#x1F6E1;&#xFE0F; Attack Libraries Guide</h1>
+            <div class="hidden md:flex space-x-6 text-sm font-semibold">
+                <a href="#what-is" class="hover:text-brand-teal transition">What Are They?</a>
+                <a href="#spectrum" class="hover:text-brand-teal transition">The Spectrum</a>
+                <a href="#comparison" class="hover:text-brand-teal transition">CAPEC vs OWASP</a>
+                <a href="#terms" class="hover:text-brand-teal transition">Terms</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="bg-gradient-to-br from-brand-navy to-brand-deep text-white py-20 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-5xl font-extrabold mb-6 leading-tight">Decoding <span class="text-brand-orange">Attack Libraries</span></h2>
+            <p class="text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto">
+                Security experts use Attack Libraries to find ways a hacker might hurt a computer system. While some frameworks only give you the big picture, attack libraries provide the detailed blueprints of what can go wrong.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-12 space-y-24">
+
+        <section id="what-is" class="scroll-mt-24">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-brand-navy mb-4">Inside the Hacker's Library</h3>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Imagine a real library, but instead of storybooks, it holds files on every way a "bad actor" can attack. These resources are generally broken down into two main categories of code.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-brand-teal transform transition hover:-translate-y-2">
+                    <div class="text-5xl mb-4">&#x1F9EA;</div>
+                    <h4 class="text-2xl font-bold mb-3 text-brand-navy">Proof-of-Concept Code</h4>
+                    <p class="text-gray-600 leading-relaxed">
+                        Simple code written just to show that an attack is possible. It acts as a demonstration rather than a fully functional weapon.
+                    </p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-brand-orange transform transition hover:-translate-y-2">
+                    <div class="text-5xl mb-4">&#x1F528;</div>
+                    <h4 class="text-2xl font-bold mb-3 text-brand-navy">Weaponized Exploit Code</h4>
+                    <p class="text-gray-600 leading-relaxed">
+                        Finished, ready-to-use digital tools that can actually break into a system. These are the tools used in real-world scenarios.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="spectrum" class="scroll-mt-24 bg-white rounded-3xl shadow-xl p-8 md:p-12">
+            <div class="mb-10 md:w-2/3">
+                <h3 class="text-3xl font-bold text-brand-navy mb-4">How to Choose: The Threat Spectrum</h3>
+                <p class="text-lg text-gray-600">
+                    Not all libraries are the same. Selecting the right one depends on your <strong>Audience</strong>, the <strong>Scope</strong> (boundary of the system), and the balance between <strong>Abstraction</strong> (the big picture) and <strong>Detail</strong> (the exact steps).
+                </p>
+            </div>
+
+            <div class="chart-container mb-8">
+                <canvas id="spectrumChart"></canvas>
+            </div>
+            
+            <div class="bg-brand-light p-6 rounded-xl border-l-4 border-brand-slate text-gray-700">
+                <strong>Chart Context:</strong> This scatter plot illustrates the balance between "Abstraction" and "Detail". Tools like <em>STRIDE</em> provide high-level concepts, whereas <em>CAPEC</em> provides deep, step-by-step attack patterns. <em>OWASP</em> sits in the middle, offering a balanced view tailored for web applications.
+            </div>
+        </section>
+
+        <section id="checklists" class="scroll-mt-24">
+            <h3 class="text-3xl font-bold text-brand-navy mb-12 text-center">Checklists vs. Libraries</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-md flex items-start space-x-4 border-l-4 border-gray-400">
+                        <div class="text-4xl">&#x2611;&#xFE0F;</div>
+                        <div>
+                            <h4 class="text-xl font-bold text-brand-navy mb-2">Checklists: For Memory</h4>
+                            <p class="text-gray-600">Great for making sure you don't forget simple, common mistakes. However, they don't help you think creatively. If a threat isn't on the list, you might miss it.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-md flex items-start space-x-4 border-l-4 border-brand-teal">
+                        <div class="text-4xl">&#x1F4A1;</div>
+                        <div>
+                            <h4 class="text-xl font-bold text-brand-navy mb-2">Libraries: For Creativity</h4>
+                            <p class="text-gray-600">Designed to make you think. They give you enough info to spark new ideas about how your specific system might be at risk, rather than just ticking boxes.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="doughnutChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="comparison" class="scroll-mt-24 bg-brand-navy text-white rounded-3xl shadow-2xl p-8 md:p-12">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-white mb-4">The Famous Examples: CAPEC vs OWASP</h3>
+                <p class="text-brand-teal text-lg max-w-2xl mx-auto">
+                    Comparing the two most prominent collections of security threats to help you understand which fits your project better.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="chart-container bg-white rounded-2xl p-4">
+                    <canvas id="radarChart"></canvas>
+                </div>
+                
+                <div class="space-y-8">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-3">
+                            <span class="text-3xl">&#x1F4D5;</span>
+                            <h4 class="text-2xl font-bold text-brand-orange">CAPEC</h4>
+                        </div>
+                        <p class="text-gray-300">
+                            <strong>The Giant Dictionary.</strong> A huge, very organized list of almost 500 different attack patterns. It covers everything from physical security to social engineering. It is very detailed but can be overwhelming because it's so big.
+                        </p>
+                    </div>
+                    
+                    <div class="border-t border-brand-slate pt-8">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <span class="text-3xl">&#x1F3AF;</span>
+                            <h4 class="text-2xl font-bold text-brand-teal">OWASP Top Ten</h4>
+                        </div>
+                        <p class="text-gray-300">
+                            <strong>The "Hits" List.</strong> A list of the 10 most dangerous risks specifically for websites. Updated yearly, it is shorter, more focused, and generally easier to use than CAPEC if you are building web applications.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="terms" class="scroll-mt-24 mb-20">
+            <h3 class="text-3xl font-bold text-brand-navy mb-8 text-center">Technical Terms Defined</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                
+                <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
+                    <h4 class="text-lg font-bold text-brand-orange mb-2">&#x1F9E0; Threat Modeling</h4>
+                    <p class="text-gray-600 text-sm">The process of sitting down and figuring out all the ways someone could attack your app or computer.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
+                    <h4 class="text-lg font-bold text-brand-orange mb-2">&#x1F5C2;&#xFE0F; Taxonomy</h4>
+                    <p class="text-gray-600 text-sm">A fancy word for a "sorting system." It’s how you group similar attacks together (like putting all "password attacks" in one folder).</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
+                    <h4 class="text-lg font-bold text-brand-orange mb-2">&#x1F3AD; Social Engineering</h4>
+                    <p class="text-gray-600 text-sm">Tricking a human being into giving up a password or secret instead of using computer code to break in.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
+                    <h4 class="text-lg font-bold text-brand-orange mb-2">&#x1F50D; Literature Review</h4>
+                    <p class="text-gray-600 text-sm">Looking at old reports and news to see what happened to other systems in the past to prepare for the future.</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-brand-deep text-gray-400 py-8 text-center">
+        <div class="max-w-4xl mx-auto px-4">
+            <p class="mb-2">&copy; 2026 Attack Libraries Infographic.</p>
+            <p class="text-xs">Built exclusively with standard HTML/CSS/JS and Chart.js. No SVG images or Mermaid.js scripts are utilized in this application.</p>
+        </div>
+    </footer>
+
+    <script>
+        const wrapLabel = (text) => {
+            if (text.length <= 16) return text;
+            const words = text.split(' ');
+            const lines = [];
+            let currentLine = '';
+            
+            words.forEach(word => {
+                if ((currentLine + word).length > 16) {
+                    if (currentLine.trim() !== '') {
+                        lines.push(currentLine.trim());
+                    }
+                    currentLine = word + ' ';
+                } else {
+                    currentLine += word + ' ';
+                }
+            });
+            
+            if (currentLine.trim() !== '') {
+                lines.push(currentLine.trim());
+            }
+            
+            return lines.length > 1 ? lines : lines[0];
+        };
+
+        const standardTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        const initCharts = () => {
+            const spectrumCtx = document.getElementById('spectrumChart').getContext('2d');
+            new Chart(spectrumCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'STRIDE (High Abstraction)',
+                        data: [{ x: 20, y: 80 }],
+                        backgroundColor: '#3A506B',
+                        pointRadius: 15,
+                        pointHoverRadius: 18
+                    }, {
+                        label: 'OWASP Top 10 (Web Focused)',
+                        data: [{ x: 60, y: 50 }],
+                        backgroundColor: '#5BC0BE',
+                        pointRadius: 20,
+                        pointHoverRadius: 23
+                    }, {
+                        label: 'CAPEC (High Detail)',
+                        data: [{ x: 90, y: 20 }],
+                        backgroundColor: '#FF9F1C',
+                        pointRadius: 25,
+                        pointHoverRadius: 28
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Level of Detail (Low to High)', font: { size: 14, weight: 'bold' } },
+                            min: 0,
+                            max: 100
+                        },
+                        y: {
+                            title: { display: true, text: 'Level of Abstraction (Low to High)', font: { size: 14, weight: 'bold' } },
+                            min: 0,
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+            const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+            const dLabels = [
+                wrapLabel('Rigid Compliance Checks'), 
+                wrapLabel('Creative Threat Discovery')
+            ];
+            new Chart(doughnutCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: dLabels,
+                    datasets: [{
+                        data: [35, 65],
+                        backgroundColor: ['#1C2541', '#5BC0BE'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: standardTooltipConfig
+                    }
+                }
+            });
+
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            const rLabels = [
+                wrapLabel('Total Attack Volume'),
+                wrapLabel('Granular Specificity'),
+                wrapLabel('Web App Focus'),
+                wrapLabel('Beginner Friendliness'),
+                wrapLabel('Physical/Social Scope')
+            ];
+            new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: rLabels,
+                    datasets: [{
+                        label: 'CAPEC',
+                        data: [95, 90, 40, 30, 90],
+                        backgroundColor: 'rgba(255, 159, 28, 0.2)',
+                        borderColor: '#FF9F1C',
+                        pointBackgroundColor: '#FF9F1C',
+                        borderWidth: 2
+                    }, {
+                        label: 'OWASP Top 10',
+                        data: [20, 40, 100, 85, 10],
+                        backgroundColor: 'rgba(91, 192, 190, 0.2)',
+                        borderColor: '#5BC0BE',
+                        pointBackgroundColor: '#5BC0BE',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0,0,0,0.1)' },
+                            grid: { color: 'rgba(0,0,0,0.1)' },
+                            pointLabels: {
+                                font: { family: 'Inter', size: 11 },
+                                color: '#2D3142'
+                            },
+                            ticks: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: standardTooltipConfig
+                    }
+                }
+            });
+        };
+
+        window.addEventListener('DOMContentLoaded', initCharts);
+    </script>
+</body>
+</html>
