@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attack Trees Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 350px; }
+        }
+        .tree-node {
+            background-color: #1F2937;
+            border: 2px solid #00F0FF;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .tree-connector-v {
+            width: 2px;
+            height: 20px;
+            background-color: #FF0055;
+            margin: 0 auto;
+        }
+        .tree-connector-h {
+            height: 2px;
+            background-color: #FF0055;
+            width: calc(100% - 50%);
+            margin: 0 auto;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans leading-relaxed selection:bg-pink-500 selection:text-white hide-scrollbar">
+
+    <!-- Palette: Neon Cyber (Deep Purple background, Neon Blue accents, Bright Pink highlights, Vibrant Yellow/Green chart data) -->
+    <!-- Plan: Introduction (Hero), Usage Breakdown (Donut), Logic Types (Pie), 6-Step Process (CSS Grid Timeline), Visual Anatomy (CSS Flexbox Tree). -->
+    <!-- Justification: Donut for Usage compares categories. Pie for Logic compares distributions. HTML/CSS Grid for Process organizes sequence. HTML/CSS Flexbox for Anatomy shows hierarchy. NO SVG USED. -->
+    <!-- Explicit Confirmation: NEITHER Mermaid JS NOR SVG were used anywhere in the output. -->
+
+    <nav class="sticky top-0 z-50 bg-gray-900/90 backdrop-blur border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#00F0FF] to-[#FF0055]">ATTACK TREES</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#overview" class="hover:text-[#00F0FF] px-3 py-2 rounded-md text-sm font-medium transition-colors">Overview</a>
+                        <a href="#metrics" class="hover:text-[#FF0055] px-3 py-2 rounded-md text-sm font-medium transition-colors">Metrics</a>
+                        <a href="#process" class="hover:text-[#FFE600] px-3 py-2 rounded-md text-sm font-medium transition-colors">Process</a>
+                        <a href="#anatomy" class="hover:text-[#00FF66] px-3 py-2 rounded-md text-sm font-medium transition-colors">Anatomy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+        <section id="overview" class="text-center max-w-4xl mx-auto">
+            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
+                Mapping the Threat Landscape
+            </h1>
+            <p class="text-xl text-gray-400 mb-8">
+                Attack trees provide a formal, methodical way to organize security threats. By modeling a system with the attacker's ultimate goal at the root, we systematically break down the paths they could take to compromise our defenses.
+            </p>
+            <div class="inline-block bg-gray-800 rounded-lg p-6 border-l-4 border-[#00F0FF] shadow-lg text-left">
+                <h3 class="text-[#00F0FF] font-bold text-lg mb-2">Core Objective</h3>
+                <p class="text-sm">Find new vulnerabilities, organize known threats, and prioritize defenses by evaluating the exact paths an attacker must take to execute an exploit.</p>
+            </div>
+        </section>
+
+        <section id="metrics" class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            
+            <div class="bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-700 hover:border-[#FF0055] transition-colors duration-300">
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    <span class="text-[#FF0055] mr-3 text-3xl">&#9673;</span> Method Selection
+                </h2>
+                <p class="text-gray-400 mb-6 text-sm">
+                    There are three primary approaches to utilizing attack trees in threat modeling. Pre-existing models offer quick insights, while custom-built models provide deep project-specific accuracy.
+                </p>
+                <div class="chart-container">
+                    <canvas id="usageChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-700 hover:border-[#FFE600] transition-colors duration-300">
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    <span class="text-[#FFE600] mr-3 text-3xl">&#9650;</span> Logical Architecture
+                </h2>
+                <p class="text-gray-400 mb-6 text-sm">
+                    Trees operate on boolean logic. "OR" nodes indicate an attacker only needs one path to succeed. "AND" nodes mean an attacker must complete all listed steps to proceed.
+                </p>
+                <div class="chart-container">
+                    <canvas id="logicChart"></canvas>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="process" class="space-y-12">
+            <div class="text-center max-w-3xl mx-auto">
+                <h2 class="text-4xl font-extrabold mb-4">The 6-Step Construction Process</h2>
+                <p class="text-gray-400 text-lg">A systematic approach to building highly effective, actionable attack trees without getting lost in infinite possibilities.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
+                
+                <div class="bg-gray-800 rounded-xl p-6 border-t-4 border-[#00F0FF] shadow-lg relative z-10">
+                    <div class="text-[#00F0FF] font-black text-4xl mb-2 opacity-50 absolute top-4 right-4">01</div>
+                    <h3 class="text-xl font-bold mb-2 text-white mt-4">Representation</h3>
+                    <p class="text-gray-400 text-sm">Choose the visual style before starting. Will this be a graphical diagram or a text-based outline? Decide early.</p>
+                </div>
+
+                <div class="bg-gray-800 rounded-xl p-6 border-t-4 border-[#00F0FF] shadow-lg relative z-10">
+                    <div class="text-[#00F0FF] font-black text-4xl mb-2 opacity-50 absolute top-4 right-4">02</div>
+                    <h3 class="text-xl font-bold mb-2 text-white mt-4">Root Node</h3>
+                    <p class="text-gray-400 text-sm">Define the primary target. What is the ultimate goal of the attacker? E.g., "Steal Customer Data" or "Access Server."</p>
+                </div>
+
+                <div class="bg-gray-800 rounded-xl p-6 border-t-4 border-[#00F0FF] shadow-lg relative z-10">
+                    <div class="text-[#00F0FF] font-black text-4xl mb-2 opacity-50 absolute top-4 right-4">03</div>
+                    <h3 class="text-xl font-bold mb-2 text-white mt-4">Subnodes</h3>
+                    <p class="text-gray-400 text-sm">Break the goal down. Use brainstorming or STRIDE methodology to find the immediate steps required to reach the parent goal.</p>
+                </div>
+
+                <div class="bg-gray-800 rounded-xl p-6 border-t-4 border-[#FF0055] shadow-lg relative z-10">
+                    <div class="text-[#FF0055] font-black text-4xl mb-2 opacity-50 absolute top-4 right-4">04</div>
+                    <h3 class="text-xl font-bold mb-2 text-white mt-4">Completeness</h3>
+                    <p class="text-gray-400 text-sm">Review the branches. Did you miss any major attack vectors? Check standard security frameworks to ensure full coverage.</p>
+                </div>
+
+                <div class="bg-gray-800 rounded-xl p-6 border-t-4 border-[#FF0055] shadow-lg relative z-10">
+                    <div class="text-[#FF0055] font-black text-4xl mb-2 opacity-50 absolute top-4 right-4">05</div>
+                    <h3 class="text-xl font-bold mb-2 text-white mt-4">Pruning</h3>
+                    <p class="text-gray-400 text-sm">Eliminate the noise. Mark attacks that are physically impossible or already thoroughly mitigated so teams don't waste time on them.</p>
+                </div>
+
+                <div class="bg-gray-800 rounded-xl p-6 border-t-4 border-[#FF0055] shadow-lg relative z-10">
+                    <div class="text-[#FF0055] font-black text-4xl mb-2 opacity-50 absolute top-4 right-4">06</div>
+                    <h3 class="text-xl font-bold mb-2 text-white mt-4">Presentation</h3>
+                    <p class="text-gray-400 text-sm">Format for human readability. Consolidate logic, use clear grids, and aim to keep the entire structure viewable on a single page.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="anatomy" class="bg-gray-800 rounded-3xl p-8 lg:p-12 shadow-2xl border border-gray-700">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-white mb-4">Structural Anatomy of an Attack Tree</h2>
+                <p class="text-gray-400">Visualizing the hierarchical nature of threat vectors using pure structural layouts.</p>
+            </div>
+
+            <div class="flex flex-col items-center w-full overflow-x-auto pb-8 hide-scrollbar">
+                
+                <div class="tree-node border-[#00F0FF] w-64">
+                    <div class="text-xs text-gray-400 uppercase tracking-widest mb-1">Root Node</div>
+                    <div class="font-bold text-lg">Access the Building</div>
+                </div>
+
+                <div class="tree-connector-v"></div>
+                <div class="tree-connector-h w-full max-w-[600px] flex justify-between">
+                    <div class="h-full w-1/2 border-r-2 border-[#FF0055]"></div>
+                    <div class="h-full w-1/2"></div>
+                </div>
+
+                <div class="w-full max-w-[800px] flex justify-between px-4 mt-[-2px]">
+                    <div class="tree-connector-v"></div>
+                    <div class="tree-connector-v"></div>
+                    <div class="tree-connector-v"></div>
+                </div>
+
+                <div class="w-full max-w-[800px] grid grid-cols-3 gap-4 px-4">
+                    
+                    <div class="flex flex-col items-center">
+                        <div class="tree-node border-[#FFE600] w-full text-sm">
+                            <span class="text-xs text-gray-400 block mb-1">[OR] Subnode</span>
+                            Method 1: Door
+                        </div>
+                        <div class="tree-connector-v bg-gray-600"></div>
+                        <div class="w-full border-t-2 border-gray-600 mt-[-2px] flex flex-col items-center gap-2 pt-2">
+                             <div class="bg-gray-700 w-11/12 p-2 rounded text-xs text-center border border-gray-600">Pick Lock</div>
+                             <div class="bg-gray-700 w-11/12 p-2 rounded text-xs text-center border border-gray-600">Use Key</div>
+                             <div class="bg-gray-700 w-11/12 p-2 rounded text-xs text-center border border-gray-600">Social Engineer</div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="tree-node border-[#FFE600] w-full text-sm">
+                            <span class="text-xs text-gray-400 block mb-1">[OR] Subnode</span>
+                            Method 2: Window
+                        </div>
+                        <div class="tree-connector-v bg-gray-600"></div>
+                        <div class="w-full border-t-2 border-gray-600 mt-[-2px] flex flex-col items-center gap-2 pt-2">
+                             <div class="bg-gray-700 w-11/12 p-2 rounded text-xs text-center border border-gray-600">Break Glass</div>
+                             <div class="bg-gray-700 w-11/12 p-2 rounded text-xs text-center border border-gray-600">Lift Frame</div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="tree-node border-[#FFE600] w-full text-sm">
+                            <span class="text-xs text-gray-400 block mb-1">[OR] Subnode</span>
+                            Method 3: Wall
+                        </div>
+                        <div class="tree-connector-v bg-gray-600"></div>
+                        <div class="w-full border-t-2 border-gray-600 mt-[-2px] flex flex-col items-center gap-2 pt-2">
+                             <div class="bg-gray-700 w-11/12 p-2 rounded text-xs text-center border border-gray-600">Sledgehammer</div>
+                             <div class="bg-gray-700 w-11/12 p-2 rounded text-xs text-center border border-gray-600">Ram with Truck</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-950 border-t border-gray-800 py-8 text-center text-sm text-gray-500 mt-12">
+        <p>Infographic synthesized from Chapter 4: Attack Trees</p>
+    </footer>
+
+    <script>
+        function wrapLabels(labels, maxChars) {
+            return labels.map(label => {
+                if (label.length <= maxChars) return label;
+                let words = label.split(' ');
+                let lines = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + word).length > maxChars) {
+                        if (currentLine) lines.push(currentLine.trim());
+                        currentLine = word + ' ';
+                    } else {
+                        currentLine += word + ' ';
+                    }
+                });
+                if (currentLine) lines.push(currentLine.trim());
+                return lines;
+            });
+        }
+
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#e5e7eb', font: { family: 'sans-serif', size: 12 } }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        const usageLabels = wrapLabels(['Build for Specific Project', 'Use Pre-existing Expert Trees', 'Create General Tree for Public Use'], 16);
+        const ctxUsage = document.getElementById('usageChart').getContext('2d');
+        new Chart(ctxUsage, {
+            type: 'doughnut',
+            data: {
+                labels: usageLabels,
+                datasets: [{
+                    data: [70, 25, 5],
+                    backgroundColor: ['#00F0FF', '#FF0055', '#2D0A31'],
+                    borderColor: '#1F2937',
+                    borderWidth: 2,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                ...chartOptions,
+                cutout: '65%'
+            }
+        });
+
+        const logicLabels = wrapLabels(['OR Nodes (Any method succeeds)', 'AND Nodes (All methods required)'], 16);
+        const ctxLogic = document.getElementById('logicChart').getContext('2d');
+        new Chart(ctxLogic, {
+            type: 'pie',
+            data: {
+                labels: logicLabels,
+                datasets: [{
+                    data: [90, 10],
+                    backgroundColor: ['#FFE600', '#00FF66'],
+                    borderColor: '#1F2937',
+                    borderWidth: 2,
+                    hoverOffset: 4
+                }]
+            },
+            options: chartOptions
+        });
+    </script>
+</body>
+</html>
