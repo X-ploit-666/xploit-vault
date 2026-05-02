@@ -4,13 +4,10 @@ Confirmation: NEITHER Mermaid JS NOR SVG were used anywhere in this output. All 
 Narrative Plan Summary:
 1. The Setup (Organize): Visualizing the Implicit Flow where the token is exposed in the browser URL.
 2. The Exploit (Process): A "Terminal-style" breakdown of modifying the authentication POST request to impersonate a victim.
-3. The Logic Gap (Inform): A Chart.js visualization showing the "Trust vs. Verification" imbalance.
-4. The Club Analogy (Organize): A CSS-based conceptual diagram of the 'Bad Guard' letting a hacker in as a VIP.
-5. Technical Root Cause (Conclusion): A summary of the backend failure (Lack of User-to-Token Binding).
-Visualization Choices:
-- Trust vs. Verification Gap (Bar Chart): Goal -> Compare. Justification -> Highlights the massive gap between the server's 'Blind Trust' and actual 'Security Verification'. Canvas/Chart.js. NO SVG.
-- Impersonation Success Probability (Doughnut Chart): Goal -> Inform. Justification -> Represents the vulnerability scope when token binding is absent. Canvas/Chart.js. NO SVG.
-- Request Modification (Terminal UI): Goal -> Organize. Justification -> Uses HTML/CSS to show the exact 'Before vs After' of the malicious request. NO SVG.
+3. ✨ Gemini Integration (AI Logic): Added an interactive Exploit Analyzer and Defense Generator powered by Gemini 2.5 Flash.
+4. The Logic Gap (Inform): A Chart.js visualization showing the "Trust vs. Verification" imbalance.
+5. The Club Analogy (Organize): A CSS-based conceptual diagram of the 'Bad Guard' letting a hacker in as a VIP.
+6. Technical Root Cause (Conclusion): A summary of the backend failure (Lack of User-to-Token Binding).
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -81,11 +78,22 @@ Visualization Choices:
         
         .strike { text-decoration: line-through; color: var(--accent-red); opacity: 0.6; }
         .injected { color: var(--accent-green); font-weight: bold; background: rgba(16, 185, 129, 0.1); }
+
+        .loading-shimmer {
+            background: linear-gradient(90deg, #1a1a1a 25%, #222 50%, #1a1a1a 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
     </style>
 </head>
 <body class="p-6 md:p-12">
 
-    <main class="max-w-5xl mx-auto space-y-20">
+    <main class="max-w-5xl mx-auto space-y-20 pb-20">
         
         <header class="text-center space-y-6">
             <div class="inline-block px-4 py-1 border border-rose-900 text-rose-500 text-xs tracking-widest font-bold bg-rose-950/20 mb-4">
@@ -98,6 +106,35 @@ Visualization Choices:
                 Implicit flow turns the browser into the "source of truth." In an evil world, we don't follow the rules—we change the truth.
             </p>
         </header>
+
+        <!-- ✨ Gemini AI Section -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="evil-card border-emerald-900 bg-emerald-950/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-emerald-500 font-bold mb-2 uppercase tracking-widest text-sm">✨ Exploit Analyzer</h3>
+                    <p class="text-zinc-400 text-xs mb-4">Let Gemini analyze the traffic and explain the breach logic.</p>
+                    <div id="ai-analysis-box" class="text-xs text-zinc-300 leading-relaxed min-h-[60px]">
+                        Click the button to start deep traffic inspection...
+                    </div>
+                </div>
+                <button onclick="analyzeExploit()" id="analyze-btn" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded transition-all flex items-center justify-center gap-2">
+                    ✨ Analyze Traffic
+                </button>
+            </div>
+
+            <div class="evil-card border-rose-900 bg-rose-950/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-rose-500 font-bold mb-2 uppercase tracking-widest text-sm">✨ Defense Generator</h3>
+                    <p class="text-zinc-400 text-xs mb-4">Ask Gemini to write a secure backend fix for this vulnerability.</p>
+                    <div id="ai-fix-box" class="text-[10px] font-mono text-zinc-400 overflow-x-auto">
+                        Awaiting fix generation...
+                    </div>
+                </div>
+                <button onclick="generateFix()" id="fix-btn" class="mt-4 w-full bg-rose-700 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded transition-all flex items-center justify-center gap-2">
+                    ✨ Generate Secure Fix
+                </button>
+            </div>
+        </section>
 
         <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div class="space-y-6">
@@ -191,6 +228,70 @@ Visualization Choices:
     </main>
 
     <script>
+        const apiKey = ""; // Provided at runtime
+
+        async function geminiCall(prompt, systemPrompt = "") {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+                    return result.candidates?.[0]?.content?.parts?.[0]?.text || "Error: No response from AI.";
+                } catch (e) {
+                    await new Promise(r => setTimeout(r, Math.pow(2, i) * 1000));
+                }
+            }
+            return "Connection failed after retries.";
+        }
+
+        async function analyzeExploit() {
+            const btn = document.getElementById('analyze-btn');
+            const box = document.getElementById('ai-analysis-box');
+            
+            btn.disabled = true;
+            btn.innerHTML = "✨ Analyzing...";
+            box.classList.add('loading-shimmer');
+            box.innerHTML = "Inspecting packet headers... Mapping logic flaws...";
+
+            const requestData = `POST /authenticate HTTP/1.1\nemail=carlos@victim-admin.com\ntoken=valid_token_from_wiener`;
+            const system = "You are a cybersecurity expert focusing on OAuth vulnerabilities. Be concise and technical.";
+            const prompt = `Explain why this request is dangerous for an OAuth Implicit Flow: ${requestData}. Specifically, mention the lack of binding between email and access_token.`;
+
+            const res = await geminiCall(prompt, system);
+            box.classList.remove('loading-shimmer');
+            box.innerHTML = res;
+            btn.disabled = false;
+            btn.innerHTML = "✨ Analyze Traffic";
+        }
+
+        async function generateFix() {
+            const btn = document.getElementById('fix-btn');
+            const box = document.getElementById('ai-fix-box');
+            
+            btn.disabled = true;
+            btn.innerHTML = "✨ Coding Fix...";
+            box.classList.add('loading-shimmer');
+            box.innerHTML = "Drafting secure middleware...";
+
+            const system = "You are a senior security engineer. Provide a very brief code snippet in Node.js/Express to fix the OAuth token impersonation issue.";
+            const prompt = "Write a snippet that verifies the email inside the JWT token against the email parameter provided in the request body.";
+
+            const res = await geminiCall(prompt, system);
+            box.classList.remove('loading-shimmer');
+            box.innerHTML = `<pre class="whitespace-pre-wrap">${res}</pre>`;
+            btn.disabled = false;
+            btn.innerHTML = "✨ Generate Secure Fix";
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             Chart.defaults.color = '#71717a';
             Chart.defaults.font.family = "'Fira Code', monospace";
