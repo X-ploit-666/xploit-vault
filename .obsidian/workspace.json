@@ -14,7 +14,7 @@
               "type": "markdown",
               "state": {
                 "file": "Web Hacking/OAUTH/3. OAuth Authentication.md",
-                "mode": "source",
+                "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
@@ -188,9 +188,10 @@
   },
   "active": "d48d13ad433e2523",
   "lastOpenFiles": [
-    "OAuth-Authentication.html",
+    "Identifying-OAuth-Recon.html",
     "Web Hacking/OAUTH/2. OAuth Grant Types.md",
     "Web Hacking/OAUTH/3. OAuth Authentication.md",
+    "OAuth-Authentication.html",
     "Web Hacking/OAUTH/1. OAuth Introduction.md",
     "OAuth-Grants.html",
     "Machine Lab Challenges.md",
@@ -209,7 +210,6 @@
     "Threat Modeling Security Design/1. Introduction.md",
     "stride.html",
     "Threat Modeling Security Design/3. Finding Threats",
-    "strategiesForThreatModeling.html",
     "OWASP Automated Threat HandbookWeb Applications/3. The Ontology.md",
     "OWASP Automated Threat HandbookWeb Applications/2. Research.md",
     "OWASP Automated Threat HandbookWeb Applications/1. Introduction.md",

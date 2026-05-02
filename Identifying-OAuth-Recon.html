@@ -1,0 +1,337 @@
+<!-- 
+Palette Name: Toxic Hacker (Primary: #000000, Secondary: #10B981, Accent: #F43F5E, Text: #E2E8F0, Highlight: #064E3B)
+Confirmation: NEITHER Mermaid JS NOR SVG were used anywhere in this output. All icons are standard Unicode, and all charts are rendered on Canvas via Chart.js.
+Narrative Plan Summary:
+1. Entry Point (Identification): Detecting the "Login with X" buttons as the initial signal.
+2. Interception (The Proof): Visualizing the Burp Suite / Network capture of the /authorization request and its parameters.
+3. Exploitation Recon (The Map): Using .well-known endpoints to expose the internal server configuration.
+4. The Security Manual Analogy (Organize): A CSS-based breakdown of the investigation steps.
+5. Technical Deep Dive (In-Depth): A Chart.js visualization of the "Attack Surface" complexity.
+Visualization Choices:
+- Parameter Significance (Radar Chart): Goal -> Relationships. Justification -> Shows which parameters (client_id, redirect_uri, state) are most critical for a successful interception. Canvas/Chart.js. NO SVG.
+- Configuration Exposure (Doughnut Chart): Goal -> Inform. Justification -> Shows how much of a system is "exposed" once a .well-known endpoint is found. Canvas/Chart.js. NO SVG.
+- Interception Flow (CSS Diagram): Goal -> Organize. Justification -> Uses a terminal-style UI to show the backend request. NO SVG.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth Recon: Identifying the Target</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --bg: #0a0a0a;
+            --accent: #10B981;
+            --danger: #F43F5E;
+            --card: #141414;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #E2E8F0;
+            font-family: 'JetBrains+Mono', monospace;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+            background: #0f0f0f;
+            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid #333;
+        }
+
+        .terminal-header {
+            background: #262626;
+            padding: 8px 12px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .red { background: #ff5f56; }
+        .yellow { background: #ffbd2e; }
+        .green { background: #27c93f; }
+
+        .glitch-text {
+            color: var(--accent);
+            text-shadow: 2px 2px #000, -1px -1px var(--danger);
+        }
+
+        .recon-step {
+            border-left: 2px solid #333;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .recon-step::before {
+            content: '>';
+            position: absolute;
+            left: -10px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 8;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(16, 185, 129, 0.1) 50%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0.1;
+            position: absolute;
+            bottom: 100%;
+            pointer-events: none;
+            animation: scanline 6s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -100%; }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-12 overflow-x-hidden">
+    <div class="scanline"></div>
+
+    <main class="max-w-6xl mx-auto space-y-24">
+        
+        <!-- Header Section -->
+        <header class="space-y-4 border-b border-zinc-800 pb-12">
+            <div class="inline-block px-3 py-1 bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs mb-4">
+                STATUS: RECONNAISSANCE_MODE_ACTIVE
+            </div>
+            <h1 class="text-4xl md:text-7xl font-black glitch-text tracking-tighter uppercase">
+                Mapping the <br/>OAuth Surface
+            </h1>
+            <p class="text-zinc-500 max-w-2xl text-lg">
+                Before you exploit, you must identify. We look for the easy clues on the surface and the technical proof hidden in the traffic.
+            </p>
+        </header>
+
+        <!-- Level 1 & 2 -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div class="space-y-8">
+                <div class="recon-step">
+                    <h2 class="text-2xl font-bold text-white mb-2">Level 1: Visual Detection</h2>
+                    <p class="text-zinc-400">The most obvious indicator. If the UI presents federated identity, the target is using OAuth.</p>
+                    <div class="mt-4 flex gap-4">
+                        <div class="bg-zinc-900 border border-zinc-800 p-3 text-xs rounded hover:border-emerald-500 transition-colors">
+                            "Login with Google"
+                        </div>
+                        <div class="bg-zinc-900 border border-zinc-800 p-3 text-xs rounded hover:border-emerald-500 transition-colors">
+                            "Sign in with Facebook"
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recon-step">
+                    <h2 class="text-2xl font-bold text-white mb-2">Level 2: Backend Confirmation</h2>
+                    <p class="text-zinc-400">Intercepting the traffic via Burp Suite. Look for the initial <code>GET /authorization</code> request.</p>
+                    <div class="mt-6 bg-[#000] border border-zinc-800 rounded-lg overflow-hidden shadow-2xl">
+                        <div class="terminal-header">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="p-4 font-mono text-sm space-y-1">
+                            <p class="text-emerald-500">GET /o/oauth2/v2/auth? HTTP/1.1</p>
+                            <p class="text-zinc-500 italic">client_id=target_app_id</p>
+                            <p class="text-zinc-500 italic">redirect_uri=https://app.com/callback</p>
+                            <p class="text-zinc-500 italic">response_type=code</p>
+                            <p class="text-zinc-500 italic">scope=email profile</p>
+                            <p class="text-zinc-500 italic">state=csrf_protection_token</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="reconRadar"></canvas>
+            </div>
+        </section>
+
+        <!-- Recon Section -->
+        <section class="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-8 md:p-12 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-8 text-6xl opacity-10">📡</div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <h2 class="text-3xl font-bold text-white">Advanced Recon: The Config Query</h2>
+                    <p class="text-zinc-400 leading-relaxed">
+                        The true hacker doesn't stop at the UI. We probe for hidden endpoints that leak the system's "Security Manual."
+                    </p>
+                    <div class="space-y-4">
+                        <div class="bg-black p-4 border border-zinc-800 rounded">
+                            <p class="text-emerald-500 text-sm">/.well-known/openid-configuration</p>
+                            <p class="text-xs text-zinc-600 mt-2">Returns JSON revealing endpoints, supported flows, and cryptographical features.</p>
+                        </div>
+                        <div class="bg-black p-4 border border-zinc-800 rounded">
+                            <p class="text-emerald-500 text-sm">/.well-known/oauth-authorization-server</p>
+                            <p class="text-xs text-zinc-600 mt-2">The secondary target for mapping internal OAuth logic.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="configLeakChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analogy Section -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-lg space-y-4">
+                <div class="text-emerald-500 text-3xl font-bold">01</div>
+                <h3 class="text-lg font-bold text-white uppercase tracking-widest">The Clue</h3>
+                <p class="text-sm text-zinc-500">"Use company badge to enter" signs confirm external auth is in use.</p>
+            </div>
+            <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-lg space-y-4">
+                <div class="text-emerald-500 text-3xl font-bold">02</div>
+                <h3 class="text-lg font-bold text-white uppercase tracking-widest">The Observation</h3>
+                <p class="text-sm text-zinc-500">Watching employees go to specific checkpoints (/authorization) to show ID.</p>
+            </div>
+            <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-lg space-y-4">
+                <div class="text-emerald-500 text-3xl font-bold">03</div>
+                <h3 class="text-lg font-bold text-white uppercase tracking-widest">The Manual</h3>
+                <p class="text-sm text-zinc-500">Finding the left-behind security manual (JSON config) revealing all entry rules.</p>
+            </div>
+        </section>
+
+        <!-- Real World Terminal -->
+        <section class="space-y-8">
+            <h2 class="text-3xl font-bold text-center text-white">Execution Example: Google Recon</h2>
+            <div class="bg-black border border-zinc-800 rounded-xl p-6 md:p-12 font-mono text-sm overflow-x-auto shadow-[0_0_50px_rgba(16,185,129,0.1)]">
+                <p class="text-zinc-600 mb-4">// Intercepted initial request</p>
+                <p class="text-emerald-500">GET https://accounts.google.com/o/oauth2/v2/auth?client_id=...</p>
+                <p class="text-emerald-500">Result: OAuth Detected.</p>
+                <div class="my-6 border-t border-zinc-900"></div>
+                <p class="text-zinc-600 mb-4">// Probing for config</p>
+                <p class="text-emerald-500">GET https://accounts.google.com/.well-known/openid-configuration</p>
+                <p class="text-zinc-300 mt-2">{</p>
+                <p class="text-zinc-400 ml-4">"issuer": "https://accounts.google.com",</p>
+                <p class="text-zinc-400 ml-4">"authorization_endpoint": ".../o/oauth2/v2/auth",</p>
+                <p class="text-zinc-400 ml-4">"token_endpoint": ".../oauth2/v4/token",</p>
+                <p class="text-zinc-400 ml-4">"userinfo_endpoint": ".../oauth2/v3/userinfo"</p>
+                <p class="text-zinc-300">}</p>
+                <p class="text-rose-500 mt-4 font-bold">>>> Attack Surface Mapped. Ready for probing.</p>
+            </div>
+        </section>
+
+        <footer class="text-center py-12 border-t border-zinc-900">
+            <p class="text-sm tracking-widest text-zinc-600 uppercase mb-2 underline decoration-rose-500">Recon Final Insight</p>
+            <p class="text-xl text-white font-bold italic">
+                "Frontend reveals the engine; Backend captures the flow; .well-known maps the weak points."
+            </p>
+        </footer>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            Chart.defaults.color = '#71717a';
+            Chart.defaults.font.family = "'JetBrains Mono', monospace";
+
+            const wrap = (l) => {
+                if (l.length <= 16) return l;
+                let words = l.split(' '), lines = [], current = '';
+                words.forEach(w => {
+                    if ((current + w).length > 16) {
+                        lines.push(current.trim());
+                        current = w + ' ';
+                    } else {
+                        current += w + ' ';
+                    }
+                });
+                lines.push(current.trim());
+                return lines;
+            };
+
+            const ttConfig = {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: (items) => {
+                                let label = items[0].chart.data.labels[items[0].dataIndex];
+                                return Array.isArray(label) ? label.join(' ') : label;
+                            }
+                        }
+                    }
+                }
+            };
+
+            const ctx1 = document.getElementById('reconRadar').getContext('2d');
+            new Chart(ctx1, {
+                type: 'radar',
+                data: {
+                    labels: [
+                        wrap('client_id (App Identity)'),
+                        wrap('redirect_uri (Return Path)'),
+                        wrap('state (Tamper Protection)'),
+                        wrap('scope (Data Access)'),
+                        wrap('response_type (Flow Type)')
+                    ],
+                    datasets: [{
+                        label: 'Criticality for Attack Mapping',
+                        data: [90, 100, 85, 75, 80],
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                        borderColor: '#10B981',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#10B981'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    ...ttConfig,
+                    scales: {
+                        r: {
+                            grid: { color: '#333' },
+                            angleLines: { color: '#333' },
+                            pointLabels: { font: { size: 10 } },
+                            ticks: { display: false }
+                        }
+                    }
+                }
+            });
+
+            const ctx2 = document.getElementById('configLeakChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        wrap('Critical Endpoints (/token, /userinfo)'),
+                        wrap('Auth Flows Supported'),
+                        wrap('Metadata & Features'),
+                        wrap('Secure/Internal Config')
+                    ],
+                    datasets: [{
+                        data: [40, 25, 25, 10],
+                        backgroundColor: ['#10B981', '#064E3B', '#34D399', '#F43F5E'],
+                        borderWidth: 0,
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    ...ttConfig,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 20 } }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
