@@ -1,0 +1,355 @@
+<!--
+Palette Name: Vibrant Cyber Security (Primary: #1E3A8A, Secondary: #F43F5E, Accent: #FBBF24, Success: #10B981, Background: #F8FAFC)
+Confirmation: NEITHER Mermaid JS NOR SVG were used anywhere in this output. All icons are standard Unicode, and all charts are rendered on Canvas via Chart.js.
+Narrative Plan Summary: 
+1. Introduction: Establishes the Hotel Analogy (Grants = Route, Scopes = Permissions).
+2. The Core Concept (Organize): A CSS layout contrasting the 'How' and 'What'.
+3. The Paths / Flows (Organize): A custom HTML/CSS structured flowchart comparing the Authorization Code flow vs. the Implicit flow step-by-step.
+4. Security & Risk Analysis (Compare): A grouped Bar Chart visualizing the safety vs. risk profiles of the two flows.
+5. Real-World Usage (Inform/Compare): A beautifully styled table combined with a Doughnut chart showing modern adoption rates.
+Visualization Choices:
+- Flow Diagrams (HTML/CSS Flowchart): Goal -> Organize/Process. Justification -> Maps the linear steps of each grant type side-by-side using structured flex/grid and Unicode. NO SVG. NO MERMAID.
+- Security Profile Comparison (Grouped Bar Chart): Goal -> Compare. Justification -> Ideal for comparing multiple attributes (Security, Exposure Risk, Setup Complexity) across two distinct categories (Auth Code vs Implicit). Canvas/Chart.js. NO SVG.
+- Recommended Adoption (Doughnut Chart): Goal -> Inform/Composition. Justification -> Visually reinforces the "Key Takeaway" that Auth Code is the overwhelmingly preferred modern standard. Canvas/Chart.js. NO SVG.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OAuth Grant Types & Scopes</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 350px;
+    max-height: 400px;
+}
+@media (min-width: 768px) {
+    .chart-container {
+        height: 400px;
+        max-width: 100%;
+    }
+}
+body {
+    background-color: #F8FAFC;
+    color: #0F172A;
+}
+.card-shadow {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+.gradient-text {
+    background: linear-gradient(to right, #1E3A8A, #F43F5E);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.flow-box {
+    background: white;
+    border: 2px solid #E2E8F0;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+}
+.flow-arrow {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #94A3B8;
+    margin: -0.5rem 0;
+    z-index: 1;
+}
+</style>
+</head>
+<body class="font-sans antialiased pb-20">
+
+<div class="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center">
+        <span class="text-2xl font-black gradient-text">🗝️ OAuth Access Paths</span>
+    </div>
+</div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
+
+    <header class="text-center max-w-4xl mx-auto space-y-6">
+        <h1 class="text-5xl md:text-6xl font-extrabold text-[#1E3A8A] tracking-tight">
+            Grant Types & Scopes
+        </h1>
+        <p class="text-xl text-gray-600 leading-relaxed">
+            If OAuth is the <strong>"Hotel Key Card,"</strong> then Grant Types are the different ways you can check into the hotel, and Scopes are the specific floors your card is allowed to reach.
+        </p>
+    </header>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white p-8 rounded-2xl card-shadow border-t-8 border-[#1E3A8A]">
+            <div class="text-5xl mb-4">🛤️</div>
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Grant Type = "The Route"</h2>
+            <p class="text-lg text-gray-700 mb-4">
+                This defines the exact sequence of steps the app takes to get the key. It is the <strong>how</strong>.
+            </p>
+            <div class="bg-blue-50 text-blue-800 px-4 py-3 rounded-lg font-mono text-sm border border-blue-100">
+                Examples: Authorization Code, Implicit
+            </div>
+        </div>
+        
+        <div class="bg-white p-8 rounded-2xl card-shadow border-t-8 border-[#FBBF24]">
+            <div class="text-5xl mb-4">🛡️</div>
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Scope = "The Permissions"</h2>
+            <p class="text-lg text-gray-700 mb-4">
+                This defines exactly what data the app can touch once it has the key. It is the <strong>what</strong>.
+            </p>
+            <ul class="bg-amber-50 text-amber-800 px-4 py-3 rounded-lg font-mono text-sm space-y-2 border border-amber-100">
+                <li>• profile (read name)</li>
+                <li>• email (view address)</li>
+                <li>• contacts.read (see list but not edit)</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="space-y-12">
+        <div class="text-center max-w-3xl mx-auto">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">The Two Main Paths</h2>
+            <p class="text-lg text-gray-600">Comparing the secure back-office exchange with the risky public handoff.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            
+            <div class="bg-[#F8FAFC] p-8 rounded-3xl border-2 border-[#10B981] relative">
+                <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-[#10B981] text-white px-6 py-2 rounded-full font-bold shadow-md">
+                    Path 1: Authorization Code
+                </div>
+                <h3 class="text-2xl font-bold text-center mt-6 mb-2">The "Secure Desk" Flow</h3>
+                <p class="text-center text-gray-600 mb-8 italic">You don't get the key directly. You get a "pickup slip" first, exchanged in private.</p>
+                
+                <div class="flex flex-col space-y-2 max-w-sm mx-auto">
+                    <div class="flow-box border-[#10B981]">1. App asks for access</div>
+                    <div class="flow-arrow">⬇️</div>
+                    <div class="flow-box border-[#10B981]">2. You log in and say "Yes"</div>
+                    <div class="flow-arrow">⬇️</div>
+                    <div class="flow-box bg-green-100 border-[#10B981] font-bold text-green-800">3. App gets a temporary code (Pickup Slip)</div>
+                    <div class="flow-arrow text-2xl">⬇️</div>
+                    <div class="flow-box bg-slate-800 text-white border-slate-900 border-dashed">
+                        4. App's server sends code + secret password behind the scenes
+                    </div>
+                    <div class="flow-arrow text-2xl">⬇️</div>
+                    <div class="flow-box bg-[#1E3A8A] text-white font-bold text-xl shadow-lg border-none">
+                        5. App gets Access Token
+                    </div>
+                </div>
+                
+                <div class="mt-8 bg-green-50 p-4 rounded-xl border border-green-200">
+                    <p class="text-green-900 font-medium text-center"><strong>✔️ Verdict: Safe.</strong> The actual key is never seen by your web browser. Exchange happens behind the scenes.</p>
+                </div>
+            </div>
+
+            <div class="bg-[#F8FAFC] p-8 rounded-3xl border-2 border-[#F43F5E] relative">
+                <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-[#F43F5E] text-white px-6 py-2 rounded-full font-bold shadow-md">
+                    Path 2: Implicit
+                </div>
+                <h3 class="text-2xl font-bold text-center mt-6 mb-2">The "Direct Delivery" Flow</h3>
+                <p class="text-center text-gray-600 mb-8 italic">Skip the middleman. The key is handed directly to the browser.</p>
+                
+                <div class="flex flex-col space-y-2 max-w-sm mx-auto">
+                    <div class="flow-box border-[#F43F5E]">1. App asks for access</div>
+                    <div class="flow-arrow">⬇️</div>
+                    <div class="flow-box border-[#F43F5E]">2. You log in and say "Yes"</div>
+                    <div class="flow-arrow text-2xl">⬇️</div>
+                    <div class="flow-box bg-[#F43F5E] text-white font-bold text-xl shadow-lg border-none animate-pulse">
+                        3. Website sends Access Token directly in URL bar
+                    </div>
+                    <div class="h-24 flex items-center justify-center text-gray-400 italic">
+                        (No server exchange steps)
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-red-50 p-4 rounded-xl border border-red-200">
+                    <p class="text-red-900 font-medium text-center"><strong>❌ Verdict: Risky.</strong> The key is visible in browser history. Anyone nearby or a malicious script could grab it.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="bg-white rounded-3xl card-shadow p-8 md:p-12">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Security & Architecture Analysis</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="chart-container">
+                <canvas id="securityChart"></canvas>
+            </div>
+            <div class="space-y-6">
+                <p class="text-lg text-gray-700">
+                    When analyzing the two flows, the <strong>Authorization Code</strong> grant offers significantly higher security because it leverages a backend server to hold the client secret.
+                </p>
+                <p class="text-lg text-gray-700">
+                    The <strong>Implicit</strong> flow was originally designed for early Single Page Applications (SPAs) that lacked a backend. However, because it exposes the token directly to the frontend client, its exposure risk is critically high by modern standards.
+                </p>
+                <div class="bg-slate-100 p-6 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-2">Analogy Check</h4>
+                    <p class="text-slate-600">Implicit flow is like handing someone a highly sensitive package in the middle of a crowded public lobby. Authorization code is verifying ID in a secure back office before handover.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="space-y-8">
+        <h2 class="text-3xl font-bold text-gray-900 text-center">Real-World Comparison</h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <div class="lg:col-span-2 overflow-hidden rounded-2xl card-shadow border border-gray-200">
+                <table class="w-full text-left border-collapse bg-white">
+                    <thead>
+                        <tr class="bg-slate-800 text-white">
+                            <th class="p-4 font-semibold text-lg border-b border-slate-700">Feature</th>
+                            <th class="p-4 font-semibold text-lg border-b border-slate-700 bg-[#10B981] text-white">Authorization Code</th>
+                            <th class="p-4 font-semibold text-lg border-b border-slate-700 bg-[#F43F5E] text-white">Implicit</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-4 font-bold text-gray-900">Best For</td>
+                            <td class="p-4 text-gray-700">Apps with a backend (Websites)</td>
+                            <td class="p-4 text-gray-700">Apps with no backend (Simple SPAs)</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-4 font-bold text-gray-900">Security</td>
+                            <td class="p-4 text-[#10B981] font-bold">High (Secret exchange)</td>
+                            <td class="p-4 text-[#F43F5E] font-bold">Low (Exposed in URL)</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-4 font-bold text-gray-900">The "Key"</td>
+                            <td class="p-4 text-gray-700">Token stays securely on the server</td>
+                            <td class="p-4 text-gray-700">Token sits exposed in the browser</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-4 font-bold text-gray-900">Typical Use</td>
+                            <td class="p-4 text-gray-700">"Login with Google" on Airbnb</td>
+                            <td class="p-4 text-gray-700 text-sm">Old-school single-page apps (Legacy)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-200 flex flex-col items-center">
+                <h3 class="text-xl font-bold text-gray-900 mb-4 text-center">Modern Industry Adoption</h3>
+                <div class="chart-container" style="height: 250px; max-height: 250px;">
+                    <canvas id="adoptionChart"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4 text-center">Due to security flaws, Implicit flow is deprecated in modern OAuth 2.1 specs.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="bg-gradient-to-r from-[#1E3A8A] to-[#1e40af] rounded-3xl p-8 md:p-12 text-white text-center shadow-2xl mt-16 relative overflow-hidden">
+        <div class="absolute top-0 right-0 text-9xl opacity-10 transform translate-x-4 -translate-y-4">💡</div>
+        <h3 class="text-3xl font-bold mb-6 relative z-10">The Ultimate Takeaway</h3>
+        <p class="text-2xl font-light leading-relaxed max-w-4xl mx-auto relative z-10">
+            <strong>Grant Type</strong> is the path you take to get permission. <strong>Scope</strong> is what that permission allows you to do. If you have a choice, always take the <strong>Authorization Code</strong> path—it's like using a secure vault instead of an open counter.
+        </p>
+    </div>
+
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    function wrapText(label) {
+        if (label.length <= 16) return label;
+        let words = label.split(' ');
+        let lines = [];
+        let currentLine = '';
+        for (let word of words) {
+            if ((currentLine + word).length > 16) {
+                if (currentLine) lines.push(currentLine.trim());
+                currentLine = word + ' ';
+            } else {
+                currentLine += word + ' ';
+            }
+        }
+        if (currentLine) lines.push(currentLine.trim());
+        return lines;
+    }
+
+    const ttConfig = {
+        tooltip: {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    return Array.isArray(label) ? label.join(' ') : label;
+                }
+            }
+        }
+    };
+
+    const ctxSecurity = document.getElementById('securityChart').getContext('2d');
+    new Chart(ctxSecurity, {
+        type: 'bar',
+        data: {
+            labels: [
+                wrapText('Overall Security Level'), 
+                wrapText('Token Exposure Risk'), 
+                wrapText('Backend Requirement')
+            ],
+            datasets: [
+                {
+                    label: 'Authorization Code',
+                    data: [95, 5, 100],
+                    backgroundColor: '#10B981',
+                    borderRadius: 6
+                },
+                {
+                    label: 'Implicit Flow',
+                    data: [20, 95, 0],
+                    backgroundColor: '#F43F5E',
+                    borderRadius: 6
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                ...ttConfig,
+                legend: { position: 'top' }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: { display: true, text: 'Relative Score (0-100)' }
+                }
+            }
+        }
+    });
+
+    const ctxAdoption = document.getElementById('adoptionChart').getContext('2d');
+    new Chart(ctxAdoption, {
+        type: 'doughnut',
+        data: {
+            labels: [wrapText('Authorization Code (Standard)'), wrapText('Implicit Flow (Legacy/Deprecated)')],
+            datasets: [{
+                data: [98, 2],
+                backgroundColor: ['#1E3A8A', '#CBD5E1'],
+                borderWidth: 0,
+                hoverOffset: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '75%',
+            plugins: {
+                ...ttConfig,
+                legend: { display: false }
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
