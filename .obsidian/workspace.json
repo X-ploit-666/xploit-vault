@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Web Hacking/OAUTH/OAuth Introduction.md",
+                "file": "Web Hacking/OAUTH/3. OAuth Authentication.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "OAuth Introduction"
+              "title": "3. OAuth Authentication"
             }
           }
         ]
@@ -188,9 +188,11 @@
   },
   "active": "d48d13ad433e2523",
   "lastOpenFiles": [
+    "OAuth-Authentication.html",
+    "Web Hacking/OAUTH/2. OAuth Grant Types.md",
+    "Web Hacking/OAUTH/3. OAuth Authentication.md",
+    "Web Hacking/OAUTH/1. OAuth Introduction.md",
     "OAuth-Grants.html",
-    "Web Hacking/OAUTH/OAuth Grant Types.md",
-    "Web Hacking/OAUTH/OAuth Introduction.md",
     "Machine Lab Challenges.md",
     "OAuth-Explained.html",
     "Threat Modeling Security Design/3. Finding Threats/1. STRIDE.md",
@@ -208,7 +210,6 @@
     "stride.html",
     "Threat Modeling Security Design/3. Finding Threats",
     "strategiesForThreatModeling.html",
-    "diveInAndThreatModel.html",
     "OWASP Automated Threat HandbookWeb Applications/3. The Ontology.md",
     "OWASP Automated Threat HandbookWeb Applications/2. Research.md",
     "OWASP Automated Threat HandbookWeb Applications/1. Introduction.md",
@@ -226,7 +227,6 @@
     "Bild Porgram/login Portal.md",
     "Images/Gemini_Generated_Image_6a0az76a0az76a0a.png",
     "Bild Porgram/Visualize.md",
-    "Bild Porgram/Technologies.md",
     "PDFs/OAT-002.png",
     "PDFs/Gemini_Generated_Image_uggu9huggu9huggu.png",
     "PDFs/OAT-001.png",
