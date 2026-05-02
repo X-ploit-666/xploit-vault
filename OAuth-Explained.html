@@ -1,0 +1,323 @@
+<!--
+Palette Name: Vibrant Tech & Hotel (Primary: #1E3A8A, Secondary: #E11D48, Accent: #FBBF24, Success: #10B981, Background: #F8FAFC)
+Confirmation: NEITHER Mermaid JS NOR SVG were used anywhere in this output. All icons are standard Unicode, and all charts are rendered on Canvas via Chart.js.
+Narrative Plan Summary: 
+1. Introduction (The Problem): Contrast giving a password vs. using OAuth.
+2. The Core Concept (Data Overview): Visualize the vast difference in risk and access scope between full passwords and tokens.
+3. The Process (Organize): A CSS/HTML based flowchart detailing the 6 steps of OAuth.
+4. The Hotel Analogy (In-Depth Analysis): A Radar chart comparing a "Master Key" to a "Key Card" across security dimensions.
+5. Real-World Application (Conclusion): A Doughnut chart visualizing data exposure in a "Login with Google" scenario.
+Visualization Choices:
+- Risk Scope (Bar Chart): Goal -> Compare. Justification -> Best for directly comparing the massive difference in access scope (100% vs limited). Canvas/Chart.js. NO SVG.
+- The 6-Step Flow (CSS Flowchart): Goal -> Organize. Justification -> Clearly maps the user journey linearly. HTML/CSS/Unicode. NO SVG.
+- Master Key vs Key Card (Radar Chart): Goal -> Relationships/Compare. Justification -> Excellent for comparing qualitative profiles (security, revocability, scope) of two concepts across multiple axes. Canvas/Chart.js. NO SVG.
+- Data Exposure (Doughnut Chart): Goal -> Inform/Compare Composition. Justification -> Visually demonstrates the tiny sliver of data shared vs the massive amount protected. Canvas/Chart.js. NO SVG.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding OAuth: The "Hotel Key" System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 400px; max-width: 100%; }
+        }
+        body { background-color: #F8FAFC; color: #0F172A; }
+        .gradient-text {
+            background: linear-gradient(to right, #1E3A8A, #E11D48);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .step-card {
+            transition: transform 0.2s ease-in-out;
+        }
+        .step-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <span class="text-2xl font-bold gradient-text tracking-tight">🗝️ OAuth Explained</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+        <header class="text-center space-y-6 max-w-4xl mx-auto">
+            <h1 class="text-5xl md:text-6xl font-extrabold text-[#1E3A8A] leading-tight">
+                Stop Sharing Your <br/><span class="text-[#E11D48]">Master Password</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-600 leading-relaxed">
+                Imagine using a new app that wants your contacts. Giving them your password gives them <strong>full control</strong>. OAuth is the technology that safely says: <em>"You can access only this specific part, and nothing else."</em>
+            </p>
+        </header>
+
+        <section id="the-problem" class="bg-white rounded-3xl shadow-xl p-8 md:p-12 border-t-8 border-[#E11D48]">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <h2 class="text-3xl font-bold text-[#1E3A8A]">The Core Problem: Over-Sharing</h2>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        Historically, to let a new app access your data on another platform, you had to hand over your login credentials. This exposes your entire digital life to third parties. OAuth fixes this by replacing passwords with limited-access tokens.
+                    </p>
+                    <div class="bg-red-50 text-red-800 p-4 rounded-xl border border-red-100 flex items-start gap-4">
+                        <span class="text-3xl">⚠️</span>
+                        <p class="font-medium">Sharing your password gives an app 100% access to read, write, and delete your data. OAuth restricts this to precisely what is needed.</p>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="accessChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="the-process" class="space-y-12">
+            <div class="text-center max-w-3xl mx-auto space-y-4">
+                <h2 class="text-4xl font-bold text-[#1E3A8A]">How It Works (The Simple Steps)</h2>
+                <p class="text-xl text-gray-600">A secure, transparent conversation between the App, You, and the Data Owner.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="step-card bg-white rounded-2xl shadow-md p-6 border-l-4 border-[#1E3A8A]">
+                    <div class="text-4xl mb-4">📱</div>
+                    <h3 class="text-xl font-bold mb-2">1. The Request</h3>
+                    <p class="text-gray-600">A new app asks, “Can I access some of your specific data to work properly?”</p>
+                </div>
+                <div class="step-card bg-white rounded-2xl shadow-md p-6 border-l-4 border-[#FBBF24]">
+                    <div class="text-4xl mb-4">🔄</div>
+                    <h3 class="text-xl font-bold mb-2">2. The Redirect</h3>
+                    <p class="text-gray-600">You are sent securely to the website that actually owns your data (like Google).</p>
+                </div>
+                <div class="step-card bg-white rounded-2xl shadow-md p-6 border-l-4 border-[#10B981]">
+                    <div class="text-4xl mb-4">🔒</div>
+                    <h3 class="text-xl font-bold mb-2">3. The Safe Login</h3>
+                    <p class="text-gray-600">You log in directly on the owning site. Your password stays completely safe with them.</p>
+                </div>
+                <div class="step-card bg-white rounded-2xl shadow-md p-6 border-l-4 border-[#1E3A8A]">
+                    <div class="text-4xl mb-4">✋</div>
+                    <h3 class="text-xl font-bold mb-2">4. The Permission</h3>
+                    <p class="text-gray-600">That website asks you: “Do you explicitly allow this app to access [Specific Data]?”</p>
+                </div>
+                <div class="step-card bg-white rounded-2xl shadow-md p-6 border-l-4 border-[#FBBF24]">
+                    <div class="text-4xl mb-4">🎫</div>
+                    <h3 class="text-xl font-bold mb-2">5. The Secret Key</h3>
+                    <p class="text-gray-600">If you agree, the app is issued a special, temporary key known as a Token.</p>
+                </div>
+                <div class="step-card bg-white rounded-2xl shadow-md p-6 border-l-4 border-[#10B981]">
+                    <div class="text-4xl mb-4">🎯</div>
+                    <h3 class="text-xl font-bold mb-2">6. Limited Access</h3>
+                    <p class="text-gray-600">The app uses that key to access <em>only</em> what you allowed—and absolutely nothing more.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="the-analogy" class="bg-white rounded-3xl shadow-xl p-8 md:p-12 border-t-8 border-[#FBBF24]">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1 chart-container">
+                    <canvas id="analogyChart"></canvas>
+                </div>
+                <div class="order-1 md:order-2 space-y-6">
+                    <h2 class="text-3xl font-bold text-[#1E3A8A]">The Hotel Analogy</h2>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        Think of your digital account like a hotel. Your password is the <strong>Master Key</strong>—it opens every single door in the building. You would never give this to a stranger like a delivery person.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
+                            <span class="text-2xl">✅</span>
+                            <span><strong>Limited Access:</strong> OAuth is a <em>Key Card</em>. It only opens the necessary doors (like the gym).</span>
+                        </li>
+                        <li class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
+                            <span class="text-2xl">✅</span>
+                            <span><strong>Temporary:</strong> The front desk can set the Key Card to expire automatically.</span>
+                        </li>
+                        <li class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
+                            <span class="text-2xl">✅</span>
+                            <span><strong>Secure:</strong> It never reveals the shape or cut of your original Master Key.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="real-world" class="bg-slate-800 text-white rounded-3xl shadow-xl p-8 md:p-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <h2 class="text-3xl font-bold text-white">Real-World: "Login with Google"</h2>
+                    <p class="text-lg text-gray-300 leading-relaxed">
+                        When you click "Login with Google" on a website, the site sends you to Google's official page. You log in there, meaning the new site never sees your typing.
+                    </p>
+                    <p class="text-lg text-gray-300 leading-relaxed">
+                        Google simply asks if the site can see your name and email. Once accepted, the site gets a token. It uses this token to create your account securely.
+                    </p>
+                    <blockquote class="border-l-4 border-[#10B981] pl-6 py-2 mt-6 italic text-xl text-gray-200">
+                        "At no point does the site ever see your Google password."
+                    </blockquote>
+                </div>
+                <div class="chart-container">
+                    <canvas id="realWorldChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <div class="text-center pb-12">
+            <h3 class="text-3xl font-bold text-[#1E3A8A] mb-4">The Key Idea</h3>
+            <p class="text-2xl text-gray-700 bg-[#FBBF24]/20 inline-block px-8 py-4 rounded-2xl border border-[#FBBF24]">
+                OAuth is a way to give limited, controlled access to your data without sharing your password.
+            </p>
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const wrap = (l) => {
+                if (l.length <= 16) return l;
+                let w = l.split(' '), lines = [], c = '';
+                w.forEach(x => {
+                    if ((c + x).length > 16) {
+                        if (c) lines.push(c.trim());
+                        c = x + ' ';
+                    } else {
+                        c += x + ' ';
+                    }
+                });
+                if (c) lines.push(c.trim());
+                return lines;
+            };
+
+            const ttConfig = {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                }
+            };
+
+            const ctxAccess = document.getElementById('accessChart').getContext('2d');
+            new Chart(ctxAccess, {
+                type: 'bar',
+                data: {
+                    labels: [wrap('Giving Password (Master Key)'), wrap('Using OAuth (Token Key)')],
+                    datasets: [{
+                        label: 'Account Access Level (%)',
+                        data: [100, 15],
+                        backgroundColor: ['#E11D48', '#10B981'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        ...ttConfig,
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: { display: true, text: 'Percentage of Data Accessible' }
+                        }
+                    }
+                }
+            });
+
+            const ctxAnalogy = document.getElementById('analogyChart').getContext('2d');
+            new Chart(ctxAnalogy, {
+                type: 'radar',
+                data: {
+                    labels: [
+                        wrap('Overall Security'),
+                        wrap('Access Control'),
+                        wrap('Revocability (Can Cancel)'),
+                        wrap('Expiration Features'),
+                        wrap('Safety if Stolen')
+                    ],
+                    datasets: [
+                        {
+                            label: 'Master Key (Password)',
+                            data: [2, 1, 1, 1, 1],
+                            backgroundColor: 'rgba(225, 29, 72, 0.2)',
+                            borderColor: '#E11D48',
+                            pointBackgroundColor: '#E11D48'
+                        },
+                        {
+                            label: 'Key Card (OAuth Token)',
+                            data: [9, 10, 10, 10, 8],
+                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                            borderColor: '#10B981',
+                            pointBackgroundColor: '#10B981'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        ...ttConfig,
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 10,
+                            ticks: { display: false }
+                        }
+                    }
+                }
+            });
+
+            const ctxRealWorld = document.getElementById('realWorldChart').getContext('2d');
+            new Chart(ctxRealWorld, {
+                type: 'doughnut',
+                data: {
+                    labels: [wrap('Protected Data (Passwords, Drive, Mails)'), wrap('Shared via Token (Name & Email)')],
+                    datasets: [{
+                        data: [95, 5],
+                        backgroundColor: ['#1E3A8A', '#FBBF24'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        ...ttConfig,
+                        legend: { 
+                            position: 'bottom',
+                            labels: { color: '#F8FAFC' }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

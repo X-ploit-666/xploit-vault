@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Threat Modeling Security Design/3. Finding Threats/4. Privacy Tools.md",
-                "mode": "source",
+                "file": "Web Hacking/OAUTH/How OAuth Works.md",
+                "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "4. Privacy Tools"
+              "title": "How OAuth Works"
             }
           }
         ]
@@ -188,12 +188,16 @@
   },
   "active": "d48d13ad433e2523",
   "lastOpenFiles": [
-    "privacyTools.html",
-    "Threat Modeling Security Design/3. Finding Threats/3. Attack Libraries.md",
+    "OAuth-Explained.html",
+    "Threat Modeling Security Design/3. Finding Threats/1. STRIDE.md",
+    "Web Hacking/OAUTH/How OAuth Works.md",
     "Threat Modeling Security Design/3. Finding Threats/4. Privacy Tools.md",
+    "Web Hacking/OAUTH",
+    "Web Hacking",
+    "Threat Modeling Security Design/3. Finding Threats/3. Attack Libraries.md",
+    "privacyTools.html",
     "Threat Modeling Security Design/3. Finding Threats/2. Attack Trees.md",
     "attacLibraries.html",
-    "Threat Modeling Security Design/3. Finding Threats/1. STRIDE.md",
     "attackTrees.html",
     "Threat Modeling Security Design/2. Getting Started/2. Strategies For Threat Modeling.md",
     "Threat Modeling Security Design/2. Getting Started/1. Dive In & Threat Model.md",
@@ -209,10 +213,7 @@
     "OWASP Automated Threat HandbookWeb Applications/1. Introduction.md",
     "OWASP Automated Threat HandbookWeb Applications/4. Threat Modeling/1. Keys.md",
     "OWASP Automated Threat HandbookWeb Applications/4. Threat Modeling/2. OAT's/OAT-001 ( CARDING ).md",
-    "introduction.html",
-    "Threat Modeling Security Design/introduction.html",
     "Deriv program/*.deriv.ae.md",
-    "Threat Modeling Security Design",
     "OWASP Automated Threat HandbookWeb Applications/4. Threat Modeling/2. OAT's/OAT-002 ( Token Cracking ).md",
     "Bild Porgram/Endpoints.md",
     "Bild Porgram/Extracted Info.md",
@@ -226,7 +227,6 @@
     "Bild Porgram/Visualize.md",
     "Bild Porgram/Technologies.md",
     "Bild Porgram/Terms.md",
-    "HTB Job Role Path/Web Penetration Tester/4. Info Gathering - Web Edition/3. DNS & subdomains/4. SubDomain BruteForcing.md",
     "PDFs/OAT-002.png",
     "PDFs/Gemini_Generated_Image_uggu9huggu9huggu.png",
     "PDFs/OAT-001.png",
