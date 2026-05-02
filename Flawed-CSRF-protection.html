@@ -1,0 +1,312 @@
+<!-- 
+Palette Name: Toxic Void (Primary: #000000, Secondary: #FACC15, Accent: #71717A, Text: #FAFAFA, Danger: #EF4444)
+Confirmation: NEITHER Mermaid JS NOR SVG were used anywhere in this output. All icons are standard Unicode, and all charts are rendered on Canvas via Chart.js.
+Narrative Plan Summary:
+1. The Detection (Inform): Contrast a 'Protected' vs 'Exposed' request header.
+2. The Force-Feed (Process): Visualizing the hidden iframe attack used to link an attacker's account to a victim.
+3. ✨ Gemini Integration (AI Logic): Interactive 'Vulnerability Scanner' and 'Exploit Payload Generator'.
+4. The Food Analogy (Organize): A "Chaos Restaurant" conceptual diagram using CSS cards.
+5. Technical Root Cause (Conclusion): Highlighting the lack of session-to-request binding.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breach: OAuth State CSRF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --bg-color: #000000;
+            --warning-yellow: #FACC15;
+            --muted-gray: #18181B;
+            --border-color: #27272A;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #FAFAFA;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            height: 300px;
+            background: #09090b;
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 4px;
+        }
+
+        .hacker-box {
+            background: #09090b;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .hacker-box:hover {
+            border-color: var(--warning-yellow);
+            box-shadow: 0 0 20px rgba(250, 204, 21, 0.1);
+        }
+
+        .warning-text {
+            color: var(--warning-yellow);
+            text-shadow: 0 0 8px rgba(250, 204, 21, 0.4);
+        }
+
+        .terminal-header {
+            background: #18181b;
+            padding: 8px 12px;
+            display: flex;
+            gap: 6px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #3f3f46; }
+
+        .loading-shimmer {
+            background: linear-gradient(90deg, #09090b 25%, #18181b 50%, #09090b 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        code { color: #d4d4d8; font-size: 0.85rem; }
+    </style>
+</head>
+<body class="p-6 md:p-12 pb-24">
+
+    <main class="max-w-5xl mx-auto space-y-20">
+        
+        <header class="text-left space-y-6">
+            <div class="inline-block px-3 py-1 bg-yellow-950/20 border border-yellow-900 text-yellow-500 text-[10px] tracking-[0.3em] font-bold uppercase">
+                Vector: Missing_State_Parameter
+            </div>
+            <h1 class="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-none">
+                State <br/><span class="warning-text">Corruption</span>
+            </h1>
+            <p class="text-zinc-500 text-lg max-w-xl">
+                When the 'state' parameter is missing, the server loses its memory. It can no longer distinguish between a user's intent and an attacker's force.
+            </p>
+        </header>
+
+        <!-- ✨ Gemini AI Features -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="hacker-box border-yellow-900/30">
+                <h3 class="text-yellow-500 font-bold mb-2 text-xs tracking-widest uppercase">✨ Exploit Scanner</h3>
+                <p class="text-zinc-500 text-[10px] mb-4">Analyze request parameters for missing session binding.</p>
+                <div id="scanner-output" class="text-[11px] text-zinc-400 min-h-[80px] leading-relaxed">
+                    Awaiting input...
+                </div>
+                <button onclick="runScanner()" id="scanner-btn" class="mt-4 w-full py-2 bg-yellow-600 hover:bg-yellow-500 text-black font-bold text-xs uppercase tracking-widest transition-all">
+                    Run Scan
+                </button>
+            </div>
+
+            <div class="hacker-box border-zinc-800">
+                <h3 class="text-zinc-300 font-bold mb-2 text-xs tracking-widest uppercase">✨ Payload Generator</h3>
+                <p class="text-zinc-500 text-[10px] mb-4">Craft a hidden iframe CSRF payload for the victim.</p>
+                <div id="payload-output" class="text-[10px] font-mono text-zinc-500 bg-black/50 p-2 rounded">
+                    [NO_DATA_GENERATED]
+                </div>
+                <button onclick="generatePayload()" id="payload-btn" class="mt-4 w-full py-2 border border-zinc-700 hover:border-zinc-500 text-zinc-300 font-bold text-xs uppercase tracking-widest transition-all">
+                    Generate Exploit
+                </button>
+            </div>
+        </section>
+
+        <!-- The Problem -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <h2 class="text-2xl font-bold uppercase tracking-tight">The Missing Guard</h2>
+                <div class="space-y-4">
+                    <p class="text-zinc-400 text-sm leading-relaxed">
+                        The <code class="text-yellow-500">state</code> parameter is a unique ticket. It ensures the person who started the login is the same person who finishes it.
+                    </p>
+                    <div class="hacker-box bg-red-950/5 border-red-900/20">
+                        <p class="text-xs font-bold text-red-500 mb-2">VULNERABLE REQUEST:</p>
+                        <code>GET /oauth/callback?code=AUTH_CODE</code>
+                        <p class="text-[10px] text-zinc-600 mt-2 italic">Result: No verification. Server accepts any code from any browser.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="entropyChart"></canvas>
+            </div>
+        </section>
+
+        <!-- The Attack Flow -->
+        <section class="space-y-8">
+            <h2 class="text-3xl font-black text-center uppercase tracking-tighter">The Invisible Link</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="hacker-box text-center space-y-2">
+                    <div class="text-2xl">🧪</div>
+                    <p class="text-[10px] text-zinc-500 uppercase">Step 1</p>
+                    <p class="text-xs font-bold">Attacker starts flow, captures CODE.</p>
+                </div>
+                <div class="hacker-box text-center border-yellow-900/50 space-y-2">
+                    <div class="text-2xl">🕸️</div>
+                    <p class="text-[10px] text-zinc-500 uppercase">Step 2</p>
+                    <p class="text-xs font-bold">Embed code in hidden iframe/link.</p>
+                </div>
+                <div class="hacker-box text-center border-red-900/50 space-y-2">
+                    <div class="text-2xl">💀</div>
+                    <p class="text-[10px] text-zinc-500 uppercase">Step 3</p>
+                    <p class="text-xs font-bold">Victim visits; accounts are merged.</p>
+                </div>
+            </div>
+
+            <div class="border border-zinc-800 rounded overflow-hidden">
+                <div class="terminal-header">
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                    <span class="ml-4 text-[10px] text-zinc-600">CSRF_PAYLOAD.HTML</span>
+                </div>
+                <div class="p-6 bg-black">
+                    <code class="block text-zinc-500">&lt;iframe src="https://victim-site.com/oauth-linking?code=<span class="text-yellow-500">ATTACKER_CODE</span>" style="display:none"&gt;&lt;/iframe&gt;</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analogy -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="chart-container">
+                <canvas id="analogyChart"></canvas>
+            </div>
+            <div class="space-y-6">
+                <h3 class="text-2xl font-bold uppercase">Chaos Restaurant</h3>
+                <p class="text-sm text-zinc-500 leading-relaxed">
+                    Without a ticket number (state), anyone can walk up to your table and say: "Here is your food." 
+                    <br/><br/>
+                    You accept it because there's no way to prove it wasn't yours. By the time you realize it's someone else's meal, they already have access to your table.
+                </p>
+            </div>
+        </section>
+
+        <!-- Root Issue -->
+        <footer class="border-t border-zinc-800 pt-12 text-center">
+            <div class="max-w-2xl mx-auto space-y-4">
+                <p class="text-xs text-zinc-600 uppercase tracking-[0.5em]">The Failure</p>
+                <p class="text-xl md:text-2xl font-light italic">
+                    "Missing state means the app accepts unsolicited responses, <br/>
+                    allowing attackers to <span class="text-yellow-500 font-bold">force-link</span> accounts via CSRF."
+                </p>
+            </div>
+        </footer>
+
+    </main>
+
+    <script>
+        const apiKey = ""; // Runtime provides this
+
+        async function geminiCall(prompt, systemPrompt = "") {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+                    return result.candidates?.[0]?.content?.parts?.[0]?.text || "Error.";
+                } catch (e) {
+                    await new Promise(r => setTimeout(r, Math.pow(2, i) * 1000));
+                }
+            }
+            return "Connection failed.";
+        }
+
+        async function runScanner() {
+            const btn = document.getElementById('scanner-btn');
+            const box = document.getElementById('scanner-output');
+            btn.disabled = true;
+            btn.innerHTML = "SCANNING...";
+            box.classList.add('loading-shimmer');
+            box.innerHTML = "Tracing packet flow... Analyzing response validation logic...";
+
+            const prompt = "Explain in 3 short, bulleted points why an OAuth request missing the 'state' parameter is vulnerable to CSRF account linking.";
+            const res = await geminiCall(prompt, "You are a hacker-themed security analyst. Be technical and punchy.");
+            
+            box.classList.remove('loading-shimmer');
+            box.innerHTML = res;
+            btn.disabled = false;
+            btn.innerHTML = "Run Scan";
+        }
+
+        async function generatePayload() {
+            const btn = document.getElementById('payload-btn');
+            const box = document.getElementById('payload-output');
+            btn.disabled = true;
+            box.classList.add('loading-shimmer');
+
+            const prompt = "Provide a one-line HTML snippet using an iframe to perform an OAuth CSRF attack on the endpoint https://vulnerable.com/callback?code=EXPLOIT_CODE.";
+            const res = await geminiCall(prompt, "Provide only the code snippet, no explanation.");
+
+            box.classList.remove('loading-shimmer');
+            box.innerText = res;
+            btn.disabled = false;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            Chart.defaults.color = '#71717a';
+            Chart.defaults.font.family = "'JetBrains Mono', monospace";
+
+            const ctx1 = document.getElementById('entropyChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['With State', 'No State'],
+                    datasets: [{
+                        label: 'Entropy (Predictability)',
+                        data: [95, 5],
+                        backgroundColor: ['#FACC15', '#EF4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 100, ticks: { display: false } } }
+                }
+            });
+
+            const ctx2 = document.getElementById('analogyChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Attacker Control', 'User Consent'],
+                    datasets: [{
+                        data: [85, 15],
+                        backgroundColor: ['#EF4444', '#18181b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '80%',
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

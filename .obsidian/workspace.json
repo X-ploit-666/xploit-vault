@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Web Hacking/OAUTH/5. OAuth Vulns/2. Vulns in the OAuth client app/1. Improper implementation of the implicit grant type.md",
-                "mode": "preview",
+                "file": "Web Hacking/OAUTH/5. OAuth Vulns/2. Vulns in the OAuth client app/2. Flawed CSRF protection.md",
+                "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "1. Improper implementation of the implicit grant type"
+              "title": "2. Flawed CSRF protection"
             }
           }
         ]
@@ -188,9 +188,11 @@
   },
   "active": "d48d13ad433e2523",
   "lastOpenFiles": [
-    "Web Hacking/OAUTH/3. OAuth Authentication.md",
-    "Web Hacking/OAUTH/5. OAuth Vulns/1. Exploiting OAuth Vulns.md",
+    "Flawed-CSRF-protection.html",
     "Web Hacking/OAUTH/5. OAuth Vulns/2. Vulns in the OAuth client app/1. Improper implementation of the implicit grant type.md",
+    "Web Hacking/OAUTH/5. OAuth Vulns/2. Vulns in the OAuth client app/2. Flawed CSRF protection.md",
+    "Web Hacking/OAUTH/5. OAuth Vulns/1. Exploiting OAuth Vulns.md",
+    "Web Hacking/OAUTH/3. OAuth Authentication.md",
     "Auth-Bypass-via-implicit-flow.html",
     "Web Hacking/OAUTH/1. OAuth Introduction.md",
     "Web Hacking/OAUTH/5. OAuth Vulns/2. Vulns in the OAuth client app",
@@ -222,7 +224,6 @@
     "Bild Porgram/Endpoints.md",
     "Bild Porgram/Extracted Info.md",
     "Bild Porgram/ATtack Surface.md",
-    "Bild Porgram/Attack Scenarios Diagrams.md",
     "Images/Gemini_Generated_Image_3goxwc3goxwc3gox 1.png",
     "Images/Gemini_Generated_Image_3goxwc3goxwc3gox.png",
     "Images/Gemini_Generated_Image_6a0az76a0az76a0a.png",
