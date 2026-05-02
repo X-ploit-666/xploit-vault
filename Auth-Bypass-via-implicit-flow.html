@@ -1,0 +1,269 @@
+<!-- 
+Palette Name: Dark Breach (Primary: #000000, Secondary: #F43F5E, Accent: #10B981, Text: #E2E8F0, Code: #D1D5DB)
+Confirmation: NEITHER Mermaid JS NOR SVG were used anywhere in this output. All icons are standard Unicode, and all charts are rendered on Canvas via Chart.js.
+Narrative Plan Summary:
+1. The Setup (Organize): Visualizing the Implicit Flow where the token is exposed in the browser URL.
+2. The Exploit (Process): A "Terminal-style" breakdown of modifying the authentication POST request to impersonate a victim.
+3. The Logic Gap (Inform): A Chart.js visualization showing the "Trust vs. Verification" imbalance.
+4. The Club Analogy (Organize): A CSS-based conceptual diagram of the 'Bad Guard' letting a hacker in as a VIP.
+5. Technical Root Cause (Conclusion): A summary of the backend failure (Lack of User-to-Token Binding).
+Visualization Choices:
+- Trust vs. Verification Gap (Bar Chart): Goal -> Compare. Justification -> Highlights the massive gap between the server's 'Blind Trust' and actual 'Security Verification'. Canvas/Chart.js. NO SVG.
+- Impersonation Success Probability (Doughnut Chart): Goal -> Inform. Justification -> Represents the vulnerability scope when token binding is absent. Canvas/Chart.js. NO SVG.
+- Request Modification (Terminal UI): Goal -> Organize. Justification -> Uses HTML/CSS to show the exact 'Before vs After' of the malicious request. NO SVG.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exploit: Implicit Flow Impersonation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
+        
+        :root {
+            --bg-color: #050505;
+            --accent-red: #F43F5E;
+            --accent-green: #10B981;
+            --terminal-bg: #0f0f0f;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #E2E8F0;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            height: 300px;
+            border: 1px solid #1a1a1a;
+            padding: 1rem;
+            background: #0a0a0a;
+            border-radius: 8px;
+        }
+
+        .evil-card {
+            background: #0d0d0d;
+            border: 1px solid #222;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .evil-card:hover {
+            border-color: var(--accent-red);
+            box-shadow: 0 0 15px rgba(244, 63, 94, 0.2);
+        }
+
+        .terminal {
+            background: var(--terminal-bg);
+            border-radius: 6px;
+            border: 1px solid #333;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .terminal-header {
+            background: #1a1a1a;
+            padding: 8px 12px;
+            display: flex;
+            gap: 6px;
+            border-bottom: 1px solid #333;
+        }
+
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; }
+        
+        .strike { text-decoration: line-through; color: var(--accent-red); opacity: 0.6; }
+        .injected { color: var(--accent-green); font-weight: bold; background: rgba(16, 185, 129, 0.1); }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+
+    <main class="max-w-5xl mx-auto space-y-20">
+        
+        <header class="text-center space-y-6">
+            <div class="inline-block px-4 py-1 border border-rose-900 text-rose-500 text-xs tracking-widest font-bold bg-rose-950/20 mb-4">
+                VULNERABILITY: IMPLICIT_FLOW_HIJACK
+            </div>
+            <h1 class="text-5xl md:text-7xl font-black uppercase tracking-tighter text-white">
+                Account <span class="text-rose-600">Impersonation</span>
+            </h1>
+            <p class="text-zinc-500 text-lg max-w-2xl mx-auto">
+                Implicit flow turns the browser into the "source of truth." In an evil world, we don't follow the rules—we change the truth.
+            </p>
+        </header>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div class="space-y-6">
+                <h2 class="text-2xl font-bold text-rose-500 underline decoration-2 underline-offset-8 mb-8">The Critical Logic Gap</h2>
+                <div class="evil-card space-y-4">
+                    <p class="text-zinc-400">The server has no password to check. It trusts two things provided by the user's browser:</p>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2"><span class="text-rose-500">⚠</span> <strong>Email:</strong> Who you claim to be</li>
+                        <li class="flex items-center gap-2"><span class="text-rose-500">⚠</span> <strong>Token:</strong> Proof you logged in somewhere else</li>
+                    </ul>
+                    <p class="text-zinc-500 italic mt-4 text-xs">If the server doesn't link the token to the specific email, identity becomes a variable we can edit.</p>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="trustChart"></canvas>
+            </div>
+        </section>
+
+        <section class="space-y-8">
+            <h2 class="text-3xl font-bold text-center uppercase tracking-widest">Executing the Breach</h2>
+            
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="status-dot bg-rose-600"></div>
+                    <div class="status-dot bg-amber-500"></div>
+                    <div class="status-dot bg-emerald-500"></div>
+                    <span class="ml-4 text-xs text-zinc-600">HTTP_HISTORY // INTERCEPTED_REQUEST</span>
+                </div>
+                <div class="p-6 text-sm md:text-base leading-relaxed">
+                    <p class="text-emerald-500">POST /authenticate HTTP/1.1</p>
+                    <p class="text-zinc-400">Host: vulnerable-app.com</p>
+                    <p class="text-zinc-400">Content-Type: application/x-www-form-urlencoded</p>
+                    <br/>
+                    <p class="text-white">
+                        email=<span class="strike">wiener@normal-user.net</span> <span class="injected">carlos@victim-admin.com</span>&<br/>
+                        token=eyJhbGciOiJSUzI1NiIs... <span class="text-zinc-500 italic">(Your valid token)</span>
+                    </p>
+                    <br/>
+                    <div class="border-t border-zinc-800 pt-4 mt-4">
+                        <p class="text-rose-500 font-bold">>>> RESPONSE: 302 FOUND (REDIRECT TO /MY-ACCOUNT)</p>
+                        <p class="text-rose-400 text-xs">Logged in successfully as: Carlos (Victim)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-1 space-y-6">
+                <h3 class="text-xl font-bold text-white uppercase border-b border-zinc-800 pb-2">The Club Analogy</h3>
+                <p class="text-sm text-zinc-500">Imagine a high-end club entry system where the guard is lazy.</p>
+                <div class="evil-card bg-rose-950/10 border-rose-900/50">
+                    <p class="text-xs font-bold text-rose-500 mb-2">THE PROCESS:</p>
+                    <p class="text-sm">You show a valid ticket (Token) and say "I'm VIP John" (Email).</p>
+                    <p class="text-sm mt-2 text-zinc-400 italic">The guard checks that the ticket is real, but never checks if the ticket was issued to John.</p>
+                </div>
+            </div>
+            <div class="lg:col-span-2 chart-container">
+                <canvas id="impersonationDoughnut"></canvas>
+            </div>
+        </section>
+
+        <section class="bg-zinc-900 border border-zinc-800 p-8 rounded-xl space-y-6">
+            <h3 class="text-2xl font-bold text-rose-600">Why this is "Evil" Design?</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
+                <div class="space-y-2">
+                    <p class="text-white font-bold tracking-widest">01. BROWSER EXPOSURE</p>
+                    <p class="text-zinc-500">Implicit flow puts the token in the URL. It's visible, loggable, and easily grabbed.</p>
+                </div>
+                <div class="space-y-2">
+                    <p class="text-white font-bold tracking-widest">02. USER-CONTROLLED IDENTITY</p>
+                    <p class="text-zinc-500">The POST request is sent from the client. Anything the client sends can be manipulated before it hits the server.</p>
+                </div>
+                <div class="space-y-2">
+                    <p class="text-white font-bold tracking-widest">03. BLIND BACKEND TRUST</p>
+                    <p class="text-zinc-500">The server assumes the browser is honest. It fails to re-verify the token-user link on its own side.</p>
+                </div>
+                <div class="space-y-2">
+                    <p class="text-white font-bold tracking-widest">04. PASSWORDS ARE OBSOLETE</p>
+                    <p class="text-zinc-500">The attacker doesn't need to know the victim's password. They only need to know the victim's email.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center py-12 border-t border-zinc-800">
+            <p class="text-rose-500 font-bold tracking-[0.3em] uppercase mb-4">Final Verdict</p>
+            <p class="text-2xl text-white font-light italic max-w-3xl mx-auto leading-relaxed">
+                "Implicit flow is a security nightmare when servers trust user-supplied identity without verifying the <span class="text-rose-500">token ↔ user</span> binding."
+            </p>
+        </footer>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            Chart.defaults.color = '#71717a';
+            Chart.defaults.font.family = "'Fira Code', monospace";
+
+            const wrap = (l) => {
+                if (l.length <= 16) return l;
+                let words = l.split(' '), lines = [], current = '';
+                words.forEach(w => {
+                    if ((current + w).length > 16) {
+                        lines.push(current.trim());
+                        current = w + ' ';
+                    } else {
+                        current += w + ' ';
+                    }
+                });
+                lines.push(current.trim());
+                return lines;
+            };
+
+            const ctx1 = document.getElementById('trustChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: [wrap('Token Validation'), wrap('User Identity Trust'), wrap('Binding Verification')],
+                    datasets: [{
+                        label: 'Vulnerable Server Behavior',
+                        data: [100, 100, 5],
+                        backgroundColor: '#F43F5E',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: (items) => {
+                                    let label = items[0].chart.data.labels[items[0].dataIndex];
+                                    return Array.isArray(label) ? label.join(' ') : label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } }
+                    }
+                }
+            });
+
+            const ctx2 = document.getElementById('impersonationDoughnut').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: [wrap('Exploitable Area (No Binding)'), wrap('Secure Implementation')],
+                    datasets: [{
+                        data: [90, 10],
+                        backgroundColor: ['#F43F5E', '#1a1a1a'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '80%',
+                    plugins: {
+                        legend: { position: 'right' }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
