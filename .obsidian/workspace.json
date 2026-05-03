@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Web Hacking/OAUTH/5. OAuth Vulns/2. Vulns in the OAuth client app/2. Flawed CSRF protection.md",
+                "file": "Web Hacking/OAUTH/5. OAuth Vulns/3. Vulns in The OAuth service/Leaking authorization codes and access tokens.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2. Flawed CSRF protection"
+              "title": "Leaking authorization codes and access tokens"
             }
           }
         ]
@@ -188,16 +188,19 @@
   },
   "active": "d48d13ad433e2523",
   "lastOpenFiles": [
-    "Flawed-CSRF-protection.html",
-    "Web Hacking/OAUTH/5. OAuth Vulns/2. Vulns in the OAuth client app/1. Improper implementation of the implicit grant type.md",
-    "Web Hacking/OAUTH/5. OAuth Vulns/2. Vulns in the OAuth client app/2. Flawed CSRF protection.md",
+    "OAuth-account-hijacking-via-redirect_uri.html",
+    "Web Hacking/OAUTH/2. OAuth Grant Types.md",
+    "Web Hacking/OAUTH/5. OAuth Vulns/3. Vulns in The OAuth service/Leaking authorization codes and access tokens.md",
     "Web Hacking/OAUTH/5. OAuth Vulns/1. Exploiting OAuth Vulns.md",
+    "Web Hacking/OAUTH/5. OAuth Vulns/3. Vulns in The OAuth service",
+    "Web Hacking/OAUTH/5. OAuth Vulns/2. Vulns in the OAuth client app/2. Flawed CSRF protection.md",
+    "Web Hacking/OAUTH/5. OAuth Vulns/2. Vulns in the OAuth client app/1. Improper implementation of the implicit grant type.md",
+    "Flawed-CSRF-protection.html",
     "Web Hacking/OAUTH/3. OAuth Authentication.md",
     "Auth-Bypass-via-implicit-flow.html",
     "Web Hacking/OAUTH/1. OAuth Introduction.md",
     "Web Hacking/OAUTH/5. OAuth Vulns/2. Vulns in the OAuth client app",
     "Web Hacking/OAUTH/4. Identifying & Recon.md",
-    "Web Hacking/OAUTH/2. OAuth Grant Types.md",
     "Web Hacking/OAUTH/5. OAuth Vulns",
     "Identifying-OAuth-Recon.html",
     "OAuth-Authentication.html",
@@ -207,9 +210,7 @@
     "Threat Modeling Security Design/3. Finding Threats/1. STRIDE.md",
     "Threat Modeling Security Design/3. Finding Threats/4. Privacy Tools.md",
     "Web Hacking/OAUTH",
-    "Web Hacking",
     "Threat Modeling Security Design/3. Finding Threats/3. Attack Libraries.md",
-    "privacyTools.html",
     "Threat Modeling Security Design/3. Finding Threats/2. Attack Trees.md",
     "Threat Modeling Security Design/2. Getting Started/2. Strategies For Threat Modeling.md",
     "Threat Modeling Security Design/2. Getting Started/1. Dive In & Threat Model.md",
@@ -223,7 +224,6 @@
     "OWASP Automated Threat HandbookWeb Applications/4. Threat Modeling/2. OAT's/OAT-002 ( Token Cracking ).md",
     "Bild Porgram/Endpoints.md",
     "Bild Porgram/Extracted Info.md",
-    "Bild Porgram/ATtack Surface.md",
     "Images/Gemini_Generated_Image_3goxwc3goxwc3gox 1.png",
     "Images/Gemini_Generated_Image_3goxwc3goxwc3gox.png",
     "Images/Gemini_Generated_Image_6a0az76a0az76a0a.png",
