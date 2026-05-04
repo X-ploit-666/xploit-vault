@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Web Hacking/OAUTH/5. OAuth Vulns/3. Vulns in The OAuth service/2. Flawed redirect_uri validation.md",
+                "file": "Web Hacking/OAUTH/5. OAuth Vulns/3. Vulns in The OAuth service/3. Stealing codes and access tokens via a proxy page.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2. Flawed redirect_uri validation"
+              "title": "3. Stealing codes and access tokens via a proxy page"
             }
           }
         ]
@@ -188,10 +188,16 @@
   },
   "active": "d48d13ad433e2523",
   "lastOpenFiles": [
-    "OAuth Redirect URI Hijacking.pdf",
-    "Web Hacking/OAUTH/5. OAuth Vulns/3. Vulns in The OAuth service/1. Leaking authorization codes and access tokens.md",
+    "Stealing-codes-and-access-tokens-via-a-proxy-page.html",
     "Web Hacking/OAUTH/5. OAuth Vulns/3. Vulns in The OAuth service/2. Flawed redirect_uri validation.md",
-    "Web Hacking/OAUTH/5. OAuth Vulns/3. Vulns in The OAuth service/3. Flawed redirect_uri validation.md",
+    "PDFs/OAuth-Redirect-URI-Hijacking.pdf",
+    "Web Hacking/OAUTH/5. OAuth Vulns/3. Vulns in The OAuth service/1. Leaking authorization codes and access tokens.md",
+    "OAuth-Redirect-URI-Hijacking.md",
+    "HTB Labs/Easy Labs/Jerry.md",
+    "Machine Lab Challenges.md",
+    "Web Focus Plan.md",
+    "PDFs/Jerry.pdf",
+    "Web Hacking/OAUTH/5. OAuth Vulns/3. Vulns in The OAuth service/3. Stealing codes and access tokens via a proxy page.md",
     "Web Hacking/OAUTH/5. OAuth Vulns/1. Exploiting OAuth Vulns.md",
     "Web Hacking/OAUTH/1. OAuth Introduction.md",
     "OAuth-account-hijacking-via-redirect_uri.html",
@@ -207,9 +213,6 @@
     "Web Hacking/OAUTH/5. OAuth Vulns",
     "Identifying-OAuth-Recon.html",
     "OAuth-Authentication.html",
-    "OAuth-Grants.html",
-    "Machine Lab Challenges.md",
-    "OAuth-Explained.html",
     "Threat Modeling Security Design/3. Finding Threats/1. STRIDE.md",
     "Threat Modeling Security Design/3. Finding Threats/4. Privacy Tools.md",
     "Threat Modeling Security Design/3. Finding Threats/3. Attack Libraries.md",
@@ -221,9 +224,6 @@
     "OWASP Automated Threat HandbookWeb Applications/2. Research.md",
     "OWASP Automated Threat HandbookWeb Applications/1. Introduction.md",
     "OWASP Automated Threat HandbookWeb Applications/4. Threat Modeling/1. Keys.md",
-    "OWASP Automated Threat HandbookWeb Applications/4. Threat Modeling/2. OAT's/OAT-001 ( CARDING ).md",
-    "Deriv program/*.deriv.ae.md",
-    "OWASP Automated Threat HandbookWeb Applications/4. Threat Modeling/2. OAT's/OAT-002 ( Token Cracking ).md",
     "Images/Gemini_Generated_Image_3goxwc3goxwc3gox 1.png",
     "Images/Gemini_Generated_Image_3goxwc3goxwc3gox.png",
     "Images/Gemini_Generated_Image_6a0az76a0az76a0a.png",
